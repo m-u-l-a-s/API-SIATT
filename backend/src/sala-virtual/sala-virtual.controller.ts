@@ -18,16 +18,16 @@ export class SalaVirtualController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.salaVirtualService.findOne(+id);
+    return this.salaVirtualService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSalaVirtualDto: CreateSalaVirtualDto) {
-    return this.salaVirtualService.update(+id, updateSalaVirtualDto);
+    return this.salaVirtualService.update(id, updateSalaVirtualDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.salaVirtualService.remove(+id);
+    return this.salaVirtualService.remove(id);
   }
 }
