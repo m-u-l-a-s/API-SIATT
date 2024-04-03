@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { SalaPresencialService } from './sala-presencial.service';
 import { CreateSalaPresencialDto } from './dto/create-sala-presencial.dto';
 
@@ -18,16 +18,16 @@ export class SalaPresencialController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.salaPresencialService.findOne(+id);
+    return this.salaPresencialService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateSalaPresencialDto: CreateSalaPresencialDto) {
-    return this.salaPresencialService.update(+id, updateSalaPresencialDto);
+    return this.salaPresencialService.update(id, updateSalaPresencialDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.salaPresencialService.remove(+id);
+    return this.salaPresencialService.remove(id);
   }
 }
