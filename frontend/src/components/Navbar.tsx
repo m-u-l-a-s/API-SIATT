@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 
 const Navbar = () => {
@@ -43,13 +43,14 @@ const Navbar = () => {
             <div className="flex flex-shrink-0 items-center">
               <img src="https://www.siatt.com.br/siatt/wp-content/uploads/2018/01/siatt-logo.png" className='h-10 rounded-lg' alt="Your Company Logo" />
             </div>
+            <span className='text-white flex justify-center items-center ml-6 text-2xl'>Portal de Agendamento de Reuniões</span>
             <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
+              {/* <div className="flex space-x-4">
                 <a href="#" className="bg-gray-800 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Calendário</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Equipe</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Dúvidas</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Sobre</a>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
