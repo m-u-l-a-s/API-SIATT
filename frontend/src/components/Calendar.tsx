@@ -111,11 +111,11 @@ const Calendar: React.FC<CalendarProps> = () => {
                     <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                         <div className="flex items-center justify-between px-6 py-3 bg-gray-700">
                             <button onClick={handlePrevMonth} className="text-white" id="prevMonth">
-                                Previous
+                                <strong>&lt;</strong>
                             </button>
                             <h2 ref={currentMonthRef} className="text-white" id="currentMonth"></h2>
                             <button onClick={handleNextMonth} className="text-white" id="nextMonth">
-                                Next
+                                <strong>&gt;</strong>
                             </button>
                         </div>
                         <div className="grid grid-cols-7 gap-2 p-4" ref={calendarRef} id="calendar"></div>
