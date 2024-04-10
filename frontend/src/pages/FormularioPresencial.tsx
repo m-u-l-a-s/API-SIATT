@@ -1,7 +1,7 @@
 import CalendarPicker from "../components/DateCalendar";
 import { GrAttachment } from "react-icons/gr";
 
-const FormularioHibrido = () => {
+const FormularioPresencial = () => {
 
     return (
  
@@ -124,7 +124,7 @@ const FormularioHibrido = () => {
 
 
                 <div className="flex items-start space-x-2">
-                    <label htmlFor="">Número de Convidados Presencial:</label>
+                    <label htmlFor="">Número de Convidados:</label>
                     <select name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-7 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                         <option value="volvo"> 1 pessoa </option>
                         <option value="saab"> Até 4 pessoas</option>
@@ -160,7 +160,7 @@ const FormularioHibrido = () => {
 
                 </div>
 
-                <div className=" flex justify-between p-4">
+                <div className=" flex justify-between">
                    <button
                         className="middle none center rounded-lg bg-white border-gray-500 py-4 px-10 font-sans text-xs font-bold uppercase 
                         text-black shadow-md transition-all hover:shadow-lg
@@ -191,4 +191,4 @@ const FormularioHibrido = () => {
     );
 };
  
- export default FormularioHibrido;
+ export default FormularioPresencial;
