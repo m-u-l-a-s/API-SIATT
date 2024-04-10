@@ -1,6 +1,7 @@
 // import { useState } from 'react'
 import './App.css'
 import Tabs from './components/Tabs';
+import PagAgendamento from './pages/PagAgendamento';
 
 
 
@@ -11,6 +12,7 @@ function App() {
   return (
     <div className='test'>
 
+       {/* <PagAgendamento/> */}
       <Tabs/>
 
     </div>
