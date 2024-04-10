@@ -1,4 +1,5 @@
 import CalendarPicker from "../components/DateCalendar";
+import TimeChoser from "../components/TimeChoser";
 import { GrAttachment } from "react-icons/gr";
 
 const FormularioOnline = () => {
@@ -14,8 +15,9 @@ const FormularioOnline = () => {
                          <label htmlFor="">Quando:</label>
               
                          <CalendarPicker/> {/* CHAMANDO DATA PICKER?  */}
+                         <TimeChoser/>
 
-                         <div className="flex ">
+                         {/* <div className="flex ">
                              <select name="hours" className="text-center bg-transparent text-xl px-2 appearance-none outline-none cursor-pointer">
                                  <option value="1" className="text-center">01</option>
                                  <option value="2">02</option>
@@ -49,7 +51,7 @@ const FormularioOnline = () => {
                                  <option value="am">AM</option>
                                  <option value="pm">PM</option>
                              </select>
-                         </div>
+                         </div> */}
  
  
                      </div>
