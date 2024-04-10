@@ -24,6 +24,10 @@ export class UsuarioService {
     return this.clienteRepository.findOneBy({id: id});
   }
 
+  async findOneByEmail(email : string) {
+    return await this.clienteRepository.findOneBy({email: email});
+  }
+
   update(id: string, user: CreateUsuarioDto) {
       return this.clienteRepository.update(id, 
         {

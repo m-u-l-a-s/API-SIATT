@@ -2,7 +2,6 @@ import { SalaPresencialEntity } from "src/sala-presencial/entities/sala-presenci
 import { SalaVirtualEntity } from "src/sala-virtual/entities/sala-virtual.entity";
 import { UsuarioEntity } from "src/usuario/entities/usuario.entity";
 import { Entity, Column, PrimaryGeneratedColumn,ManyToOne, OneToMany } from "typeorm";
-import { ParticipantesEntity } from "./participantes.entity";
 
 export enum Categoria {
     VIRTUAL = "virtual",
@@ -34,13 +33,12 @@ export class ReuniaoEntity {
     @ManyToOne(() => UsuarioEntity, usuario => usuario.reunioes)
     solicitante : UsuarioEntity
 
-    @OneToMany(() => ParticipantesEntity, (participantes) => participantes.reuniaoId)
-    participantes : ParticipantesEntity[]
+    @Column({type : 'json'})
+    participantes : JSON
 
     @ManyToOne(() => SalaPresencialEntity , salaPresencial => salaPresencial.reunioes)
     salaPresencial : SalaPresencialEntity
 
     @ManyToOne(() => SalaVirtualEntity, salaVirtual => salaVirtual.reunioes)
     salaVirtual : SalaVirtualEntity
-  reuniao: Promise<UsuarioEntity>;
 }
