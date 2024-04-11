@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { IoCalendarOutline } from 'react-icons/io5'; // Importe o ícone desejado
+import { IoCalendarOutline } from 'react-icons/io5'; 
 
 const CalendarPicker: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
