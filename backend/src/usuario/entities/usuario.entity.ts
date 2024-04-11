@@ -1,7 +1,7 @@
 import { ReuniaoEntity } from 'src/reuniao/entities/reuniao.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-@Entity({name: "usuarios"})
+@Entity({name: "usuario"})
 export class UsuarioEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
