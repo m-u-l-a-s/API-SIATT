@@ -1,6 +1,7 @@
 import CalendarPicker from "../components/DateCalendar";
 import { GrAttachment } from "react-icons/gr";
 
+
 const FormularioHibrido = () => {
 
     return (
@@ -110,9 +111,13 @@ const FormularioHibrido = () => {
 
                     <div className="flex items-start space-x-2">
 
-                        <button className="flex items-center justify-center border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                        <button className="flex items-center justify-center border bg-white
+                        border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
+                         focus:border-gray-500 focus:ring-gray-400">
+
                             <GrAttachment className="mr-2" />
                             Anexar documento
+
                         </button>
                     </div>
 
@@ -126,6 +131,61 @@ const FormularioHibrido = () => {
                         <label htmlFor=""> E-mail dos convidados </label>
                         <input placeholder="exemplo@exemplo.com" className="border bg-white border-gray-300 rounded-lg px-3  w-96 h-7 focus:outline-none focus:border-gray-500 focus:ring-gray-400 " type="text" />
                     </div>
+
+                    
+                    <div className="email-list max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2">
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span>email</span>
+                            <button className="text-gray-500 hover:text-gray-700">X</button>
+                        </div>
+                        {/* Repita essa estrutura conforme necessário para mais e-mails */}
+
+                    </div>
+                    
 
 
                     <div className="flex items-start space-x-2">
