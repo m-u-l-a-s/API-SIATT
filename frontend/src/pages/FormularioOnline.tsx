@@ -1,13 +1,13 @@
+
 import CalendarPicker from "../components/DateCalendar";
-import { GrAttachment } from "react-icons/gr";
 import TimeChoser from "../components/TimeChoser";
+import { GrAttachment } from "react-icons/gr";
 
-
-const FormularioHibrido = () => {
+const FormularioOnline = () => {
 
     return (
 
-        <div className="flex items-start justify-center mt-4 text-black font-medium">
+        <div className="flex flex-col items-center justify-center mt-4 text-black font-medium">
 
             <form action="" className="justify-center space-x-40 ">
 
@@ -51,19 +51,19 @@ const FormularioHibrido = () => {
 
                         <div className="flex items-start space-x-2">
 
-                            <button className="flex items-center justify-center border bg-white
-        border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
-         focus:border-gray-500 focus:ring-gray-400">
+                        <button className="flex items-center justify-center border bg-white
+                        border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
+                         focus:border-gray-500 focus:ring-gray-400">
 
-                                <GrAttachment className="mr-2" />
-                                Anexar documento
+                            <GrAttachment className="mr-2" />
+                            Anexar documento
 
-                            </button>
-                        </div>
+                        </button>
+                    </div>
 
                     </div>
 
-                    {/* SEGUNDA COLUNA DO FORMULARIO */}
+
 
                     <div className="space-y-7 ml-10">
 
@@ -125,17 +125,6 @@ const FormularioHibrido = () => {
 
                         </div>
 
-                        <div className="flex items-start space-x-2">
-                            <label htmlFor="">Convidados Presenciais:</label>
-                            <select name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option value="quant1"> 1 pessoa </option>
-                                <option value="quant2"> Até 4 pessoas</option>
-                                <option value="quant3"> Até 10 essoas</option>
-                                <option value="quant4"> Até 13 pessoas</option>
-                                <option value="quant5"> Até 25 pessoas</option>
-                            </select>
-                        </div>
-
 
                         <div className="flex items-start">
                             <label>Escolha sua sala</label>
@@ -193,9 +182,13 @@ active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:sha
 
             </form>
 
+
+            {/* <ButtonsForms /> */}
+
         </div>
 
     );
+
 };
 
-export default FormularioHibrido;
+export default FormularioOnline;

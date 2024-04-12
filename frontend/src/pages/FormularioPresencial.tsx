@@ -1,9 +1,9 @@
+
 import CalendarPicker from "../components/DateCalendar";
-import { GrAttachment } from "react-icons/gr";
 import TimeChoser from "../components/TimeChoser";
+import { GrAttachment } from "react-icons/gr";
 
-
-const FormularioHibrido = () => {
+const FormularioPresencial = () => {
 
     return (
 
@@ -52,8 +52,8 @@ const FormularioHibrido = () => {
                         <div className="flex items-start space-x-2">
 
                             <button className="flex items-center justify-center border bg-white
-        border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
-         focus:border-gray-500 focus:ring-gray-400">
+border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
+focus:border-gray-500 focus:ring-gray-400">
 
                                 <GrAttachment className="mr-2" />
                                 Anexar documento
@@ -63,7 +63,7 @@ const FormularioHibrido = () => {
 
                     </div>
 
-                    {/* SEGUNDA COLUNA DO FORMULARIO */}
+
 
                     <div className="space-y-7 ml-10">
 
@@ -126,7 +126,7 @@ const FormularioHibrido = () => {
                         </div>
 
                         <div className="flex items-start space-x-2">
-                            <label htmlFor="">Convidados Presenciais:</label>
+                            <label htmlFor="">Número de Convidados:</label>
                             <select name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                 <option value="quant1"> 1 pessoa </option>
                                 <option value="quant2"> Até 4 pessoas</option>
@@ -196,6 +196,12 @@ active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:sha
         </div>
 
     );
+
 };
 
-export default FormularioHibrido;
+
+export default FormularioPresencial;
+
+
+
+
