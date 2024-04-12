@@ -15,8 +15,8 @@ export class SalaPresencialService {
     return this.salaPresencialRepository.save(salaPresencialDto);
   }
 
-  findAll() {
-    return this.salaPresencialRepository.find();
+  async findAll(): Promise<SalaPresencialEntity[]> {
+    return await this.salaPresencialRepository.find();
   }
 
   findOne(id: string) {
