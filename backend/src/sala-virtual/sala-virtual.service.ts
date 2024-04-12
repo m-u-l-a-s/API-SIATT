@@ -16,7 +16,7 @@ export class SalaVirtualService {
     const sala = new SalaVirtualEntity()
     sala.identificacao = createSalaVirtualDto.identificacao
     sala.login = createSalaVirtualDto.login
-    await sala.setSenha(createSalaVirtualDto.senha)
+    sala.senha = createSalaVirtualDto.senha
     sala.permissao = createSalaVirtualDto.permissao
     return await this.salaVirtualRepository.save(sala);
   }
@@ -34,7 +34,7 @@ export class SalaVirtualService {
     if (sala != null){
       sala.identificacao = updateSalaVirtualDto.identificacao
       sala.login = updateSalaVirtualDto.login
-      sala.setSenha(updateSalaVirtualDto.senha)
+      sala.senha = updateSalaVirtualDto.senha
       sala.permissao = updateSalaVirtualDto.permissao
       return this.salaVirtualRepository.save(sala)
     }
