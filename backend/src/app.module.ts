@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { UsuarioModule } from './usuario/usuario.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
@@ -6,6 +6,9 @@ import { ReuniaoModule } from './reuniao/reuniao.module';
 import { ReuniaoAnexosModule } from './reuniao-anexos/reuniao-anexos.module';
 import { SalaVirtualModule } from './sala-virtual/sala-virtual.module';
 import { SalaPresencialModule } from './sala-presencial/sala-presencial.module';
+import { DataGuard } from './data.guard';
+import { MockDataBase } from './MockDataBase/mock-database.service';
+import { MockDataBaseModule } from './MockDataBase/mock-database.module';
 
 @Module({
   imports: [
@@ -24,8 +27,16 @@ import { SalaPresencialModule } from './sala-presencial/sala-presencial.module';
     ReuniaoModule,
     ReuniaoAnexosModule,
     SalaVirtualModule,
-    SalaPresencialModule],
+    SalaPresencialModule,
+    MockDataBaseModule
+  ],
   controllers: [],
-  providers: [],
+  providers: [DataGuard, MockDataBase],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit{
+  constructor(private readonly dataGuard : DataGuard){}
+
+  async onModuleInit() {
+    await this.dataGuard.canActivate(null);   
+  }
+}

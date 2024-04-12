@@ -11,7 +11,7 @@ export class SalaPresencialService {
     private readonly salaPresencialRepository: Repository<SalaPresencialEntity>
   ) { }
 
-  create(salaPresencialDto: CreateSalaPresencialDto) {
+  async create(salaPresencialDto: CreateSalaPresencialDto) {
     return this.salaPresencialRepository.save(salaPresencialDto);
   }
 
