@@ -1,9 +1,30 @@
 
+import { useState } from "react";
 import CalendarPicker from "../components/DateCalendar";
+import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
-import { GrAttachment } from "react-icons/gr";
+import { GrAdd, GrAttachment } from "react-icons/gr";
 
 const FormularioOnline = () => {
+    const [emailInput, setEmailInput] = useState<string>('');
+    const [emails, setEmails] = useState<string[]>([]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmailInput(e.target.value);
+    };
+
+    const handleAddEmail = () => {
+        if (emailInput.trim() !== '') {
+            setEmails([...emails, emailInput.trim()]);
+            setEmailInput('');
+        }
+    };
+
+    const handleDeleteEmail = (index: number) => {
+        const updatedEmails = [...emails];
+        updatedEmails.splice(index, 1);
+        setEmails(updatedEmails);
+    };
 
     return (
 
@@ -67,63 +88,25 @@ const FormularioOnline = () => {
 
                     <div className="space-y-7 ml-10">
 
-                        <div className="flex items-start space-x-2" >
+                    <div className="flex items-start space-x-2" >
                             <label htmlFor=""> E-mail dos convidados: </label>
-                            <input placeholder="exemplo@exemplo.com" className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 " type="text" />
+                            <input
+                                placeholder="exemplo@exemplo.com"
+                                className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                                type="text"
+                                value={emailInput}
+                                onChange={handleInputChange}
+                            />
+                            <button
+                                onClick={handleAddEmail}
+                                className="flex items-center justify-center border border-gray-300 bg-white text-gray-700 font-semibold 
+                                py-2 px-4 w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100 w-auto"
+                            >
+                                <GrAdd />
+                            </button>
                         </div>
 
-                        <div className="email-list max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2">
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            {/* Repita essa estrutura conforme necessário para mais e-mails */}
-
-                        </div>
+                        <ListaEmails emails={emails} onDelete={handleDeleteEmail} />
 
 
                         <div className="flex items-start">
