@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 import './App.css'
-import Tabs from './components/Tabs';
-import PagAgendamento from './pages/PagAgendamento';
+import { Rotas } from './pages/Rotas';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 
 
@@ -10,12 +10,12 @@ function App() {
   // const [count, setCount] = useState(0)
 
   return (
-    <div className='test'>
-
-       {/* <PagAgendamento/> */}
-      <Tabs/>
-
-    </div>
+   
+    <Router>
+      <div className='test'>
+        <Rotas />
+      </div>
+    </Router>
   );
 };
 
