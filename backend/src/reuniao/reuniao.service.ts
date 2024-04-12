@@ -5,7 +5,6 @@ import { Categoria, ReuniaoEntity } from './entities/reuniao.entity';
 import { Repository } from 'typeorm';
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { SalaPresencialService } from 'src/sala-presencial/sala-presencial.service';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class ReuniaoService {
