@@ -3,6 +3,7 @@ import Calendar from "../components/Calendar"
 import ButtonAdd from "../components/ButtonAdd";
 import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
+import { Link } from "react-router-dom";
 
 const PagAgendamento = () => {
 
@@ -33,7 +34,10 @@ const PagAgendamento = () => {
                     {/* <span className="mt-20">.</span> */}
                     <SearchInput/>
                     <Calendar/>
+
+                    <Link to="/Home/Agendamento">
                     <ButtonAdd/>
+                    </Link>
                 </div>
 
 
