@@ -17,19 +17,23 @@ const FormularioHibrido = () => {
 
                         <div className="flex justify-between">
                             <div className="flex items-start space-x-4">
-                                <label htmlFor="">Data:</label>
+                                <label 
+                                htmlFor="dataReuniao">Data:</label>
                                 <CalendarPicker /> {/* CHAMANDO DATA PICKER?  */}
                             </div>
 
                             <div className="ml-4">
-                                <label htmlFor="" className="pr-4">Hora:</label>
+                                <label 
+                                htmlFor="horarioReuniao" 
+                                className="pr-4">Hora:</label>
                                 <TimeChoser />
                             </div>
                         </div>
 
                         <div className="flex items-start space-x-2">
 
-                            <label>Duração:</label>
+                            <label 
+                            htmlFor="tempoDuracao">Duração:</label>
                             <TimeChoser />
 
                         </div>
@@ -37,7 +41,11 @@ const FormularioHibrido = () => {
 
                         <div className="flex items-start space-x-2">
                             <label>Título da Reunião:</label>
-                            <input className="border bg-white border-gray-300 rounded-lg px-3  w-96 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 " type="text" />
+                            <input 
+                            className="border bg-white border-gray-300 rounded-lg px-3  w-96 h-8 
+                            focus:outline-none focus:border-gray-500 focus:ring-gray-400 " 
+                            type="text"
+                            id="tituloReuniao" name="tituloReuniao" />
                         </div>
 
 
@@ -46,14 +54,18 @@ const FormularioHibrido = () => {
                         </div>
 
                         <div className="flex items-start">
-                            <textarea className="border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-20 focus:outline-none focus:border-gray-500 focus:ring-gray-400" />
+                            <textarea 
+                            className="border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-20 
+                            focus:outline-none focus:border-gray-500 focus:ring-gray-400"
+                            id="pautaReuniao" name="pautaReuniao" />
                         </div>
 
                         <div className="flex items-start space-x-2">
 
                             <button className="flex items-center justify-center border bg-white
-        border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
-         focus:border-gray-500 focus:ring-gray-400">
+                            border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
+                            focus:border-gray-500 focus:ring-gray-400"
+                            type="button" id="botaoAnexo" name="botaoAnexo">
 
                                 <GrAttachment className="mr-2" />
                                 Anexar documento
@@ -69,7 +81,11 @@ const FormularioHibrido = () => {
 
                         <div className="flex items-start space-x-2" >
                             <label htmlFor=""> E-mail dos convidados: </label>
-                            <input placeholder="exemplo@exemplo.com" className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 " type="text" />
+                            <input placeholder="exemplo@exemplo.com" 
+                            className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 
+                            focus:outline-none focus:border-gray-500 focus:ring-gray-400 " 
+                            type="text"
+                            id="eMails" name="eMails"  />
                         </div>
 
                         <div className="email-list max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2">
@@ -126,16 +142,14 @@ const FormularioHibrido = () => {
                         </div>
 
                         <div className="flex items-start space-x-2">
-                            <label htmlFor="">Convidados Presenciais:</label>
-                            <select name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option value="quant1"> 1 pessoa </option>
-                                <option value="quant2"> Até 4 pessoas</option>
-                                <option value="quant3"> Até 10 essoas</option>
-                                <option value="quant4"> Até 13 pessoas</option>
-                                <option value="quant5"> Até 25 pessoas</option>
-                            </select>
+                            <label htmlFor="">Número de Convidados:</label>
+                            <input 
+                            type="number"
+                            id="nConvidados" name="nConvidados" 
+                            className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 
+                            focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                            </input>
                         </div>
-
 
                         <div className="flex items-start">
                             <label>Escolha sua sala</label>
@@ -170,9 +184,9 @@ const FormularioHibrido = () => {
 
                         <button
                             className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
-text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
-focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
-disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                            focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
+                            disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             data-ripple-light="true"
                         >
                             Limpar Campos
@@ -180,9 +194,9 @@ disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
 
                         <button
                             className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold uppercase 
-text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
-hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
-active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
+                            hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
+                            active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             data-ripple-light="true"
                         >
                             Agendar

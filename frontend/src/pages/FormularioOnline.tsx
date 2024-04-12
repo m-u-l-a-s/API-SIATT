@@ -125,9 +125,8 @@ const FormularioOnline = () => {
 
                         </div>
 
-
                         <div className="flex items-start">
-                            <label>Escolha sua sala</label>
+                            <label>Selecione a sua sala</label>
                         </div>
 
                         <div className="flex items-start space-x-2">
@@ -137,16 +136,6 @@ const FormularioOnline = () => {
                                 <option value="sala2">Sala 2</option>
                                 <option value="sala3">Sala 3</option>
                                 <option value="sala4">Sala 4</option>
-                            </select>
-                        </div>
-
-                        <div className="flex items-start space-x-2">
-                            <label >Sala Presencial:</label>
-                            <select name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option className="" value="volvo">Sala 1</option>
-                                <option value="saab">Sala 2</option>
-                                <option value="opel">Sala 3</option>
-                                <option value="audi">Sala 4</option>
                             </select>
                         </div>
 

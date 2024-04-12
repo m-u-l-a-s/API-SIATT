@@ -127,28 +127,13 @@ focus:border-gray-500 focus:ring-gray-400">
 
                         <div className="flex items-start space-x-2">
                             <label htmlFor="">Número de Convidados:</label>
-                            <select name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option value="quant1"> 1 pessoa </option>
-                                <option value="quant2"> Até 4 pessoas</option>
-                                <option value="quant3"> Até 10 essoas</option>
-                                <option value="quant4"> Até 13 pessoas</option>
-                                <option value="quant5"> Até 25 pessoas</option>
-                            </select>
+                            <input name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                            </input>
                         </div>
 
 
                         <div className="flex items-start">
                             <label>Escolha sua sala</label>
-                        </div>
-
-                        <div className="flex items-start space-x-2">
-                            <label> Sala Online:</label>
-                            <select name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option value="sala1">Sala 1</option>
-                                <option value="sala2">Sala 2</option>
-                                <option value="sala3">Sala 3</option>
-                                <option value="sala4">Sala 4</option>
-                            </select>
                         </div>
 
                         <div className="flex items-start space-x-2">
