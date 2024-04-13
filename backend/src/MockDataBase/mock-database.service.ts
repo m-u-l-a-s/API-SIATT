@@ -19,6 +19,8 @@ export class MockDataBase {
 
     salaPresencialService : SalaPresencialService
     salaVirtualService : SalaVirtualService
+    usuarioService : UsuarioService
+    reuniaoService : ReuniaoService
 
     constructor(
         @InjectRepository(SalaPresencialEntity)
@@ -36,6 +38,8 @@ export class MockDataBase {
         ) { 
             this.salaPresencialService = new SalaPresencialService(salaPresencial);
             this.salaVirtualService = new SalaVirtualService(salaVirtual);
+            this.usuarioService = new UsuarioService(usuario);
+            this.reuniaoService = new ReuniaoService(reuniao,this.usuarioService, this.salaPresencialService, this.salaVirtualService);
         }
 
     async isEmpty(): Promise<void> {
@@ -75,7 +79,6 @@ export class MockDataBase {
     }
 
     async createTestDataUser(): Promise<void> {
-        const usuarioService = new UsuarioService(this.usuario);
         const nomes = ['claudia','mateus','jonas','alexandre','joice','alicea','vitor']
         for (let index = 0; index < 7; index++) {
             const user = new CreateUsuarioDto()
@@ -84,16 +87,15 @@ export class MockDataBase {
             user.login = nomes[index]
             user.permissao = 3
             user.status = 1
-            await usuarioService.create(user)
+            await this.usuarioService.create(user)
         }
     }
 
     async createTestDataReuniao(): Promise<void> {
-        const usuarioService = new UsuarioService(this.usuario);
-        const salaPresencialService = new SalaPresencialService(this.salaPresencial);
-        const reuniaoService = new ReuniaoService(this.reuniao,usuarioService,salaPresencialService);
+        const reuniaoService = new ReuniaoService(this.reuniao,this.usuarioService,this.salaPresencialService,this.salaVirtualService);
 
-        const salaPrincipal = await this.salaPresencialService.findAll()
+        const salaPrincipal = await this.salaPresencialService.findAll();
+        const salaVirtual = await this.salaVirtualService.findAll();
 
         const reuniao1 = new CreateReuniaoDto()
         reuniao1.titulo = `Reunião com o time de Desenvolvimento`
@@ -130,6 +132,43 @@ export class MockDataBase {
         reuniao3.presencial = salaPrincipal[2].id
 
         await reuniaoService.criarReuniaoPresencial(reuniao3);
+
+        const reuniao4 = new CreateReuniaoDto()
+        reuniao4.titulo = `Reunião com clientes da CHINA`
+        reuniao4.pauta = `Apresentação do projeto CBOMB`
+        reuniao4.categoria = Categoria.VIRTUAL
+        reuniao4.dataHora = new Date(2024,7,25,14,10,0)
+        reuniao4.duracao = 50
+        reuniao4.solicitanteEmail = "jonas@gmail.com"
+        reuniao4.participantes = JSON.parse(`["xingiping@gmail.com","mateus@gmail.com","claudia@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
+        reuniao4.virtual = salaVirtual[2].id
+
+        await reuniaoService.criarReuniaoVirtual(reuniao4);
+
+        const reuniao5 = new CreateReuniaoDto()
+        reuniao5.titulo = `Daily CBOMB`
+        reuniao5.pauta = `Daily do projeto CBOMB`
+        reuniao5.categoria = Categoria.VIRTUAL
+        reuniao5.dataHora = new Date(2024,7,14,14,10,0)
+        reuniao5.duracao = 50
+        reuniao5.solicitanteEmail = "mateus@gmail.com"
+        reuniao5.participantes = JSON.parse(`["jonas@gmail.com","claudia@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
+        reuniao5.virtual = salaVirtual[1].id
+
+        await reuniaoService.criarReuniaoVirtual(reuniao5);
+
+        const reuniao6 = new CreateReuniaoDto()
+        reuniao6.titulo = `Daily CBOMB`
+        reuniao6.pauta = `Daily do projeto CBOMB`
+        reuniao6.categoria = Categoria.HIBRIDA
+        reuniao6.dataHora = new Date(2024,7,15,14,10,0)
+        reuniao6.duracao = 50
+        reuniao6.solicitanteEmail = "mateus@gmail.com"
+        reuniao6.participantes = JSON.parse(`["jonas@gmail.com","claudia@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
+        reuniao6.virtual = salaVirtual[1].id
+        reuniao6.presencial = salaPrincipal[2].id
+
+        await reuniaoService.criarReuniaoHibrida(reuniao6);
     }
 
 } 
