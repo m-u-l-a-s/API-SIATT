@@ -5,6 +5,21 @@ import CalendarPicker from "../components/DateCalendar";
 import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
+import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
+import ButtonLimparCampos from "../components/ButtonLimparCampos";
+
+// type Meeting = {
+//     id: string,
+//     titulo: string,
+//     dataHora: string,
+//     duracao: number,
+//     categoria: string,
+//     pauta: string,
+//     participantes: string[],
+//     solicitanteId: string,
+//     salaPresencialId: string,
+//     salaVirtualId: string | null,
+// };
 
 export enum Categoria {
     VIRTUAL = "virtual",
@@ -86,7 +101,7 @@ export function FormularioReuniao() {
                             <div className="flex items-start">
                                 <textarea
                                     className="border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-20 
-                            focus:outline-none focus:border-gray-500 focus:ring-gray-400"
+                                    focus:outline-none focus:border-gray-500 focus:ring-gray-400"
                                     id="pautaReuniao" name="pautaReuniao" />
                             </div>
 
@@ -122,7 +137,7 @@ export function FormularioReuniao() {
                                 <button
                                     onClick={handleAddEmail}
                                     className="flex items-center justify-center border border-gray-300 bg-white text-gray-700 font-semibold 
-                                py-2 px-4 w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100 w-auto"
+                                    py-2 px-4 w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
                                 >
                                     <GrAdd />
                                 </button>
@@ -166,11 +181,11 @@ export function FormularioReuniao() {
                             {(form === Categoria.PRESENCIAL || form === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label >Sala Presencial:</label>
-                                    <select name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                        <option className="" value="volvo">Sala 1</option>
-                                        <option value="saab">Sala 2</option>
-                                        <option value="opel">Sala 3</option>
-                                        <option value="audi">Sala 4</option>
+                                    <select name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                        <option className="" value="sala1">Sala 1</option>
+                                        <option value="sala2">Sala 2</option>
+                                        <option value="sala3">Sala 3</option>
+                                        <option value="sala4">Sala 4</option>
                                     </select>
                                 </div>
                             )}
@@ -181,25 +196,10 @@ export function FormularioReuniao() {
                     <div>
                         <div className="flex  items-center justify-between mt-9 text-black font-medium px-56  -space-x-">
 
-                            <button
-                                className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
-                            focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
-                            disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                data-ripple-light="true"
-                            >
-                                Limpar Campos
-                            </button>
+                            <ButtonLimparCampos/>
 
-                            <button
-                                className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
-                            hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
-                            active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                data-ripple-light="true"
-                            >
-                                Agendar
-                            </button>
+                            <ButtonCriarReuniao/>
+
                         </div>
                     </div>
 
