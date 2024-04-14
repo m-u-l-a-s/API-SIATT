@@ -1,6 +1,6 @@
 import { Routes, Route,  } from "react-router-dom";
 import PagAgendamento from "./PagAgendamento";
-import Tabs from "../components/Tabs";
+import { FormularioReuniao } from "./FormularioReuniao";
 
 
 
@@ -9,10 +9,7 @@ export const Rotas = () => {
 
         <Routes>
             <Route path="/" element={<PagAgendamento />} />
-            <Route path="/Home/Agendamento" element={<Tabs />} />
-
-
-
+            <Route path="/Home/Agendamento" element={<FormularioReuniao />} />
         </Routes>
 
     );
