@@ -95,9 +95,9 @@ As seguintes ferramentas, linguagens, bibliotecas e tecnologias foram usadas na 
     <th><img
     src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original-wordmark.svg" /></th>
     <th><img
-    src="https://user-images.githubusercontent.com/89823203/188508559-2e9b2add-9fb0-427f-b812-3201f43f9c57.png"
+    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"
     alt="Alt text"
-    title="HTML"
+    title="React"
     style="display: inline-block; margin: 0 auto; width: 60px"></th>
     <th><img
     src="https://github.com/apiFatec/API-3-Semestre-Ionic/assets/112169639/8f7699b6-4ee3-4bfb-a761-f79faa45049d"
@@ -126,7 +126,7 @@ As seguintes ferramentas, linguagens, bibliotecas e tecnologias foram usadas na 
   <tbody>
     <td>Figma</td>
     <td>MySQL</td>
-    <td>HTML</td>
+    <td>React</td>
     <td>Tailwind</td>
     <td>JavaScript</td>
     <td>NestJS</td>
