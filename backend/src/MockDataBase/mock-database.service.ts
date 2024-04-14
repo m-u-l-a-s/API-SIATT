@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateReuniaoDto } from "src/reuniao/dto/create-reuniao-presencial.dto";
+import { CreateReuniaoDto } from "src/reuniao/dto/create-reuniao.dto";
 import { Categoria, ReuniaoEntity } from "src/reuniao/entities/reuniao.entity";
 import { ReuniaoService } from "src/reuniao/reuniao.service";
 import { CreateSalaPresencialDto } from "src/sala-presencial/dto/create-sala-presencial.dto";
@@ -107,7 +107,7 @@ export class MockDataBase {
         reuniao1.participantes = JSON.parse(`["claudia@gmail.com","jonas@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
         reuniao1.presencial = salaPrincipal[0].id
 
-        await reuniaoService.criarReuniaoPresencial(reuniao1);
+        await reuniaoService.createReuniao(reuniao1);
 
         const reuniao2 = new CreateReuniaoDto()
         reuniao2.titulo = `Reunião com o cliente SIATT`
@@ -119,7 +119,7 @@ export class MockDataBase {
         reuniao2.participantes = JSON.parse(`["mateus@gmail.com","jonas@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
         reuniao2.presencial = salaPrincipal[1].id
 
-        await reuniaoService.criarReuniaoPresencial(reuniao2);
+        await reuniaoService.createReuniao(reuniao2);
 
         const reuniao3 = new CreateReuniaoDto()
         reuniao3.titulo = `Reunião com o cliente IONIC`
@@ -131,7 +131,7 @@ export class MockDataBase {
         reuniao3.participantes = JSON.parse(`["mateus@gmail.com","claudia@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
         reuniao3.presencial = salaPrincipal[2].id
 
-        await reuniaoService.criarReuniaoPresencial(reuniao3);
+        await reuniaoService.createReuniao(reuniao3);
 
         const reuniao4 = new CreateReuniaoDto()
         reuniao4.titulo = `Reunião com clientes da CHINA`
@@ -143,7 +143,7 @@ export class MockDataBase {
         reuniao4.participantes = JSON.parse(`["xingiping@gmail.com","mateus@gmail.com","claudia@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
         reuniao4.virtual = salaVirtual[2].id
 
-        await reuniaoService.criarReuniaoVirtual(reuniao4);
+        await reuniaoService.createReuniao(reuniao4);
 
         const reuniao5 = new CreateReuniaoDto()
         reuniao5.titulo = `Daily CBOMB`
@@ -155,7 +155,7 @@ export class MockDataBase {
         reuniao5.participantes = JSON.parse(`["jonas@gmail.com","claudia@gmail.com","alexandre@gmail.com","joice@gmail.com","alicea@gmail.com","vitor@gmail.com"]`)
         reuniao5.virtual = salaVirtual[1].id
 
-        await reuniaoService.criarReuniaoVirtual(reuniao5);
+        await reuniaoService.createReuniao(reuniao5);
 
         const reuniao6 = new CreateReuniaoDto()
         reuniao6.titulo = `Daily CBOMB`
@@ -168,7 +168,7 @@ export class MockDataBase {
         reuniao6.virtual = salaVirtual[1].id
         reuniao6.presencial = salaPrincipal[2].id
 
-        await reuniaoService.criarReuniaoHibrida(reuniao6);
+        await reuniaoService.createReuniao(reuniao6);
     }
 
 } 
