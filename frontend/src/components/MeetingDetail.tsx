@@ -7,13 +7,14 @@ import { MdDelete } from "react-icons/md";
 
 
 interface MeetingDetailProps {
+    key: string,
     title: string;
     date: string;
     time: string;
     place: string;
 }
 
-const MeetingDetail: React.FC<MeetingDetailProps> = ({ title, date, time, place }) => {
+const MeetingDetail: React.FC<MeetingDetailProps> = ({ key, title, date, time, place }) => {
     return (
         <div className="meeting-item bg-gray-200 m-2 rounded-md">
             <div className="meeting-item-title font-bold flex p-2">{title}</div>

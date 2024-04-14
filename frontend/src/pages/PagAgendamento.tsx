@@ -5,6 +5,7 @@ import ButtonAdd from "../components/ButtonAdd";
 import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
 import { Link } from "react-router-dom";
+import separaDataHora from "../control/utils";
 
 type Meeting = {
     id: string,
@@ -47,6 +48,16 @@ const PagAgendamento = () => {
         fetchData();
     }, []);
 
+    const reunioesDetails = reunioesAgendadas.map(reuniao => {
+        const dataHoraArray = separaDataHora(reuniao.dataHora)
+        if (dataHoraArray != null){
+            const data = dataHoraArray[0]
+            const hora = dataHoraArray[1]
+            return { ...reuniao, data, hora };
+        }
+        return reunioesAgendadas
+    });
+
     return (
         <div>
             <Navbar />
@@ -58,11 +69,12 @@ const PagAgendamento = () => {
                         <span className="flex items-center">|</span>
                         <a className="text-fonteVermelha p-4 hover:cursor-pointer">Criado por mim</a>
                     </h2>
-                    {reunioesAgendadas.map((reuniao) => (
+                    {reunioesDetails.map((reuniao) => (
                         <MeetingDetail
+                            key={reuniao.id}
                             title={reuniao.titulo}
-                            date={reuniao.dataHora}
-                            time={reuniao.dataHora}
+                            date={reuniao.data}
+                            time={reuniao.hora}
                             place={reuniao.categoria}
                         />
                     ))}
