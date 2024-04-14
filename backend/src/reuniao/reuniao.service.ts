@@ -104,23 +104,23 @@ export class ReuniaoService {
   }
 
   async findAllPresencial() {
-    const query = "SELECT * FROM reuniao_entity WHERE categoria = 'fisica';"
+    const query = "SELECT * FROM reuniao WHERE categoria = 'fisica';"
     return this.reuniaoRepository.query(query);
   }
 
   async findAllOnline() {
-    const query = "SELECT * FROM reuniao_entity WHERE categoria = 'virtual';"
+    const query = "SELECT * FROM reuniao WHERE categoria = 'virtual';"
     return this.reuniaoRepository.query(query);
   }
 
   async findAllHibrido() {
-    const query = "SELECT * FROM reuniao_entity WHERE categoria = 'hibrida';"
+    const query = "SELECT * FROM reuniao WHERE categoria = 'hibrida';"
     return this.reuniaoRepository.query(query);
   }
 
   async findAllByEmail(email: string) {
     const user = await this.usuarioService.findOneByEmail(email);
-    const query = `SELECT * FROM  reuniao_entity re 
+    const query = `SELECT * FROM  reuniao re 
     WHERE JSON_CONTAINS(participantes ,'"${email}"') OR re.solicitanteId = "${user.id}";`;
     return await this.reuniaoRepository.query(query)
   }
