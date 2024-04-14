@@ -11,8 +11,18 @@ export class ReuniaoController {
   constructor(private readonly reuniaoService: ReuniaoService) {}
 
   @Post("presencial")
-  createReuniaoPresencial(@Body() createReuniaoDto: CreateReuniaoDto) {
-    return this.reuniaoService.criarReuniaoPresencial(createReuniaoDto);
+  async createReuniaoPresencial(@Body() createReuniaoDto: CreateReuniaoDto) {
+    return await this.reuniaoService.criarReuniaoPresencial(createReuniaoDto);
+  }
+
+  @Post("virtual")
+  async createReuniaoVirtual(@Body() createReuniaoDto: CreateReuniaoDto) {
+    return await this.reuniaoService.criarReuniaoVirtual(createReuniaoDto);
+  }
+
+  @Post("hibrida")
+  async createReuniaoHibrada(@Body() createReuniaoDto: CreateReuniaoDto) {
+    return await this.reuniaoService.criarReuniaoHibrida(createReuniaoDto);
   }
 
   @Get("presencial")

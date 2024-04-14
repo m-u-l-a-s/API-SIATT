@@ -7,11 +7,13 @@ import { SalaPresencialService } from 'src/sala-presencial/sala-presencial.servi
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { UsuarioEntity } from 'src/usuario/entities/usuario.entity';
 import { SalaPresencialEntity } from 'src/sala-presencial/entities/sala-presencial.entity';
+import { SalaVirtualService } from 'src/sala-virtual/sala-virtual.service';
+import { SalaVirtualEntity } from 'src/sala-virtual/entities/sala-virtual.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ReuniaoEntity, UsuarioEntity, SalaPresencialEntity])],
+  imports: [TypeOrmModule.forFeature([ReuniaoEntity, UsuarioEntity, SalaPresencialEntity, SalaVirtualEntity])],
   controllers: [ReuniaoController],
-  providers: [ReuniaoService, SalaPresencialService, UsuarioService],
+  providers: [ReuniaoService, SalaPresencialService, SalaVirtualService, UsuarioService],
   exports: [TypeOrmModule]
 })
 export class ReuniaoModule {}

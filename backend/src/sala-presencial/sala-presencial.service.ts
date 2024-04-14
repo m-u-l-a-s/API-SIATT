@@ -11,12 +11,12 @@ export class SalaPresencialService {
     private readonly salaPresencialRepository: Repository<SalaPresencialEntity>
   ) { }
 
-  create(salaPresencialDto: CreateSalaPresencialDto) {
+  async create(salaPresencialDto: CreateSalaPresencialDto) {
     return this.salaPresencialRepository.save(salaPresencialDto);
   }
 
-  findAll() {
-    return this.salaPresencialRepository.find();
+  async findAll(): Promise<SalaPresencialEntity[]> {
+    return await this.salaPresencialRepository.find();
   }
 
   findOne(id: string) {

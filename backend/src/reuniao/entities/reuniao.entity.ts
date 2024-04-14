@@ -9,7 +9,7 @@ export enum Categoria {
     HIBRIDA = "hibrida"
 }
 
-@Entity()
+@Entity({name:"reuniao"})
 export class ReuniaoEntity {
 
     @PrimaryGeneratedColumn('uuid')

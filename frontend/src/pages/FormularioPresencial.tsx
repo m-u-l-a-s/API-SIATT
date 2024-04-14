@@ -1,9 +1,30 @@
 
+import { useState } from "react";
 import CalendarPicker from "../components/DateCalendar";
+import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
-import { GrAttachment } from "react-icons/gr";
+import { GrAdd, GrAttachment } from "react-icons/gr";
 
 const FormularioPresencial = () => {
+    const [emailInput, setEmailInput] = useState<string>('');
+    const [emails, setEmails] = useState<string[]>([]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmailInput(e.target.value);
+    };
+
+    const handleAddEmail = () => {
+        if (emailInput.trim() !== '') {
+            setEmails([...emails, emailInput.trim()]);
+            setEmailInput('');
+        }
+    };
+
+    const handleDeleteEmail = (index: number) => {
+        const updatedEmails = [...emails];
+        updatedEmails.splice(index, 1);
+        setEmails(updatedEmails);
+    };
 
     return (
 
@@ -52,8 +73,8 @@ const FormularioPresencial = () => {
                         <div className="flex items-start space-x-2">
 
                             <button className="flex items-center justify-center border bg-white
-border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
-focus:border-gray-500 focus:ring-gray-400">
+                            border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
+                            focus:border-gray-500 focus:ring-gray-400">
 
                                 <GrAttachment className="mr-2" />
                                 Anexar documento
@@ -67,88 +88,35 @@ focus:border-gray-500 focus:ring-gray-400">
 
                     <div className="space-y-7 ml-10">
 
-                        <div className="flex items-start space-x-2" >
+                    <div className="flex items-start space-x-2" >
                             <label htmlFor=""> E-mail dos convidados: </label>
-                            <input placeholder="exemplo@exemplo.com" className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 " type="text" />
+                            <input
+                                placeholder="exemplo@exemplo.com"
+                                className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                                type="text"
+                                value={emailInput}
+                                onChange={handleInputChange}
+                            />
+                            <button
+                                onClick={handleAddEmail}
+                                className="flex items-center justify-center border border-gray-300 bg-white text-gray-700 font-semibold 
+                                py-2 px-4 w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100 w-auto"
+                            >
+                                <GrAdd />
+                            </button>
                         </div>
 
-                        <div className="email-list max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2">
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <span>email</span>
-                                <button className="text-gray-500 hover:text-gray-700">X</button>
-                            </div>
-                            {/* Repita essa estrutura conforme necessário para mais e-mails */}
-
-                        </div>
+                        <ListaEmails emails={emails} onDelete={handleDeleteEmail} />
 
                         <div className="flex items-start space-x-2">
                             <label htmlFor="">Número de Convidados:</label>
-                            <select name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option value="quant1"> 1 pessoa </option>
-                                <option value="quant2"> Até 4 pessoas</option>
-                                <option value="quant3"> Até 10 essoas</option>
-                                <option value="quant4"> Até 13 pessoas</option>
-                                <option value="quant5"> Até 25 pessoas</option>
-                            </select>
+                            <input name="convidados" id="convidados" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                            </input>
                         </div>
 
 
                         <div className="flex items-start">
                             <label>Escolha sua sala</label>
-                        </div>
-
-                        <div className="flex items-start space-x-2">
-                            <label> Sala Online:</label>
-                            <select name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                <option value="sala1">Sala 1</option>
-                                <option value="sala2">Sala 2</option>
-                                <option value="sala3">Sala 3</option>
-                                <option value="sala4">Sala 4</option>
-                            </select>
                         </div>
 
                         <div className="flex items-start space-x-2">
@@ -169,20 +137,22 @@ focus:border-gray-500 focus:ring-gray-400">
                     <div className="flex  items-center justify-between mt-9 text-black font-medium px-56  -space-x-">
 
                         <button
-                            className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
-text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
-focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
-disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs 
+                            font-bold uppercase 
+                          text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                            focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
+                            disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             data-ripple-light="true"
                         >
                             Limpar Campos
                         </button>
 
                         <button
-                            className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold uppercase 
-text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
-hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
-active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold 
+                            uppercase 
+                          text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
+                          hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
+                           active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             data-ripple-light="true"
                         >
                             Agendar
