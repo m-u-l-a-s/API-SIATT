@@ -1,7 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdAccessTime } from "react-icons/md";
 
-const TimeChoser: React.FC = () => {
+interface propsData{
+    horaCallBack:Function,
+    minCallBack:Function
+  }
+
+const TimeChoser= (props:propsData) => {
     const [hour, setHour] = useState("00");
     const [minute, setMinute] = useState("00");
     const [showTimePicker, setShowTimePicker] = useState(false);
@@ -9,10 +14,12 @@ const TimeChoser: React.FC = () => {
 
     const handleHourChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setHour(e.target.value);
+        props.horaCallBack(Number(e.target.value));
     };
 
     const handleMinuteChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setMinute(e.target.value);
+        props.minCallBack(Number(e.target.value));
     };
 
     const handleInputClick = () => {

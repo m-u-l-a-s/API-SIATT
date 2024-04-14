@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { GrAttachment, GrAdd } from "react-icons/gr";
 import CalendarPicker from "../components/DateCalendar";
@@ -12,11 +12,146 @@ export enum Categoria {
     HIBRIDA = "hibrida"
 }
 
+export interface CreateReuniao
+{
+    titulo : string | undefined
+    categoria : Categoria | undefined
+    dataHora : Date | undefined
+    duracao : number | undefined
+    pauta : string | undefined
+    presencial : string | undefined
+    virtual : string | undefined
+    solicitanteEmail : string | undefined
+    participantes : any | undefined
+}
+export interface SalaVirtual {
+    id : string
+    identificacao : string
+    login : string
+    senha : string
+    permissao : number
+}
+
+export interface SalaPresencial
+{
+    id: string
+    identificacao : string
+    permissao : number
+    ocupacaoMax : number
+    local : string
+}
 
 export function FormularioReuniao() {
     const [form, setForm] = useState(Categoria.PRESENCIAL)
     const [emailInput, setEmailInput] = useState<string>('');
     const [emails, setEmails] = useState<string[]>([]);
+    const [salaOnline,setSalaOnline] = useState<SalaVirtual[]>([]);
+    const [salaPresencial,setSalaPresencial] = useState<SalaPresencial[]>([]);
+    const [salaOnlineSelecionada,setSalaOnlineSelecionada] = useState<string>('');
+    const [salaPresencialSelecionada,setSalaPresencialSelecionada] = useState<string>('');
+    const [dataCalendarioCombo,setDataCalendarioCombo] = useState<Date>();
+    const [horaInicial,setHoraInicial] = useState<number>();
+    const [minInicial,setMinInicial] = useState<number>();
+    const [horaDuracao,setHoraDuracao] = useState<number>();
+    const [minDuracao,setMinDuracao] = useState<number>();
+
+    //useEffect - popular combos
+    
+    useEffect(()=>{
+        getSalaOnline();
+        getSalaPresencial();
+    },[])
+
+    //Rota para popular combo sala online
+
+    const getSalaOnline = async()=>{
+        fetch ('http://localhost:3000/sala-virtual').then(response=>{
+            if (!response.ok) {
+                throw new Error('Erro ao realizar a requisição');
+              }
+              return response.json();
+            })
+            .then(data => {
+                setSalaOnline(data);
+              // Faça algo com os dados recebidos
+            })
+            .catch(error => {
+              console.error('Ocorreu um erro:', error);
+            });
+    }
+
+    // Rota para popular combo sala presencial
+
+    const getSalaPresencial = async()=>{
+        fetch ('http://localhost:3000/sala-presencial').then(response=>{
+            if (!response.ok) {
+                throw new Error('Erro ao realizar a requisição');
+              }
+              return response.json();
+            })
+            .then(data => {
+                setSalaPresencial(data);
+              // Faça algo com os dados recebidos
+            })
+            .catch(error => {
+              console.error('Ocorreu um erro:', error);
+            });
+    }
+    
+    //Criação do formulário - função p/salvar no banco
+    type FormValues ={
+        titulo:string,
+        categoria: Categoria,
+        data:Date,
+        hora:string,
+        duracao:number,
+        pauta:string,
+        presencial:string,
+        virtual:string,
+        email:string[],
+    }
+
+    const [formValues, setFormValues] = useState<FormValues>({
+        titulo:'',
+        categoria: Categoria.PRESENCIAL,
+        data: new Date,
+        hora:'',
+        duracao:0,
+        pauta:'',
+        presencial:'',
+        virtual:'',
+        email:[],  
+    });
+
+    //Função p/salvar as mudanças no formulário
+    const handleChangeForm = (key: keyof FormValues, value: any) =>{
+        setFormValues({...formValues, [key]:value})
+    }
+
+    //função p/salvar os email no formulário
+    const handleChangeFormEmail=()=>{
+        handleChangeForm('email',emails);
+    }
+
+    //função p/salvar formulario no banco
+    // const saveForm = () =>{
+    //     switch (form) {
+    //         case Categoria.PRESENCIAL:
+    //             setSalaOnlineSelecionada('');
+    //             break;
+    //         case Categoria.VIRTUAL:
+    //             setSalaPresencialSelecionada('');
+    //             break;
+    //         default:
+    //             break;
+    //     }
+
+    //     const reuniao:CreateReuniao = {
+    //         dataHora: dataCalendarioCombo,
+            
+    //     }
+
+    // }
 
     const handleInputChange = (e: any) => {
         setEmailInput(e.target.value);
@@ -49,14 +184,14 @@ export function FormularioReuniao() {
                                 <div className="flex items-start space-x-4">
                                     <label
                                         htmlFor="dataReuniao">Data:</label>
-                                    <CalendarPicker /> {/* CHAMANDO DATA PICKER?  */}
+                                    <CalendarPicker dataCallBack={setDataCalendarioCombo}/> {/* CHAMANDO DATA PICKER?  */}
                                 </div>
 
                                 <div className="ml-4">
                                     <label
                                         htmlFor="horarioReuniao"
                                         className="pr-4">Hora:</label>
-                                    <TimeChoser />
+                                    <TimeChoser horaCallBack={setHoraInicial} minCallBack={setMinInicial} />
                                 </div>
                             </div>
 
@@ -64,7 +199,7 @@ export function FormularioReuniao() {
 
                                 <label
                                     htmlFor="tempoDuracao">Duração:</label>
-                                <TimeChoser />
+                                <TimeChoser horaCallBack={setHoraDuracao} minCallBack={setMinDuracao} />
 
                             </div>
 
@@ -75,7 +210,8 @@ export function FormularioReuniao() {
                                     className="border bg-white border-gray-300 rounded-lg px-3  w-96 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
-                                    id="tituloReuniao" name="tituloReuniao" />
+                                    id="tituloReuniao" name="tituloReuniao" 
+                                    onChange={e=>{handleChangeForm('titulo',e.target.value)}}/>
                             </div>
 
 
@@ -87,7 +223,8 @@ export function FormularioReuniao() {
                                 <textarea
                                     className="border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-20 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400"
-                                    id="pautaReuniao" name="pautaReuniao" />
+                                    id="pautaReuniao" name="pautaReuniao" 
+                                    onChange={e=>{handleChangeForm('pauta',e.target.value)}}/>
                             </div>
 
                             <div className="flex items-start space-x-2">
@@ -127,11 +264,7 @@ export function FormularioReuniao() {
                                     <GrAdd />
                                 </button>
 
-
                             </div>
-
-
-
 
                             <ListaEmails emails={emails} setEmails={setEmails} />
 
@@ -154,11 +287,26 @@ export function FormularioReuniao() {
                             {(form === Categoria.VIRTUAL || form === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label> Sala Online:</label>
-                                    <select name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                        <option value="sala1">Sala 1</option>
-                                        <option value="sala2">Sala 2</option>
-                                        <option value="sala3">Sala 3</option>
-                                        <option value="sala4">Sala 4</option>
+                                    <select onChange={e=>{setSalaOnlineSelecionada(e.target.value)}} name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                        {/* popular combo online */}
+                                        {salaOnline.sort((a, b) => {
+                                                const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
+                                                const nomeB = b.identificacao.toUpperCase();
+                                              
+                                                if (nomeA < nomeB) {
+                                                  return -1;
+                                                }
+                                                if (nomeA > nomeB) {
+                                                  return 1;
+                                                }
+                                                return 0; // os nomes são iguais
+                                              }).map(sala=>{
+                                                return(
+                                                    <option value={sala.id}>
+                                                        {sala.identificacao}
+                                                    </option>
+                                                )
+                                            })}
                                     </select>
                                 </div>
                             )}
@@ -166,11 +314,27 @@ export function FormularioReuniao() {
                             {(form === Categoria.PRESENCIAL || form === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label >Sala Presencial:</label>
-                                    <select name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                        <option className="" value="volvo">Sala 1</option>
-                                        <option value="saab">Sala 2</option>
-                                        <option value="opel">Sala 3</option>
-                                        <option value="audi">Sala 4</option>
+                                    <select onChange={e=>setSalaPresencialSelecionada(e.target.value)}name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                        {/* popular combo presencial */}
+                                        {salaPresencial.sort((a, b) => {
+                                                const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
+                                                const nomeB = b.identificacao.toUpperCase();
+                                              
+                                                if (nomeA < nomeB) {
+                                                  return -1;
+                                                }
+                                                if (nomeA > nomeB) {
+                                                  return 1;
+                                                }
+                                                return 0; // os nomes são iguais
+                                              }).map(sala=>{
+                                                return(
+                                                    <option value={sala.id}>
+                                                        {sala.identificacao}
+                                                    </option>
+                                                )
+                                            })
+                                        }
                                     </select>
                                 </div>
                             )}
@@ -182,6 +346,7 @@ export function FormularioReuniao() {
                         <div className="flex  items-center justify-between mt-9 text-black font-medium px-56  -space-x-">
 
                             <button
+                                type="button"
                                 className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
                             text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
                             focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
@@ -192,11 +357,12 @@ export function FormularioReuniao() {
                             </button>
 
                             <button
+                                type="button"
                                 className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold uppercase 
                             text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
                             hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
                             active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                data-ripple-light="true"
+                                data-ripple-light="true"                               
                             >
                                 Agendar
                             </button>
