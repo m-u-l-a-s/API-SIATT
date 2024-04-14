@@ -47,10 +47,10 @@ Ao implementar este portal, a SIATT não apenas otimizará a comunicação inter
 As entregas de valor de cada sprint estão mais detalhadas nos relatórios disponíveis nos links abaixo. Cada relatório fornece uma visão aprofundada do progresso do projeto. Ao acessar esses relatórios, os stakeholders podem acompanhar de perto o desenvolvimento do projeto e entender como as metas e objetivos estão sendo alcançados ao longo do tempo.
 | Sprint | Previsão de entrega | Status | Histórico |
 |:--:|:----------:|:-------------------|:-------------------------------------------------:|
-| 01 | 14/04/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/Docs/docs/Sprint01/README.md) |
-| 02 | 05/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/Docs/docs/Sprint02/README.md) |
-| 03 | 26/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/Docs/docs/Sprint03/README.md) |
-| 04 | 16/06/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/Docs/docs/Sprint04/README.md) |
+| 01 | 14/04/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint01/README.md) |
+| 02 | 05/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint02/README.md) |
+| 03 | 26/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint03/README.md) |
+| 04 | 16/06/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint04/README.md) |
 
 → [Voltar ao topo](#topo)
 
