@@ -18,6 +18,8 @@ type Meeting = {
     solicitanteId: string,
     salaPresencialId: string,
     salaVirtualId: string | null,
+    login: string;
+    senha: string;
 };
 
 const PagAgendamento = () => {
@@ -106,6 +108,9 @@ const PagAgendamento = () => {
                             date={reuniao.data}
                             time={reuniao.hora}
                             place={reuniao.categoria}
+                            sala={`Zoom - sala 04`}
+                            login={`usuarioSecreto123`}
+                            password={`senhaSecreta123`}
                         />
                     ))}
                 </div>

@@ -1,20 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CiCalendarDate } from "react-icons/ci";
 import { CiLocationOn } from "react-icons/ci";
 import { FaFileDownload } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-
+import { BsInfoCircleFill } from "react-icons/bs";
+import InformationModal from './InformationModal';
 
 interface MeetingDetailProps {
-    key: string,
+    key: string;
     title: string;
     date: string;
     time: string;
     place: string;
+    login: string;
+    password: string;
+    sala: string;
 }
 
-const MeetingDetail: React.FC<MeetingDetailProps> = ({ key, title, date, time, place }) => {
+const MeetingDetail: React.FC<MeetingDetailProps> = ({ title, date, time, place, sala, login, password}) => {
+    const [showModal, setShowModal] = useState(false);
+
+    const handleInfoIconClick = () => {
+        setShowModal(true);
+    };
+
+    const handleCancelModal = () => {
+        setShowModal(false);
+    };
+
+    const handleConfirmModal = () => {
+        // Add your logic for handling confirmation here
+        setShowModal(false);
+    };
+
     return (
         <div className="meeting-item bg-gray-200 m-2 rounded-md">
             <div className="meeting-item-title font-bold flex p-2">{title}</div>
@@ -25,9 +44,24 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ key, title, date, time, p
                 <li className='p-2 flex'> {time} </li>
                 <li className='p-2 flex'> <CiLocationOn className='text-2xl mr-2' title='Local da reunião' style={{ cursor: 'pointer' }}/>{place}</li>
                 <li className='p-2 flex' title='Fazer download da ata' style={{ cursor: 'pointer' }}><FaFileDownload className='text-2xl mr-2 align-middle'/></li>
-                <li className='p-2 flex ml-auto' title='Editar reunião' style={{ cursor: 'pointer' }}><FaEdit className='text-2xl mr-2 align-middle'/></li>
-                <li className='p-2 flex' title='Excluir reunião' style={{ cursor: 'pointer' }}><MdDelete className='text-2xl mr-2 align-middle'/></li>
+
+                <li className='p-2 flex ml-auto' title='Mais informações' style={{ cursor: 'pointer' }}
+                    onClick={handleInfoIconClick}
+                ><BsInfoCircleFill className='text-2xl mr-2 align-middle'/></li>
+                <li className='p-2 flex' title='Editar reunião' style={{ cursor: 'pointer' }}><FaEdit className='text-2xl mr-2 align-middle'/></li>
+                <li className='p-2 flex' title='Excluir reunião' style={{ cursor: 'pointer' }}><MdDelete className='text-3xl mr-2 align-middle'/></li>
             </ul>
+            {showModal && (
+                <InformationModal
+                    message={
+                    <pre>
+                        {`${title} \n Sala: ${sala} \n Login: ${login} \n Senha: ${password}`}
+                    </pre>
+                    }
+                    confirmText="Ok, fechar"
+                    onConfirm={handleConfirmModal}
+                />
+            )}
         </div>
     );
 };
