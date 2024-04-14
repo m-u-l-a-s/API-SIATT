@@ -1,5 +1,5 @@
 import { HttpCode, Injectable } from '@nestjs/common';
-import { CreateReuniaoDto } from './dto/create-reuniao-presencial.dto';
+import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria, ReuniaoEntity } from './entities/reuniao.entity';
 import { Repository } from 'typeorm';
@@ -34,8 +34,7 @@ export class ReuniaoService {
     return reuniao
   }
 
-
-  async criarReuniaoPresencial(reuniaoDTO: CreateReuniaoDto) {
+  async createReuniao(reuniaoDTO: CreateReuniaoDto) {
     const reuniao = await this.criarReuniaoEntity(reuniaoDTO)
 
     if (reuniao.solicitante == null) {
@@ -43,8 +42,11 @@ export class ReuniaoService {
     }
 
     try {
-      reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial);
-      if (reuniaoDTO.participantes.length > reuniao.salaPresencial.ocupacaoMax) {
+      if (reuniaoDTO.virtual !== null) { reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual) }
+      if (reuniaoDTO.presencial !== null) {
+        reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
+      }
+      if (reuniao.salaPresencial !== null && reuniaoDTO.participantes.lenght > reuniao.salaPresencial.ocupacaoMax) {
         return "O numero de participantes excede o tamanho da sala"
       }
       return await this.reuniaoRepository.save(reuniao);
@@ -53,41 +55,7 @@ export class ReuniaoService {
     }
   }
 
-  async criarReuniaoVirtual(reuniaoDTO: CreateReuniaoDto) {
-    const reuniao = await this.criarReuniaoEntity(reuniaoDTO)
-
-    if (reuniao.solicitante == null) {
-      return "Solicitante não encontrado"
-    }
-
-    try {
-      reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual)
-      return await this.reuniaoRepository.save(reuniao);
-    } catch (error) {
-      return error.message
-    }
-  }
-
-  async criarReuniaoHibrida(reuniaoDTO: CreateReuniaoDto) {
-    const reuniao = await this.criarReuniaoEntity(reuniaoDTO)
-
-    if (reuniao.solicitante == null) {
-      return "Solicitante não encontrado"
-    }
-
-    try {
-      reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual)
-      reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
-      if (reuniaoDTO.participantes.length > reuniao.salaPresencial.ocupacaoMax) {
-        return "O numero de participantes excede o tamanho da sala"
-      }
-      return await this.reuniaoRepository.save(reuniao);
-    } catch (error) {
-      return error.message
-    }
-  }
-
-  async updatePresencial(id: string, reuniaoDTO: CreateReuniaoDto) {
+  async update(id: string, reuniaoDTO: CreateReuniaoDto) {
     const reuniao = await this.findOne(id);
     if (reuniao) {
       reuniao.titulo = reuniaoDTO.titulo;
@@ -96,8 +64,10 @@ export class ReuniaoService {
       reuniao.duracao = reuniaoDTO.duracao;
       reuniao.pauta = reuniaoDTO.pauta;
       reuniao.participantes = reuniaoDTO.participantes;
+      if (reuniaoDTO.presencial !== null) { reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial) }
+      if (reuniaoDTO.virtual !== null ) { reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual); }
       reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
-      reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial);
+      
       return await this.reuniaoRepository.update(id, reuniao);
     }
     return
