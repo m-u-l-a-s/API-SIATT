@@ -22,6 +22,8 @@ type Meeting = {
 
 const PagAgendamento = () => {
     const [reunioesAgendadas, setReunioesAgendadas] = useState<Meeting[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [activeButton, setActiveButton] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,27 +51,55 @@ const PagAgendamento = () => {
     }, []);
 
     const reunioesDetails = reunioesAgendadas.map(reuniao => {
-        const dataHoraArray = separaDataHora(reuniao.dataHora)
-        if (dataHoraArray != null){
-            const data = dataHoraArray[0]
-            const hora = dataHoraArray[1]
+        const dataHoraArray = separaDataHora(reuniao.dataHora);
+        if (dataHoraArray != null) {
+            const data = dataHoraArray[0];
+            const hora = dataHoraArray[1];
             return { ...reuniao, data, hora };
         }
-        return reunioesAgendadas
+        return reunioesAgendadas;
     });
+
+    // Filtrar reuniões baseado no conteúdo do SearchInput:
+    const filteredReunioes = reunioesDetails.filter(reuniao =>
+        reuniao.titulo.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const handleFilterClick = (filterType: string) => {
+        setActiveButton(filterType);
+        // You can apply additional logic here based on the filter type
+    };
 
     return (
         <div>
             <Navbar />
-            <h1 className="text-fonteAmarela mt-6">Seu calendário de reuniões</h1>
             <div className="conteudo flex flex-col md:flex-row">
-                <div className="coluna-1 md:w-2/3 md:order-1 h-screen p-4 sm:w-screen">
-                    <h2 className="text-fonteVermelha text-3xl flex flex-initial">
-                        <a className="text-fonteVermelha p-4 hover:cursor-pointer">Mensal</a>
-                        <span className="flex items-center">|</span>
-                        <a className="text-fonteVermelha p-4 hover:cursor-pointer">Criado por mim</a>
-                    </h2>
-                    {reunioesDetails.map((reuniao) => (
+                <div className="coluna-1 md:w-3/3 md:order-1 h-screen p-4 sm:w-screen flex flex-col mb-10">
+                    <div className="sub-coluna-1 flex justify-between m-2">
+                        <h2 className="text-fonteVermelha text-3xl flex flex-initial">
+                            <a
+                                className={`text-fonteVermelha p-4 hover:cursor-pointer hover:bg-gray-200 rounded-lg
+                                 ${activeButton === 'mensal' && 'bg-gray-100 font-semibold' }`}
+                                onClick={() => handleFilterClick('mensal')}
+                            >
+                                Mensal
+                            </a>
+                            <a
+                                className={`text-fonteVermelha p-4 hover:cursor-pointer hover:bg-gray-200 rounded-lg
+                                ${activeButton === 'criadoPorMim' && 'bg-gray-100 font-semibold'}`}
+                                onClick={() => handleFilterClick('criadoPorMim')}
+                            >
+                                Criado por mim
+                            </a>
+                        </h2>
+                        <div className="mr-2 flex align-middle">
+                            <SearchInput setSearchQuery={setSearchQuery} />
+                            <Link to="/Home/Agendamento">
+                                <ButtonAdd />
+                            </Link>
+                        </div>
+                    </div>
+                    {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
                             key={reuniao.id}
                             title={reuniao.titulo}
@@ -79,13 +109,12 @@ const PagAgendamento = () => {
                         />
                     ))}
                 </div>
-                <div className="coluna-2 md:w-1/3 md:order-2 h-screen p-4 sm:w-screen">
-                    <SearchInput />
+
+                {/* Não exluir! Calendário vai entrar na segunda sprint. */}
+                {/* <div className="coluna-2 mt-4 md:w-1/3 md:order-2 h-screen p-4 sm:w-screen">
                     <Calendar />
-                    <Link to="/Home/Agendamento">
-                        <ButtonAdd />
-                    </Link>
-                </div>
+                </div> */}
+
             </div>
         </div>
     );
