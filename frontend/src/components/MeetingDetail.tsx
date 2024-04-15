@@ -6,9 +6,10 @@ import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import InformationModal from './InformationModal';
+import ConfirmationModal from './ConfirmationModal';
 
 interface MeetingDetailProps {
-    key: string;
+    id: string;
     title: string;
     date: string;
     time: string;
@@ -18,8 +19,11 @@ interface MeetingDetailProps {
     sala: string;
 }
 
-const MeetingDetail: React.FC<MeetingDetailProps> = ({ title, date, time, place, sala, login, password}) => {
+const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, title, date, time, place, sala, login, password}) => {
     const [showModal, setShowModal] = useState(false);
+
+    const [deleteModal, setDeleteModal] = useState(false)
+
 
     const handleInfoIconClick = () => {
         setShowModal(true);
@@ -33,6 +37,11 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ title, date, time, place,
         // Add your logic for handling confirmation here
         setShowModal(false);
     };
+
+    const deleteMeeting = async () => {
+        await fetch(`http://localhost:3000/reuniao/${id}`, {method : 'DELETE'})
+        window.location.reload()
+    }
 
     return (
         <div className="meeting-item bg-gray-200 m-2 rounded-md">
@@ -49,8 +58,13 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ title, date, time, place,
                     onClick={handleInfoIconClick}
                 ><BsInfoCircleFill className='text-2xl mr-2 align-middle'/></li>
                 <li className='p-2 flex' title='Editar reunião' style={{ cursor: 'pointer' }}><FaEdit className='text-2xl mr-2 align-middle'/></li>
-                <li className='p-2 flex' title='Excluir reunião' style={{ cursor: 'pointer' }}><MdDelete className='text-3xl mr-2 align-middle'/></li>
+                <li className='p-2 flex' title='Excluir reunião' style={{ cursor: 'pointer' }}><MdDelete onClick={() => {setDeleteModal(true)
+                }} className='text-3xl mr-2 align-middle'/></li>
             </ul>
+            {deleteModal && (
+                <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Deseja Excluir a reunião' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
+            )}
+
             {showModal && (
                 <InformationModal
                     message={

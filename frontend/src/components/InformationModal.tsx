@@ -6,7 +6,7 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
 }
 
-const ConfirmationModal: FC<ConfirmationModalProps> = ({
+const InformationModal: FC<ConfirmationModalProps> = ({
   message,
   confirmText,
   onConfirm,
@@ -41,4 +41,4 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
   );
 };
 
-export default ConfirmationModal;
+export default InformationModal;
