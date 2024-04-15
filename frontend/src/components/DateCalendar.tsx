@@ -11,8 +11,11 @@ const CalendarPicker  = (props:propsData) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date | null) => {
+    if (date === null) {
+      return 'Data vazia'
+    }
     setSelectedDate(date);
-    props.dataCallBack(date);
+    props.dataCallBack(date.toISOString());
   };
 
   return (

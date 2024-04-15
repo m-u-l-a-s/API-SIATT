@@ -19,7 +19,7 @@ interface MeetingDetailProps {
     sala: string;
 }
 
-const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, title, date, time, place, sala, login, password}) => {
+const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc ,title, date, time, place, sala, login, password}) => {
     const [showModal, setShowModal] = useState(false);
 
     const [deleteModal, setDeleteModal] = useState(false)
@@ -69,7 +69,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, title, date, time, pl
                 <InformationModal
                     message={
                     <pre>
-                        {`${title} \n Sala: ${sala} \n Login: ${login} \n Senha: ${password}`}
+                        {`${title}\n Pauta: ${desc} \n Sala: ${sala} \n Login: ${login} \n Senha: ${password}`}
                     </pre>
                     }
                     confirmText="Ok, fechar"

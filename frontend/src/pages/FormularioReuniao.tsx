@@ -7,6 +7,7 @@ import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
 import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
 import ButtonLimparCampos from "../components/ButtonLimparCampos";
+import InformationModal from "../components/InformationModal";
 
 // type Meeting = {
 //     id: string,
@@ -23,7 +24,7 @@ import ButtonLimparCampos from "../components/ButtonLimparCampos";
 
 export enum Categoria {
     VIRTUAL = "virtual",
-    PRESENCIAL = "presencial",
+    PRESENCIAL = "fisica",
     HIBRIDA = "hibrida"
 }
 
@@ -55,6 +56,8 @@ export interface SalaPresencial {
 }
 
 export function FormularioReuniao() {
+    const [alertModal, setAlertModal] = useState(false)
+
     const [form, setForm] = useState(Categoria.PRESENCIAL)
     const [emailInput, setEmailInput] = useState<string>('');
     const [emails, setEmails] = useState<string[]>([]);
@@ -62,11 +65,13 @@ export function FormularioReuniao() {
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
     const [salaOnlineSelecionada, setSalaOnlineSelecionada] = useState<string>('');
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
-    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<Date>();
-    const [horaInicial, setHoraInicial] = useState<number>();
-    const [minInicial, setMinInicial] = useState<number>();
-    const [horaDuracao, setHoraDuracao] = useState<number>();
-    const [minDuracao, setMinDuracao] = useState<number>();
+
+    const [horaDuracao, setHoraDuracao] = useState<number>(0);
+    const [minDuracao, setMinDuracao] = useState<number>(0);
+
+    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
+    const [horaInicial, setHoraInicial] = useState<number>(0);
+    const [minInicial, setMinInicial] = useState<number>(0);
 
     //useEffect - popular combos
 
@@ -146,24 +151,53 @@ export function FormularioReuniao() {
         handleChangeForm('email', emails);
     }
 
-    // const saveForm = () =>{
-    //     switch (form) {
-    //         case Categoria.PRESENCIAL:
-    //             setSalaOnlineSelecionada('');
-    //             break;
-    //         case Categoria.VIRTUAL:
-    //             setSalaPresencialSelecionada('');
-    //             break;
-    //         default:
-    //             break;
-    //     }
+    const saveForm = () => {
+        switch (form) {
+            case Categoria.PRESENCIAL:
+                setSalaOnlineSelecionada('');
+                break;
+            case Categoria.VIRTUAL:
+                setSalaPresencialSelecionada('');
+                break;
+            default:
+                break;
+        }
 
-    //     const reuniao:CreateReuniao = {
-    //         dataHora: dataCalendarioCombo,
+        if (dataCalendarioCombo === undefined) {
+            return "A data da reunião é obrigatória!"
+        }
 
-    //     }
+        let dataReuniao = new Date(dataCalendarioCombo)
+        dataReuniao.setHours(horaInicial-3)
+        dataReuniao.setMinutes(minInicial)
 
-    // }
+        const reuniao =
+        {
+            titulo: formValues.titulo,
+            categoria: form,
+            dataHora: dataReuniao.toISOString(),
+            duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
+            pauta: formValues.pauta,
+            presencial: salaPresencialSelecionada,
+            virtual: salaOnlineSelecionada,
+            solicitanteEmail: "mateus@gmail.com",
+            participantes: emails
+        }
+
+        fetch("http://localhost:3000/reuniao/agendar",
+            {
+                body: JSON.stringify(reuniao),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', },
+            }).then(resposta => {
+                if (!resposta.ok) {
+                    throw new Error('Erro ao realizar a requisição');
+                }
+                console.log(JSON.stringify(reuniao))
+                console.log(resposta)
+                return resposta.json(); // Retorna os dados da resposta no formato JSON
+            }).then(() => setAlertModal(true))
+    }
 
     const handleInputChange = (e: any) => {
         setEmailInput(e.target.value);
@@ -239,7 +273,7 @@ export function FormularioReuniao() {
                                     id="pautaReuniao" name="pautaReuniao"
                                     onChange={e => { handleChangeForm('pauta', e.target.value) }} />
                             </div>
-
+{/* 
                             <div className="flex items-start space-x-2">
 
                                 <button className="flex items-center justify-center border bg-white
@@ -251,7 +285,7 @@ export function FormularioReuniao() {
                                     Anexar documento
 
                                 </button>
-                            </div>
+                            </div> */}
 
                         </div>
 
@@ -302,6 +336,7 @@ export function FormularioReuniao() {
                                     <label> Sala Online:</label>
                                     <select onChange={e => { setSalaOnlineSelecionada(e.target.value) }} name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo online */}
+                                        <option value="">Sala Online</option>
                                         {salaOnline.sort((a, b) => {
                                             const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
                                             const nomeB = b.identificacao.toUpperCase();
@@ -330,6 +365,7 @@ export function FormularioReuniao() {
 
                                     <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo presencial */}
+                                        <option value="">Sala Presencial</option>
                                         {salaPresencial.sort((a, b) => {
                                             const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
                                             const nomeB = b.identificacao.toUpperCase();
@@ -379,9 +415,14 @@ export function FormularioReuniao() {
                             hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
                             active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
+                                onClick={saveForm}
                             >
                                 Agendar
                             </button>
+
+                            {alertModal && (
+                                <InformationModal message={"Reunião Agendada com sucesso"} confirmText={"Ok"} onConfirm={() => window.location.href='/'} />
+                            )}
                         </div>
                     </div>
 

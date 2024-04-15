@@ -78,7 +78,7 @@ const PagAgendamento = () => {
             <div className="conteudo flex flex-col md:flex-row">
                 <div className="coluna-1 md:w-3/3 md:order-1 h-screen p-4 sm:w-screen flex flex-col mb-10">
                     <div className="sub-coluna-1 flex justify-between m-2">
-                        <h2 className="text-fonteVermelha text-3xl flex flex-initial">
+                        {/* <h2 className="text-fonteVermelha text-3xl flex flex-initial">
                             <a
                                 className={`text-fonteVermelha p-4 hover:cursor-pointer hover:bg-gray-200 rounded-lg
                                  ${activeButton === 'mensal' && 'bg-gray-100 font-semibold' }`}
@@ -93,7 +93,7 @@ const PagAgendamento = () => {
                             >
                                 Criado por mim
                             </a>
-                        </h2>
+                        </h2> */}
                         <div className="mr-2 flex align-middle">
                             <SearchInput setSearchQuery={setSearchQuery} />
                             <Link to="/Home/Agendamento">
@@ -104,6 +104,7 @@ const PagAgendamento = () => {
                     {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
                             id={reuniao.id}
+                            desc={reuniao.pauta}
                             title={reuniao.titulo}
                             date={reuniao.data}
                             time={reuniao.hora}
