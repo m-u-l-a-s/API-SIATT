@@ -108,4 +108,8 @@ export class ReuniaoService {
     }
     return
   }
+
+  async find(){
+    return await this.reuniaoRepository.find();
+  }
 }
