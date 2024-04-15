@@ -15,6 +15,11 @@ export class ReuniaoController {
     return await this.reuniaoService.createReuniao(createReuniaoDto);
   }
 
+  @Get()
+  async findAll(){
+    return await this.reuniaoService.find()
+  }
+
   @Get("presencial")
   findAllPresencial() {
     return this.reuniaoService.findAllPresencial();

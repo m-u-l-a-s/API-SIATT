@@ -4,11 +4,11 @@ interface ConfirmationModalProps {
   message: string;
   cancelText: string;
   confirmText: string;
-  onCancel: () => void;
-  onConfirm: () => void;
+  onCancel: Function;
+  onConfirm: Function;
 }
 
-const ConfirmationModal: FC<ConfirmationModalProps> = ({
+export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   message,
   cancelText,
   confirmText,
@@ -32,14 +32,14 @@ const ConfirmationModal: FC<ConfirmationModalProps> = ({
               <button
                 className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                onClick={onCancel}
+                onClick={() => onCancel()}
               >
                 {cancelText}
               </button>
               <button
                 className="bg-yellow-300 text-black active:bg-yellow-300 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
-                onClick={onConfirm}
+                onClick={() => onConfirm()}
               >
                 {confirmText}
               </button>
