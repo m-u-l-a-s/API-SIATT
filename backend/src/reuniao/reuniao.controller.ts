@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { ReuniaoService } from './reuniao.service';
-import { CreateReuniaoDto } from './dto/create-reuniao-presencial.dto';
+import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 
 interface UserRequest{
   email : string
@@ -10,9 +10,14 @@ interface UserRequest{
 export class ReuniaoController {
   constructor(private readonly reuniaoService: ReuniaoService) {}
 
-  @Post("presencial")
-  createReuniaoPresencial(@Body() createReuniaoDto: CreateReuniaoDto) {
-    return this.reuniaoService.criarReuniaoPresencial(createReuniaoDto);
+  @Post("agendar")
+  async create(@Body() createReuniaoDto : CreateReuniaoDto){
+    return await this.reuniaoService.createReuniao(createReuniaoDto);
+  }
+
+  @Get()
+  async findAll(){
+    return await this.reuniaoService.find()
   }
 
   @Get("presencial")
@@ -42,7 +47,7 @@ export class ReuniaoController {
 
   @Put(':id')
   update(@Param('id') id: string, @Body() reuniaoDTO: CreateReuniaoDto) {
-    return this.reuniaoService.updatePresencial(id, reuniaoDTO);
+    return this.reuniaoService.update(id, reuniaoDTO);
   }
 
   @Delete(':id')

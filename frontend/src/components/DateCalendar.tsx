@@ -3,11 +3,19 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IoCalendarOutline } from 'react-icons/io5'; 
 
-const CalendarPicker: React.FC = () => {
+interface propsData{
+  dataCallBack:Function
+}
+
+const CalendarPicker  = (props:propsData) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date | null) => {
+    if (date === null) {
+      return 'Data vazia'
+    }
     setSelectedDate(date);
+    props.dataCallBack(date.toISOString());
   };
 
   return (

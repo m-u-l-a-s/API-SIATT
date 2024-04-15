@@ -8,8 +8,9 @@ export class CreateReuniaoDto
     duracao : number
     pauta : string
     presencial : string
+    virtual : string
     solicitanteEmail : string
-    participantes : JSON
+    participantes : any
 }
 
 
