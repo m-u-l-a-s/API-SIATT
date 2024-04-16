@@ -1,5 +1,6 @@
 // import { useState } from 'react'
 import './App.css'
+import Navbar from './components/Navbar';
 import { Rotas } from './pages/Rotas';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -13,6 +14,8 @@ function App() {
    
     <Router>
       <div className='test'>
+        <Navbar />
+
         <Rotas />
       </div>
     </Router>

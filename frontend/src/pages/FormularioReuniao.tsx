@@ -214,7 +214,6 @@ export function FormularioReuniao() {
 
     return (
         <>
-            <Navbar />
             <Tabs state={form} setState={setForm} />
 
             <div className="flex items-start justify-center mt-4 text-black font-medium">

@@ -65,7 +65,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
                 }} className='text-3xl mr-2 align-middle' /></li>
             </ul>
             {deleteModal && (
-                <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Deseja Excluir a reunião' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
+                <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Tem certeza que deseja excluir esta reunião?' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
             )}
 
             {showModal && (
@@ -73,7 +73,6 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
                     message=
 
                     {`${title}\n Pauta: ${desc} \n Sala: ${sala} \n Login: ${login} \n Senha: ${password}`}
-
 
                     confirmText="Ok, fechar"
                     onConfirm={handleConfirmModal}

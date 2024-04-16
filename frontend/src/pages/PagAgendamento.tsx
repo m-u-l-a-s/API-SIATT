@@ -30,9 +30,9 @@ const PagAgendamento = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await fetch(`${api_url()}presencial`);
-                const hibridaResponse = await fetch(`${api_url()}hibrida`);
-                const virtualResponse = await fetch(`${api_url()}virtual`);
+                const presencialResponse = await fetch(`${api_url()}reuniao/presencial`);
+                const hibridaResponse = await fetch(`${api_url()}reuniao/hibrida`);
+                const virtualResponse = await fetch(`${api_url()}reuniao/virtual`);
 
                 if (!presencialResponse.ok || !hibridaResponse.ok || !virtualResponse.ok) {
                     throw new Error("Não foi possível buscar os dados.");
@@ -74,7 +74,6 @@ const PagAgendamento = () => {
 
     return (
         <div>
-            <Navbar />
             <div className="conteudo flex flex-col md:flex-row">
                 <div className="coluna-1 md:w-3/3 md:order-1 h-screen p-4 sm:w-screen flex flex-col mb-10">
                     <div className="sub-coluna-1 flex justify-between m-2">
@@ -103,6 +102,7 @@ const PagAgendamento = () => {
                     </div>
                     {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
+                            key={reuniao.id}
                             id={reuniao.id}
                             desc={reuniao.pauta}
                             title={reuniao.titulo}

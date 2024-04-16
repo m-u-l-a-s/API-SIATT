@@ -9,6 +9,7 @@ export const Rotas = () => {
 
         <Routes>
             <Route path="/" element={<PagAgendamento />} />
+            <Route path="/Home" element={<PagAgendamento />} />
             <Route path="/Home/Agendamento" element={<FormularioReuniao />} />
         </Routes>
 
