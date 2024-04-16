@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import Calendar from "../components/Calendar";
 import ButtonAdd from "../components/ButtonAdd";
 import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
@@ -25,7 +24,7 @@ type Meeting = {
 const PagAgendamento = () => {
     const [reunioesAgendadas, setReunioesAgendadas] = useState<Meeting[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [activeButton, setActiveButton] = useState<string>('');
+    // const [activeButton, setActiveButton] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -59,7 +58,7 @@ const PagAgendamento = () => {
             const hora = dataHoraArray[1];
             return { ...reuniao, data, hora };
         }
-        return reunioesAgendadas;
+        return {...reuniao, data: '0', hora:'0'};
     });
 
     // Filtrar reuniões baseado no conteúdo do SearchInput:
@@ -67,10 +66,10 @@ const PagAgendamento = () => {
         reuniao.titulo.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleFilterClick = (filterType: string) => {
-        setActiveButton(filterType);
-        // You can apply additional logic here based on the filter type
-    };
+    // const handleFilterClick = (filterType: string) => {
+    //     setActiveButton(filterType);
+    //     // You can apply additional logic here based on the filter type
+    // };
 
     return (
         <div>
