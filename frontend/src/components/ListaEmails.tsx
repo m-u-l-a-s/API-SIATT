@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 interface ListaEmailsProps {
   emails: string[];
   setEmails: Function;

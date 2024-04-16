@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  // const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const toggleProfileMenu = () => {
-    setIsProfileMenuOpen(!isProfileMenuOpen);
-  };
+  // const toggleProfileMenu = () => {
+  //   setIsProfileMenuOpen(!isProfileMenuOpen);
+  // };
 
   return (
     <nav className="bg-black">

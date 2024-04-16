@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { GrAttachment, GrAdd } from "react-icons/gr";
+import { GrAdd } from "react-icons/gr";
 import CalendarPicker from "../components/DateCalendar";
 import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
-import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
-import ButtonLimparCampos from "../components/ButtonLimparCampos";
 import InformationModal from "../components/InformationModal";
 
 // type Meeting = {
@@ -147,9 +145,9 @@ export function FormularioReuniao() {
     }
 
     //função p/salvar os email no formulário
-    const handleChangeFormEmail = () => {
-        handleChangeForm('email', emails);
-    }
+    // const handleChangeFormEmail = () => {
+    //     handleChangeForm('email', emails);
+    // }
 
     const saveForm = () => {
         switch (form) {
