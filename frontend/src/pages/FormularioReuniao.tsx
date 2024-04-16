@@ -6,6 +6,7 @@ import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
+import { api_url } from "../variables";
 
 // type Meeting = {
 //     id: string,
@@ -81,7 +82,7 @@ export function FormularioReuniao() {
     //Rota para popular combo sala online
 
     const getSalaOnline = async () => {
-        fetch('http://localhost:3000/sala-virtual').then(response => {
+        fetch(`${api_url()}/sala-virtual`).then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao realizar a requisição');
             }
@@ -99,7 +100,7 @@ export function FormularioReuniao() {
     // Rota para popular combo sala presencial
 
     const getSalaPresencial = async () => {
-        fetch('http://localhost:3000/sala-presencial').then(response => {
+        fetch(`${api_url()}sala-presencial`).then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao realizar a requisição');
             }
@@ -182,7 +183,7 @@ export function FormularioReuniao() {
             participantes: emails
         }
 
-        fetch("http://localhost:3000/reuniao/agendar",
+        fetch(`${api_url()}reuniao/agendar`,
             {
                 body: JSON.stringify(reuniao),
                 method: 'POST',

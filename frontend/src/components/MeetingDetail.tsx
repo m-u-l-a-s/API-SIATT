@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
+import { api_url } from '../variables';
 
 interface MeetingDetailProps {
     id: string;
@@ -40,7 +41,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
     };
 
     const deleteMeeting = async () => {
-        await fetch(`http://localhost:3000/reuniao/${id}`, { method: 'DELETE' })
+        await fetch(`${api_url()}reuniao/${id}`, { method: 'DELETE' })
         window.location.reload()
     }
 

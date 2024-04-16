@@ -5,6 +5,7 @@ import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
 import { Link } from "react-router-dom";
 import separaDataHora from "../control/utils";
+import { api_url } from "../variables";
 
 type Meeting = {
     id: string,
@@ -29,9 +30,9 @@ const PagAgendamento = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await fetch("http://localhost:3000/reuniao/presencial");
-                const hibridaResponse = await fetch("http://localhost:3000/reuniao/hibrida");
-                const virtualResponse = await fetch("http://localhost:3000/reuniao/virtual");
+                const presencialResponse = await fetch(`${api_url()}presencial`);
+                const hibridaResponse = await fetch(`${api_url()}hibrida`);
+                const virtualResponse = await fetch(`${api_url()}virtual`);
 
                 if (!presencialResponse.ok || !hibridaResponse.ok || !virtualResponse.ok) {
                     throw new Error("Não foi possível buscar os dados.");
