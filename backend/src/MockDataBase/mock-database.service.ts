@@ -61,6 +61,7 @@ export class MockDataBase {
             const reuniao = new CreateSalaPresencialDto();
             reuniao.identificacao = `Sala ${400 + index}`
             reuniao.local = `Centro Comercial 2`
+            reuniao.endereco = `PIT - Parque de Inovação Tecnológica São José dos Campos`;
             reuniao.ocupacaoMax = 10;
             reuniao.permissao = 1;
             await this.salaPresencialService.create(reuniao)
