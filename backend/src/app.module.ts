@@ -9,6 +9,7 @@ import { SalaPresencialModule } from './sala-presencial/sala-presencial.module';
 import { DataGuard } from './data.guard';
 import { MockDataBase } from './MockDataBase/mock-database.service';
 import { MockDataBaseModule } from './MockDataBase/mock-database.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { MockDataBaseModule } from './MockDataBase/mock-database.module';
     ReuniaoAnexosModule,
     SalaVirtualModule,
     SalaPresencialModule,
-    MockDataBaseModule
+    MockDataBaseModule,
+    AuthModule
   ],
   controllers: [],
   providers: [DataGuard, MockDataBase],

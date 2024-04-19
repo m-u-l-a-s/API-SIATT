@@ -85,6 +85,7 @@ export class MockDataBase {
             const user = new CreateUsuarioDto()
             user.diretoria = true
             user.email = `${nomes[index]}@gmail.com`
+            user.senha = `fatec`
             user.login = nomes[index]
             user.permissao = 3
             user.status = 1

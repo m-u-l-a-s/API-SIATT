@@ -12,8 +12,15 @@ export class UsuarioService {
     private clienteRepository : Repository<UsuarioEntity>
   ){}
 
-  create(createUsuarioDto: CreateUsuarioDto) {    
-    return this.clienteRepository.save(createUsuarioDto);
+  async create(createUsuarioDto: CreateUsuarioDto) {   
+    const usuario = new UsuarioEntity();
+    usuario.login = createUsuarioDto.email
+    usuario.diretoria = createUsuarioDto.diretoria
+    usuario.email = createUsuarioDto.email
+    usuario.permissao = createUsuarioDto.permissao
+    usuario.status = createUsuarioDto.status
+    await usuario.setSenha(createUsuarioDto.senha)
+    return this.clienteRepository.save(usuario);
   }
 
   findAll() {
