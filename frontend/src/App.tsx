@@ -1,6 +1,7 @@
 // import { useState } from 'react'
 import './App.css'
 import Navbar from './components/Navbar';
+import CadUsuario from './components/CadUsuario';
 import { Rotas } from './pages/Rotas';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -16,7 +17,8 @@ function App() {
       <div className='test'>
         <Navbar />
 
-        <Rotas />
+        {/* <Rotas /> */}
+        <CadUsuario/>
       </div>
     </Router>
   );

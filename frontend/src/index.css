@@ -72,12 +72,13 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */
 
 @layer components {
 
-  .cursor-pointer {
-    @apply flex items-center justify-center bg-gray-600
+  .bordaInput {
+    @apply border bg-white border-gray-300 rounded-lg px-3 
+    focus:outline-none focus:border-gray-500 focus:ring-gray-400 
   }
 
-} */
+}
