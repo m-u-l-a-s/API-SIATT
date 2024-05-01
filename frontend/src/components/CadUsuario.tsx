@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { api_url } from "../variables";
 
 
 interface Usuario {
     login: string;
     email: string;
     departamento: string;
-    nivelPermissao: any | undefined
+    permissao : Number ;
     senha: string;
     status: 1;
 }
@@ -18,23 +19,39 @@ const CadUsuario = () => {
     const [email, setEmail] = useState<string>('');
     const [senha, setSenha] = useState<string>('');
     const [departamento, setDepartamento] = useState<string>('');
-    const [nivelPermissao, setNivelPermissao] = useState<string>('1');
+    const [permissao, setPermissao] = useState<string>('1');
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
     const [departamentos, setDepartamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo" ]);
 
     const handleAdicionarUsuario = (event: any) => {
+        if(permissao == undefined){
+           throw new Error ("Permissao vazia")
+        }
         event.preventDefault();
-        const novoUsuario: Usuario = { login, email, senha, departamento, nivelPermissao, status:1 };
+        const novoUsuario: Usuario = { login, email, senha, departamento, permissao:Number(permissao), status:1 };
         setUsuarios([...usuarios, novoUsuario]);
 
     };
 
-
-   
-
-    const handleCadastrarUsuarios = () => {
+    const handleCadastrarUsuarios = async () => {
         // Implemente a lógica para enviar os usuários cadastrados para o backend
+        usuarios.forEach(async usuario => {
+
+             await fetch(`${api_url()}usuario`,{
+                method:'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(usuario)
+            }).then(Resposta => {
+                if (!Resposta.ok){
+                    throw new Error("Seu Cadastro não foi realizado!") 
+                }
+                console.log(Resposta.ok)
+            })
+
+        })
         console.log('Usuários cadastrados:', usuarios);
     };
 
@@ -83,8 +100,9 @@ const CadUsuario = () => {
                     <select
                         id="nivelPermissao"
                         className="bordaInput px-3 py-1"
-                        value={nivelPermissao} onChange={(e) => setNivelPermissao(e.target.value)}
+                        value={permissao} onChange={(e) => setPermissao(e.target.value)}
                     >
+                        <option value={""}>Selecione</option>
                         <option value={1}>1</option>
                         <option value={2}>2</option>
                         <option value={3}>3</option>
