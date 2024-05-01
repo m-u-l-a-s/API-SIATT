@@ -1,5 +1,6 @@
 import { ReuniaoEntity } from 'src/reuniao/entities/reuniao.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { DEPARTAMENTO } from '../dto/create-usuario.dto';
 import * as bcrypt from 'bcrypt'
 
 @Entity({name: "usuario"})
@@ -17,7 +18,7 @@ export class UsuarioEntity {
     senha : string
 
     @Column()
-    diretoria: boolean;
+    departamento: DEPARTAMENTO;
 
     @Column()
     permissao: number

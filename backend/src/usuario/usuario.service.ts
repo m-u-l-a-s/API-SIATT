@@ -15,7 +15,7 @@ export class UsuarioService {
   async create(createUsuarioDto: CreateUsuarioDto) {   
     const usuario = new UsuarioEntity();
     usuario.login = createUsuarioDto.email
-    usuario.diretoria = createUsuarioDto.diretoria
+    usuario.departamento = createUsuarioDto.departamento
     usuario.email = createUsuarioDto.email
     usuario.permissao = createUsuarioDto.permissao
     usuario.status = createUsuarioDto.status
@@ -40,7 +40,7 @@ export class UsuarioService {
         {
           email: user.email,
           login: user.login,
-          diretoria: user.diretoria,
+          departamento: user.departamento,
           permissao: user.permissao,
           status: user.status
         })
