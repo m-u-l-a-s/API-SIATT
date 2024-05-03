@@ -21,7 +21,7 @@ import { AuthModule } from './auth/auth.module';
       port: Number.parseInt(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      synchronize: true,
+      synchronize: false,
       entities: [__dirname + '/**/*.entity{.ts,.js}']
     }),
     UsuarioModule,

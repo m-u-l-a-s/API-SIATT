@@ -7,6 +7,11 @@ import { JwtService } from '@nestjs/jwt';
 import { UsuarioEntity } from 'src/usuario/entities/usuario.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
 
+export interface Login {
+    email : string
+    senha : string
+}
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -14,14 +19,17 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
-    async validarUsuario(login: string, senha: string): Promise<any> {
-        const user = this.usuarioService.findOneByEmail(login)
+    async validarUsuario(login : Login): Promise<any> {
+        const user = this.usuarioService.findOneByEmail(login.email)
         if (!user) {
             throw new UnauthorizedException("Email ou senha inválidos!")
-        }
-        if ((await user).compararSenha(senha)) {
-            return await this.gerarToken(await user)
-        }
+        } 
+        const senhaTrue = (await user).compararSenha(login.senha)
+        // if (senhaTrue) {
+        //     return await this.gerarToken(await user)
+        // } else {
+        //     throw new UnauthorizedException("Senha inválida!")
+        // }
     }
 
     async gerarToken(payload: UsuarioEntity) {
