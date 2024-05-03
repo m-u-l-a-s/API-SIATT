@@ -4,7 +4,14 @@ export class CreateUsuarioDto
     login : string
     senha : string
     email : string
-    diretoria : boolean
+    departamento : DEPARTAMENTO
     permissao : number
     status : number   
+}
+
+export enum DEPARTAMENTO{
+    FINANCEIRO="financeiro",
+    COMERCIAL="comercial",
+    TECNICO="tecnico",
+    ADMINISTRATIVO="administrativo"
 }
