@@ -24,7 +24,7 @@ const LoginForm: React.FC = () => {
                 body: JSON.stringify(data),
             });
             
-            if (response.ok ) {
+            if (response.status == 201) {
                 const text = await response.text(); // Await here to get the text
                 console.log('Login feito com sucesso!');
                 console.log(`response: ${text}`);
