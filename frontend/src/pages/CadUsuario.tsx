@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api_url } from "../variables";
 import { MdDelete } from "react-icons/md";
 import InformationModal from "../components/InformationModal";
+import api from "../services/api";
 
 
 interface Usuario {
@@ -47,20 +48,14 @@ const CadUsuario = () => {
     const handleCadastrarUsuarios = async () => {
         // Implemente a lógica para enviar os usuários cadastrados para o backend
         usuarios.forEach(async usuario => {
-
-            await fetch(`${api_url()}usuario`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(usuario)
-            }).then(Resposta => {
-                if (!Resposta.ok) {
+            await api.post("usuario", {
+                usuario
+            }).then(resp => {
+                if (resp.status !== 201) {
                     throw new Error("Seu Cadastro não foi realizado!")
                 }
-                console.log(Resposta.ok)
+                console.log(resp.status)
             }).then(() => setAlertModal(true))
-
         })
         console.log('Usuários cadastrados:', usuarios);
     };

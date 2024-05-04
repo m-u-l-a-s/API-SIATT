@@ -7,6 +7,7 @@ import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
 import { api_url } from "../variables";
+import api from "../services/api";
 
 // type Meeting = {
 //     id: string,
@@ -82,37 +83,33 @@ export function FormularioReuniao() {
     //Rota para popular combo sala online
 
     const getSalaOnline = async () => {
-        fetch(`${api_url()}/sala-virtual`).then(response => {
-            if (!response.ok) {
+
+        api.get(`sala-virtual`).then(resp => {
+            if (resp.status !== 200) {
                 throw new Error('Erro ao realizar a requisição');
             }
-            return response.json();
+            return resp.data
+        }).then(data => {
+            setSalaOnline(data);
+        }).catch(error => {
+            console.error("Ocorreu um erro", error)
         })
-            .then(data => {
-                setSalaOnline(data);
-                // Faça algo com os dados recebidos
-            })
-            .catch(error => {
-                console.error('Ocorreu um erro:', error);
-            });
     }
 
     // Rota para popular combo sala presencial
 
     const getSalaPresencial = async () => {
-        fetch(`${api_url()}sala-presencial`).then(response => {
-            if (!response.ok) {
+
+        api.get(`sala-presencial`).then(resp => {
+            if (resp.status !== 200) {
                 throw new Error('Erro ao realizar a requisição');
             }
-            return response.json();
+            return resp.data
+        }).then(data => {
+            setSalaPresencial(data);
+        }).catch(error => {
+            console.error("Ocorreu um erro", error)
         })
-            .then(data => {
-                setSalaPresencial(data);
-                // Faça algo com os dados recebidos
-            })
-            .catch(error => {
-                console.error('Ocorreu um erro:', error);
-            });
     }
 
     //Criação do formulário - função p/salvar no banco
@@ -167,7 +164,7 @@ export function FormularioReuniao() {
         }
 
         let dataReuniao = new Date(dataCalendarioCombo)
-        dataReuniao.setHours(horaInicial-3)
+        dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
         const reuniao =
@@ -183,19 +180,13 @@ export function FormularioReuniao() {
             participantes: emails
         }
 
-        fetch(`${api_url()}reuniao/agendar`,
-            {
-                body: JSON.stringify(reuniao),
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-            }).then(resposta => {
-                if (!resposta.ok) {
-                    throw new Error('Erro ao realizar a requisição');
-                }
-                console.log(JSON.stringify(reuniao))
-                console.log(resposta)
-                return resposta.json(); // Retorna os dados da resposta no formato JSON
-            }).then(() => setAlertModal(true))
+        api.post("/reuniao/agendar", reuniao).then(resp => {
+            if (resp.status !== 201) {
+                throw new Error(`Erro ao realizar a requisição: ${resp.status}`);
+            }
+            console.log(resp)
+            return resp.data(); // Retorna os dados da resposta no formato JSON
+        }).then(() => setAlertModal(true))
     }
 
     const handleInputChange = (e: any) => {
@@ -271,7 +262,7 @@ export function FormularioReuniao() {
                                     id="pautaReuniao" name="pautaReuniao"
                                     onChange={e => { handleChangeForm('pauta', e.target.value) }} />
                             </div>
-{/* 
+                            {/* 
                             <div className="flex items-start space-x-2">
 
                                 <button className="flex items-center justify-center border bg-white
@@ -419,7 +410,7 @@ export function FormularioReuniao() {
                             </button>
 
                             {alertModal && (
-                                <InformationModal message={"Reunião Agendada com sucesso"} confirmText={"Ok"} onConfirm={() => window.location.href='/'} />
+                                <InformationModal message={"Reunião Agendada com sucesso"} confirmText={"Ok"} onConfirm={() => window.location.href = '/'} />
                             )}
                         </div>
                     </div>

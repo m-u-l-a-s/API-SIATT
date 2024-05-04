@@ -1,10 +1,8 @@
 import React, { useState, FormEvent } from 'react';
-import { api_url } from '../variables';
 import { useNavigate } from 'react-router-dom';
-export interface Login {
-    email : string
-    senha : string
-}
+import { Login, authService } from '../services/auth';
+
+
 
 const LoginForm: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -14,32 +12,25 @@ const LoginForm: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const data: Login = {email : email, senha : senha}
+        const data: Login = { email: email, senha: senha }
+
         try {
-            const response = await fetch(`${api_url()}auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
+            let res = await authService.autenticarUsuario(data);
             
-            if (response.status == 201) {
-                const text = await response.text(); // Await here to get the text
-                console.log('Login feito com sucesso!');
-                console.log(`response: ${text}`);
-                // Redirect to '/' upon successful login
-                navigate('/');
-            } else {
-                console.error('Login falhou :(');
-                setLoginError('Credenciais inválidas. Por favor, tente novamente.');
-            }
+            let respData = await res.data
+
+            console.log(respData)
+
+            authService.setToken(respData.access_token)
+
+            navigate('/');
+
         } catch (error) {
             console.error('Error:', error);
-            setLoginError('Ocorreu um erro ao tentar fazer login. Por favor, tente novamente mais tarde.');
+            setLoginError('Erro ao Efetuar');
         }
     };
-    
+
 
     return (
         <div className="hero min-h-screen bg-base-200 play-bold text-white">

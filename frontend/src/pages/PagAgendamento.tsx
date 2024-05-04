@@ -6,6 +6,7 @@ import SearchInput from "../components/SearchInput";
 import { Link } from "react-router-dom";
 import separaDataHora from "../control/utils";
 import { api_url } from "../variables";
+import api from "../services/api";
 
 type Meeting = {
     id: string,
@@ -30,17 +31,17 @@ const PagAgendamento = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await fetch(`${api_url()}reuniao/presencial`);
-                const hibridaResponse = await fetch(`${api_url()}reuniao/hibrida`);
-                const virtualResponse = await fetch(`${api_url()}reuniao/virtual`);
+                const presencialResponse = await api.get(`reuniao/presencial`);
+                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida`);
+                const virtualResponse = await api.get(`${api_url()}reuniao/virtual`);
 
-                if (!presencialResponse.ok || !hibridaResponse.ok || !virtualResponse.ok) {
+                if (presencialResponse.status !== 200 || hibridaResponse.status !== 200 || virtualResponse.status !== 200) {
                     throw new Error("Não foi possível buscar os dados.");
                 }
 
-                const presencialData = await presencialResponse.json();
-                const hibridaData = await hibridaResponse.json();
-                const virtualData = await virtualResponse.json();
+                const presencialData = await presencialResponse.data;
+                const hibridaData = await hibridaResponse.data;
+                const virtualData = await virtualResponse.data;
 
                 const mergedData = [...presencialData, ...hibridaData, ...virtualData];
                 setReunioesAgendadas(mergedData);
