@@ -48,7 +48,7 @@ As entregas de valor de cada sprint estão mais detalhadas nos relatórios dispo
 | Sprint | Previsão de entrega | Status | Histórico |
 |:--:|:----------:|:-------------------|:-------------------------------------------------:|
 | 01 | 14/04/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint01/README.md) |
-| 02 | 05/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint02/README.md) |
+| 02 | 05/05/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint02/README.md) |
 | 03 | 26/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint03/README.md) |
 | 04 | 16/06/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint04/README.md) |
 
