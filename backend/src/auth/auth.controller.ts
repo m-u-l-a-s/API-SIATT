@@ -1,6 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Login } from './auth.service';
+
+export interface Login {
+    email: string
+    senha: string
+}
 
 @Controller('auth')
 export class AuthController {
@@ -11,7 +15,7 @@ export class AuthController {
     @Post('login')
     async login(@Body() body : Login) {
         try {
-            return this.authService.validarUsuario(body)            
+            return this.authService.validarUsuario(body.email, body.senha)            
         } catch (error) {
             return error.message;
         }
