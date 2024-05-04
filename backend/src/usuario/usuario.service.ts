@@ -19,6 +19,7 @@ export class UsuarioService {
     usuario.email = createUsuarioDto.email
     usuario.permissao = createUsuarioDto.permissao
     usuario.status = createUsuarioDto.status
+    usuario.admin = createUsuarioDto.admin
     await usuario.setSenha(createUsuarioDto.senha)
     return this.clienteRepository.save(usuario);
   }

@@ -7,6 +7,7 @@ export class CreateUsuarioDto
     departamento : DEPARTAMENTO
     permissao : number
     status : number   
+    admin : boolean
 }
 
 export enum DEPARTAMENTO{

@@ -89,6 +89,7 @@ export class MockDataBase {
             user.login = nomes[index]
             user.permissao = 3
             user.status = 1
+            user.admin = true
             await this.usuarioService.create(user)
         }
     }

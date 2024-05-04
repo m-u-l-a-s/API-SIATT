@@ -26,6 +26,9 @@ export class UsuarioEntity {
     @Column()
     status : number
 
+    @Column()
+    admin : boolean
+
     @OneToMany(() => ReuniaoEntity, reunioes => reunioes.solicitante)
     reunioes : ReuniaoEntity[]
 
