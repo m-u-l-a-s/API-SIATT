@@ -140,19 +140,18 @@ const CadUsuario = () => {
 
                 <div className="h-56 w-full overflow-y-auto">
 
-                    <div className="  space-y-2 overflow-y-auto ">
+                    <div className="space-y-2 overflow-y-auto ">
                         {usuarios.map((usuario, index) => (
                             <div key={index}
-                                className=" flex items-center space-x-3 bordaInput w-auto h-auto ">
+                                className=" flex items-center justify-between space-x-3 bordaInput w-auto h-auto ">
 
-                                <span className="inline">{usuario.login}</span>
-                                <div className=" flex items-center justify-end w-full h-auto space-x-3" >
+                                    <span>{usuario.login}</span>
+
                                     {/* <button >ed</button> */}
-
                                     <button
                                         onClick={(e) => DelUsuarioLista(index, e)}
                                     > <MdDelete /> </button>
-                                </div>
+
 
                             </div>
                         ))}
