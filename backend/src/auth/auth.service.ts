@@ -22,7 +22,7 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException("Email ou senha inválidos!")
         }
-        
+
         const result = await user.compararSenha(senha)
 
         switch (result) {
