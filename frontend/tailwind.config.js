@@ -7,12 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        fonteAmarela: "#FCBE04",
+        fonteAmarela: "#FFF000",
         fonteVermelha: "#FF3C2F",
         botaoVermelho: "#FF3C2F"
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('daisyui'),
+  ],
 }
 
