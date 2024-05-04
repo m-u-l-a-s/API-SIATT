@@ -29,7 +29,8 @@ export class AuthService {
             case false:
                 throw new UnauthorizedException("Senha Inválida")
             case true:
-                return await this.gerarToken(user);
+                const resp = await this.gerarToken(user);
+                return {access_token : resp.access_token, admin : user.admin }
             default:
                 throw new Error("Erro ao realizar validação")
         }
@@ -38,7 +39,7 @@ export class AuthService {
     async gerarToken(payload: UsuarioEntity) {
         return {
             access_token: this.jwtService.sign(
-                { email: payload.email, permissao: payload.permissao, departamento: payload.departamento },
+                { email: payload.email},
                 {
                     secret: process.env.JWT_TOKEN,
                     expiresIn: '30d'
