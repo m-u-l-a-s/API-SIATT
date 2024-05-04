@@ -38,7 +38,7 @@ export class AuthService {
     async gerarToken(payload: UsuarioEntity) {
         return {
             access_token: this.jwtService.sign(
-                { email: payload.email },
+                { email: payload.email, permissao: payload.permissao, departamento: payload.departamento },
                 {
                     secret: process.env.JWT_TOKEN,
                     expiresIn: '30d'
