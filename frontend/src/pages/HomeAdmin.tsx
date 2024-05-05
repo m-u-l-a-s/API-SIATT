@@ -10,7 +10,7 @@ export const HomeAdmin = () => {
             icon={<FaPencilAlt className="h-10 w-7" />}
             titleCard="Cadastrar Salas / Usuários"
             buttonText="Cadastrar"
-            buttonLink="#"
+            buttonLink="/Cadastro"
           ></CardHome>
 
           <div className="flex flex-col w-1 bg-gray-500 space-y-5">

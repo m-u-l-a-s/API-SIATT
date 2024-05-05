@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const  auth  = useAuth()
+    
   // const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -13,6 +16,11 @@ const Navbar = () => {
   // const toggleProfileMenu = () => {
   //   setIsProfileMenuOpen(!isProfileMenuOpen);
   // };
+
+  const Logout = (e:any) => {
+    e.preventDefault()
+    auth?.logout();
+  }
 
   return (
     <nav className="bg-black">
@@ -48,12 +56,12 @@ const Navbar = () => {
             </div>
             <span className='text-white flex justify-center items-center ml-6 text-2xl'>Portal de Agendamento de Reuniões</span>
             <div className="hidden sm:ml-6 sm:block">
-              {/* <div className="flex space-x-4">
-                <a href="#" className="bg-gray-800 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Calendário</a>
+              <div className="flex space-x-4">
+                {/* <a href="#" className="bg-gray-800 text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Calendário</a>
                 <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Equipe</a>
-                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Dúvidas</a>
-                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Sobre</a>
-              </div> */}
+                <a href="#" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Dúvidas</a> */}
+                <button className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium" onClick={(e) => Logout(e)}>Sair</button>
+              </div>
             </div>
           </div>
           {/* <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
