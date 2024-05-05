@@ -3,6 +3,7 @@ import { useState } from "react"
 import ConfirmationModal from "./ConfirmationModal"
 import { api_url } from "../variables"
 import { MdDelete } from "react-icons/md"
+import { Navigate, useNavigate } from "react-router-dom"
 
 interface salaVirtualCad{
     identificacao : string
@@ -45,6 +46,9 @@ const CadSala = () => {
   const [salaVirtual, setSalaVirtual] = useState<salaVirtualCad[]>([]);
   const [salaPresencial, setSalaPresencial] = useState<salaPresencialCad[]>([]);
 
+  //const - use navigate
+  const navigate = useNavigate()
+
   //função limpar campos dos formulários
   const handleCleanForm = () =>{
     if (selectedButton==='Virtual') {
@@ -81,6 +85,7 @@ const CadSala = () => {
         };
         setSalaVirtual([...salaVirtual,novaSalaVirtual]);
         console.log(salaVirtual)
+        handleCleanForm();
       }
       else if (selectedButton==='Presencial'){
         event.preventDefault();
@@ -92,7 +97,8 @@ const CadSala = () => {
           local,
         }
         setSalaPresencial([...salaPresencial,novaSalaPresencial]);
-        console.log(salaPresencial)
+        console.log(salaPresencial);
+        handleCleanForm();
       }
   }
 
@@ -135,6 +141,8 @@ const CadSala = () => {
       })
     })
 
+    setModalCadastro(false);
+    navigate('/');
   }
 
   return (
