@@ -1,6 +1,7 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Login, authService } from '../services/auth';
+import { Login, authService } from '../services/services.auth';
+import useAuth from '../hooks/useAuth';
 
 
 
@@ -9,26 +10,14 @@ const LoginForm: React.FC = () => {
     const [senha, setSenha] = useState('');
     const [loginError, setLoginError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const auth = useAuth()
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data: Login = { email: email, senha: senha }
 
-        try {
-            let res = await authService.autenticarUsuario(data);
-            
-            let respData = await res.data
-
-            console.log(respData)
-
-            authService.setToken(respData.access_token)
-
-            navigate('/');
-
-        } catch (error) {
-            console.error('Error:', error);
-            setLoginError('Erro ao Efetuar');
-        }
+        await auth?.login(data)
+        navigate("/")
     };
 
 
