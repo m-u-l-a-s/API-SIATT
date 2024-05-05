@@ -1,11 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import { FormularioReuniao } from "../pages/FormularioReuniao";
 import { HomeAdmin } from "../pages/HomeAdmin";
-import CadUsuario from "../pages/CadUsuario";
+// import CadUsuario from "../pages/CadUsuario";
 import Login from "../pages/Login";
 import PagAgendamento from "../pages/PagAgendamento";
 import { IsLogged } from "./IsLogged";
 import { Private } from "./Private";
+import PagCadastro from "../pages/PagCadastro";
 
 
 export const Rotas = () => {
@@ -13,7 +14,7 @@ export const Rotas = () => {
     <Routes>
       {/* Rotas privada */}
       <Route path="/" element={<Private page={HomeAdmin} />} />
-      <Route path="/Cadastro" element={<Private page={CadUsuario} />} />
+      <Route path="/Cadastro" element={<Private page={PagCadastro} />} />
       {/* Rotas privada */}
 
       {/* Rotas De usuários logados */}
