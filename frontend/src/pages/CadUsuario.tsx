@@ -12,7 +12,9 @@ interface Usuario {
     permissao: Number;
     senha: string;
     status: 1;
+    admin: boolean;
 }
+
 
 
 
@@ -24,6 +26,7 @@ const CadUsuario = () => {
     const [departamento, setDepartamento] = useState<string>('');
     const [permissao, setPermissao] = useState<string>('');
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+    const [admin, setAdmin] = useState<boolean | undefined>(undefined)
 
     const [departamentos, setDepartamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
 
@@ -32,7 +35,7 @@ const CadUsuario = () => {
             throw new Error("Permissao vazia")
         }
         event.preventDefault();
-        const novoUsuario: Usuario = { login, email, senha, departamento, permissao: Number(permissao), status: 1 };
+        const novoUsuario: Usuario = { login, email, senha, departamento, permissao: Number(permissao), status: 1, admin: Boolean(admin) };
         setUsuarios([...usuarios, novoUsuario]);
 
     };
@@ -45,17 +48,28 @@ const CadUsuario = () => {
 
     }
 
+
+    const handleAdminChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setAdmin(e.target.value === 'true');
+        if (e.target.value === 'true') {
+            setPermissao('3');
+        } else {
+            setPermissao('');
+        }
+    };
+
     const handleCadastrarUsuarios = async () => {
         // Implemente a lógica para enviar os usuários cadastrados para o backend
         usuarios.forEach(async usuario => {
-            await api.post("usuario", {
-                usuario
-            }).then(resp => {
-                if (resp.status !== 201) {
-                    throw new Error("Seu Cadastro não foi realizado!")
-                }
-                console.log(resp.status)
-            }).then(() => setAlertModal(true))
+            await api.post("usuario", usuario)
+                .then(resp => {
+                    if (resp.status !== 201) {
+                        console.log(resp)
+                        throw new Error("Seu Cadastro não foi realizado!")
+                    }
+
+                })
+                .then(() => setAlertModal(true))
         })
         console.log('Usuários cadastrados:', usuarios);
     };
@@ -100,12 +114,33 @@ const CadUsuario = () => {
 
                     </div>
 
+                    <div className="space-x-4 -ml-20">
+                        <label htmlFor=""> É um Administrador?</label>
+                        <select
+                            id="nivelPermissao"
+                            className="bordaInput px-3 py-1"
+                            value={admin ? 'true' : 'false'}
+                            onChange={handleAdminChange}
+                        >
+
+                            <option value={'true'}>Sim</option>
+                            <option value={'false'}>Não</option>
+
+                        </select>
+
+
+
+
+                    </div>
+
+
                     <div className="space-x-3 -ml-20">
                         <label>Nível de permissão:</label>
                         <select
                             id="nivelPermissao"
                             className="bordaInput px-3 py-1"
                             value={permissao} onChange={(e) => setPermissao(e.target.value)}
+                            disabled={admin}
                         >
                             <option value={""}>Selecione</option>
                             <option value={1}>1</option>
@@ -140,12 +175,12 @@ const CadUsuario = () => {
                             <div key={index}
                                 className=" flex items-center justify-between space-x-3 bordaInput w-auto h-auto ">
 
-                                    <span>{usuario.login}</span>
+                                <span>{usuario.login}</span>
 
-                                    {/* <button >ed</button> */}
-                                    <button
-                                        onClick={(e) => DelUsuarioLista(index, e)}
-                                    > <MdDelete /> </button>
+                                {/* <button >ed</button> */}
+                                <button
+                                    onClick={(e) => DelUsuarioLista(index, e)}
+                                > <MdDelete /> </button>
 
 
                             </div>
