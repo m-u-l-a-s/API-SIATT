@@ -22,11 +22,11 @@ const LoginForm: React.FC = () => {
 
 
     return (
-        <div className="hero min-h-screen bg-base-200 play-bold text-white">
+        <div className="hero min-h-screen bg-base-200 play-bold text-base-content">
             <div className="hero-content flex-col lg:flex-row-reverse">
                 <div className="w-[36rem] text-center lg:text-left flex flex-col">
-                    <h1 className="text-5xl font-bold text-white">Acesse sua conta</h1>
-                    <p className="py-6 text-white">
+                    <h1 className="text-5xl font-bold">Acesse sua conta</h1>
+                    <p className="py-6">
                         Com o Siatt Connect é fácil agendar e acompanhar as suas reuniões.
                     </p>
                     <img className="w-min mt-4 m-auto rounded-md text-center" src="..\siatt-logo.png" alt="" />

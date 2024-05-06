@@ -2,9 +2,19 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { authService } from '../services/services.auth';
+import { useEffect } from 'react'
+import { themeChange } from 'theme-change'
+import ThemeController from './ThemeController';
+
 
 
 const Navbar = () => {
+
+
+  useEffect(() => {
+    themeChange(false)
+    // 👆 false parameter is required for react project
+  }, [])
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate()
   const auth = useAuth()
@@ -95,6 +105,8 @@ const Navbar = () => {
               </div>
             </div> 
           </div>*/}
+
+        <ThemeController></ThemeController>
         </div>
       </div>
 
