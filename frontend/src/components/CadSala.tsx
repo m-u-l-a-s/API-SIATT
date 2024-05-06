@@ -177,14 +177,14 @@ const CadSala = () => {
                 <label className="font-bold text-xl flex-auto mb-2">Virtual</label>
 
                 <div className=" p-1 gap-2 flex justify-between">
-                  <label className="font-semibold">Identificação:</label>
-                  <input type="text" className=" border border-gray-400 rounded pl-1"
+                  <label className="bg-transparent font-semibold">Identificação:</label>
+                  <input type="text" className="bg-transparent border border-gray-400 rounded pl-1"
                   value={identVirtual} onChange={(e)=>setIdentVirtual(e.target.value)}/>
                 </div>
 
                 <div className=" p-1 flex justify-between">
                   <label className="font-semibold">Permissão:</label>
-                  <select className="border border-gray-400 rounded w-[57.8%]"
+                  <select className="bg-transparent border border-gray-400 rounded w-[57.8%]"
                   value={permissaoVirtual} onChange={(e)=>setPermissaoVirtual(e.target.value)}>
                     <option value={""}>Selecione</option>
                     <option value={1}>1</option>
@@ -195,13 +195,13 @@ const CadSala = () => {
 
                 <div className="p-1 flex justify-between">
                   <label className="font-semibold">Login:</label>
-                  <input type="text" className="border border-gray-400 rounded pl-1 "
+                  <input type="text" className="bg-transparent border border-gray-400 rounded pl-1 "
                   value={login} onChange={(e)=>setLogin(e.target.value)}/>
                 </div>
 
                 <div className="p-1 flex justify-between">
                   <label className="font-semibold">Senha:</label>
-                  <input type="text" className="border border-gray-400 rounded pl-1"
+                  <input type="text" className="bg-transparent border border-gray-400 rounded pl-1"
                   value={senha} onChange={(e)=>setSenha(e.target.value)}/>
                 </div>
 
@@ -215,13 +215,13 @@ const CadSala = () => {
 
               <div className=" p-1 gap-2 flex justify-between">
                 <label className="font-semibold">Identificação:</label>
-                <input type="text" className=" border border-gray-400 rounded pl-1"
+                <input type="text" className="bg-transparent border border-gray-400 rounded pl-1"
                 value={identPresencial} onChange={(e)=>setIdentPresencial(e.target.value)}/>
               </div>
 
               <div className=" p-1 flex justify-between">
                 <label className="font-semibold">Permissão:</label>
-                <select className="border border-gray-400 rounded w-[57.8%]"
+                <select className="bg-transparent border border-gray-400 rounded w-[57.8%]"
                 value={permissaoPresencial} onChange={(e)=>setPermissaoPresencial(e.target.value)}>
                   <option value={""}>Selecione</option>
                   <option value={1}>1</option>
@@ -232,19 +232,19 @@ const CadSala = () => {
 
               <div className="p-1 flex justify-between">
                 <label className="font-semibold">Endereço:</label>
-                <input type="text" className="border border-gray-400 rounded pl-1"
+                <input type="text" className="bg-transparent border border-gray-400 rounded pl-1"
                 value={endereco} onChange={(e)=>setEndereco(e.target.value)}/>
               </div>
 
               <div className="p-1 flex justify-between">
                 <label className="font-semibold">Local:</label>
-                <input type="text" className="border border-gray-400 rounded pl-1"
+                <input type="text" className="bg-transparent border border-gray-400 rounded pl-1"
                 value={local} onChange={(e)=>setLocal(e.target.value)}/>
               </div>
 
               <div className="p-1 flex justify-between">
                 <label className="font-semibold">Ocupação máx:</label>
-                <input type="number" className="border border-gray-400 rounded pl-1"
+                <input type="number" className="bg-transparent border border-gray-400 rounded pl-1"
                 value={ocupacaoMax} onChange={(e)=>setOcupacaoMax(e.target.value)}/>
               </div>
             </form>
