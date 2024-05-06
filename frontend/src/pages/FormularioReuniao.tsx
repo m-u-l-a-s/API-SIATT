@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import { GrAdd } from "react-icons/gr";
 import CalendarPicker from "../components/DateCalendar";
 import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
-import { api_url } from "../variables";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
 import useAuth from "../hooks/useAuth";
-import { AuthProvider } from "../context/auth";
 
 // type Meeting = {
 //     id: string,
@@ -59,13 +56,16 @@ export interface SalaPresencial {
 }
 
 export function FormularioReuniao() {
-    const [alertModal, setAlertModal] = useState(false)
+    const [alertModal, setAlertModal] = useState(false);
 
-    const [form, setForm] = useState(Categoria.PRESENCIAL)
+    const [form, setForm] = useState(Categoria.PRESENCIAL);
     const [emailInput, setEmailInput] = useState<string>('');
     const [emails, setEmails] = useState<string[]>([]);
+
     const [salaOnline, setSalaOnline] = useState<SalaVirtual[]>([]);
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
+    const [salaPresencialFiltrada, setSalaPresencialFiltrada] = useState<SalaPresencial[]>([]);
+
     const [salaOnlineSelecionada, setSalaOnlineSelecionada] = useState<string>('');
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
 
@@ -75,6 +75,9 @@ export function FormularioReuniao() {
     const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
+
+    const [numConvidados, setNumConvidados] = useState();
+
 
     const auth = useAuth();
 
@@ -112,6 +115,7 @@ export function FormularioReuniao() {
             return resp.data
         }).then(data => {
             setSalaPresencial(data);
+            setSalaPresencialFiltrada(data);
         }).catch(error => {
             console.error("Ocorreu um erro", error)
         })
@@ -207,6 +211,21 @@ export function FormularioReuniao() {
             setEmailInput('');
         }
     };
+
+    const sugestaoSala= (e: any) => {
+        const nConvidados = e.target.value
+        setNumConvidados(nConvidados);
+
+        const salasFiltradas = salaPresencial.filter((sala) => {
+            return sala.ocupacaoMax >= nConvidados 
+        })
+
+        if (salasFiltradas.length < 1) {
+            setSalaPresencialFiltrada([{id: '',identificacao:'Não há nenhuma sala disponível' , local:'',ocupacaoMax: 0, permissao:0 }])
+        } else {
+            setSalaPresencialFiltrada(salasFiltradas)
+        }
+    }
 
     return (
         <>
@@ -313,6 +332,7 @@ export function FormularioReuniao() {
                                 <div className="flex items-start space-x-2">
                                     <label htmlFor="">Número de Convidados:</label>
                                     <input
+                                        onChange={(e) => sugestaoSala(e)}
                                         type="number"
                                         id="nConvidados" name="nConvidados"
                                         className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 
@@ -360,7 +380,7 @@ export function FormularioReuniao() {
                                     <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo presencial */}
                                         <option value="">Sala Presencial</option>
-                                        {salaPresencial.sort((a, b) => {
+                                        {salaPresencialFiltrada.sort((a, b) => {
                                             const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
                                             const nomeB = b.identificacao.toUpperCase();
 

@@ -1,6 +1,5 @@
 import { createContext, useState } from "react";
 import { Login, authService } from "../services/services.auth";
-import jwt_decode from "jwt-decode";
 
 interface AuthContextType {
     user : any
@@ -15,8 +14,6 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: any) {
     const [user, setUser] = useState(authService.getUser());
     const [token, setToken] = useState<string | null>(authService.getToken());
-    const [email, setEmail] = useState<string | null>()
-
 
     const login = async (data: Login) => {
         await authService.autenticarUsuario(data).then(async resp => {
