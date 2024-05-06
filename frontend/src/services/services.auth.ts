@@ -1,7 +1,6 @@
 import { cookie } from "../variables";
 import api from "./api";
-
-
+import { jwtDecode } from "jwt-decode";
 
 export interface Login {
     email: string
@@ -36,5 +35,12 @@ export const authService = {
 
     removeUser() {
         cookie.remove("user")
+    },
+    decodificarToken (token : string | null | undefined){
+        if (token) {
+            const decode = jwtDecode(token)
+            return decode.email
+        }
+        return null
     }
 }

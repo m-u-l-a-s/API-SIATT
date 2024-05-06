@@ -7,7 +7,7 @@ import separaDataHora from "../control/utils";
 import { api_url } from "../variables";
 import api from "../services/api";
 import useAuth from "../hooks/useAuth";
-import { jwtDecode } from "jwt-decode";
+import { authService } from "../services/services.auth";
 
 type Meeting = {
     id: string,
@@ -30,25 +30,18 @@ const PagAgendamento = () => {
     const auth = useAuth()
     // const [activeButton, setActiveButton] = useState<string>('');
 
-    const decodificarToken = (token : string | null | undefined) => {
-        if (token) {
-            const decode = jwtDecode(token)
-            return decode.email
-        }
-        return null
-    }
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await api.get(`reuniao/presencial/${decodificarToken(auth?.token)}`);
-                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida/${decodificarToken(auth?.token)}`);
-                const virtualResponse = await api.get(`${api_url()}reuniao/virtual/${decodificarToken(auth?.token)}`);
+                const presencialResponse = await api.get(`reuniao/presencial/${authService.decodificarToken(auth?.token)}`);
+                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida/${authService.decodificarToken(auth?.token)}`);
+                const virtualResponse = await api.get(`${api_url()}reuniao/virtual/${authService.decodificarToken(auth?.token)}`);
 
                 if (presencialResponse.status !== 200 || hibridaResponse.status !== 200 || virtualResponse.status !== 200) {
                     throw new Error("Não foi possível buscar os dados.");
                 }
-                console.log(presencialResponse)
 
                 const presencialData = await presencialResponse.data;
                 const hibridaData = await hibridaResponse.data;
@@ -141,3 +134,4 @@ const PagAgendamento = () => {
 };
 
 export default PagAgendamento;
+
