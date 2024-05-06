@@ -3,6 +3,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioEntity } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
+import { SrvRecord } from 'dns';
 
 
 @Injectable()
@@ -45,7 +46,6 @@ export class UsuarioService {
           permissao: user.permissao,
           status: user.status
         })
-    
   }
 
   remove(id: string) {
