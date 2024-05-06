@@ -37,7 +37,7 @@ export class ReuniaoController {
 
   @Get("virtual/:email")
   findAllVirtualByEmail(@Param("email") email : string) {
-    return this.reuniaoService.findAllPresencialByEmail(email);
+    return this.reuniaoService.findAllOnlineByEmail(email);
   }
 
   @Get("hibrida")
