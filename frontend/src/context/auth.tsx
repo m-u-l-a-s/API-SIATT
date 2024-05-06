@@ -1,47 +1,48 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 import { Login, authService } from "../services/services.auth";
+import jwt_decode from "jwt-decode";
 
-interface AuthContextType{
-    admin : boolean
-    token : string | null
-    login : Function
-    logout : Function
+interface AuthContextType {
+    user : any
+    token: string | null
+    login: Function
+    logout: Function
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 
-export function AuthProvider ({children} : any){
-    const [admin, setAdmin] = useState<boolean>(authService.getAdmin())
+export function AuthProvider({ children }: any) {
+    const [user, setUser] = useState(authService.getUser());
     const [token, setToken] = useState<string | null>(authService.getToken());
+    const [email, setEmail] = useState<string | null>()
+
 
     const login = async (data: Login) => {
-        const t = await authService.autenticarUsuario(data);
-        switch (t.status) {
-            case 201:
-                authService.setTokenLocalStorage(t.data.access_token)
-                authService.setAdminLocalStorage(t.data.admin)
-                console.log(t.data)
-                setToken(t.data.access_token)
-                setAdmin(t.data.admin)
-                
-                break;
-            case 401:
-                setAdmin(false)
-                setToken(null)
-                throw new Error("Login ou senha inválidos")
-        }
-        return
+        await authService.autenticarUsuario(data).then(async resp => {
+            switch (resp.status) {
+                case 201:
+                    authService.setToken(resp.data.access_token)
+                    authService.setUser(resp.data.user)
+                    setToken(resp.data.access_token)
+                    setUser(resp.data.user)
+                    break;
+                case 401:
+                    setUser(null)
+                    setToken(null)
+                    throw new Error("Login ou senha inválidos")
+            }
+        })
     };
 
     const logout = () => {
         authService.removeToken()
-
+        authService.removeUser()
         setToken(null)
-        setAdmin(false)
+        setUser(null)
     };
 
     return (
-        < AuthContext.Provider value={{token, login, logout, admin}}>{children}</AuthContext.Provider>
-      );
+        < AuthContext.Provider value={{ token, login, logout, user }}>{children}</AuthContext.Provider>
+    )
 }
