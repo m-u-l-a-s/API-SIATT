@@ -9,7 +9,8 @@ export default {
       colors: {
         fonteAmarela: "#FFF000",
         fonteVermelha: "#FF3C2F",
-        botaoVermelho: "#FF3C2F"
+        botaoVermelho: "#FF3C2F",
+        transparent: 'transparent',
       }
     },
   },

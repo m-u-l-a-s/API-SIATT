@@ -1,6 +1,5 @@
 import {
     Injectable,
-    NotAcceptableException,
     UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -30,7 +29,7 @@ export class AuthService {
                 throw new UnauthorizedException("Senha Inválida")
             case true:
                 const resp = await this.gerarToken(user);
-                return {access_token : resp.access_token, admin : user.admin }
+                return {access_token : resp.access_token, user : { departamento : user.departamento, permissao: user.permissao, admin: user.admin }}
             default:
                 throw new Error("Erro ao realizar validação")
         }
@@ -39,7 +38,7 @@ export class AuthService {
     async gerarToken(payload: UsuarioEntity) {
         return {
             access_token: this.jwtService.sign(
-                { email: payload.email},
+                { email: payload.email },
                 {
                     secret: process.env.JWT_TOKEN,
                     expiresIn: '30d'

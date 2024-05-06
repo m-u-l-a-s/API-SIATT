@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Login, authService } from '../services/services.auth';
+import { Login } from '../services/services.auth';
 import useAuth from '../hooks/useAuth';
 
 

@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom"
 import useAuth from "../hooks/useAuth";
+import { useEffect } from "react";
 interface Props {
     page: any
 }
@@ -7,18 +8,11 @@ interface Props {
 export const Private = (props: Props) => {
     const auth = useAuth()
 
-    const signed = auth?.token;
-
-    const admin = auth?.admin;
-
-    switch (admin) {
-        case false:
-            if (signed) {
-                return <Navigate to={"/home"} replace />
-            } else {
-                return <Navigate to={"/login"} replace />
-            }
-        case true:
-            return <props.page />
+    if (auth?.token && auth.user.admin) {
+        return <props.page />
     }
+    if (auth?.token) {
+        return <Navigate to={"/home"}/>
+    }
+    return <Navigate to={"/login"} replace />
 }

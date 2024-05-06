@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import ButtonAdd from "../components/ButtonAdd";
 import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
@@ -7,6 +6,8 @@ import { Link } from "react-router-dom";
 import separaDataHora from "../control/utils";
 import { api_url } from "../variables";
 import api from "../services/api";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 type Meeting = {
     id: string,
@@ -26,22 +27,34 @@ type Meeting = {
 const PagAgendamento = () => {
     const [reunioesAgendadas, setReunioesAgendadas] = useState<Meeting[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const auth = useAuth()
     // const [activeButton, setActiveButton] = useState<string>('');
+
+    const decodificarToken = (token : string | null | undefined) => {
+        if (token) {
+            const decode = jwtDecode(token)
+            return decode.email
+        }
+        return null
+    }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await api.get(`reuniao/presencial`);
-                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida`);
-                const virtualResponse = await api.get(`${api_url()}reuniao/virtual`);
+                const presencialResponse = await api.get(`reuniao/presencial/${decodificarToken(auth?.token)}`);
+                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida/${decodificarToken(auth?.token)}`);
+                const virtualResponse = await api.get(`${api_url()}reuniao/virtual/${decodificarToken(auth?.token)}`);
 
                 if (presencialResponse.status !== 200 || hibridaResponse.status !== 200 || virtualResponse.status !== 200) {
                     throw new Error("Não foi possível buscar os dados.");
                 }
+                console.log(presencialResponse)
 
                 const presencialData = await presencialResponse.data;
                 const hibridaData = await hibridaResponse.data;
                 const virtualData = await virtualResponse.data;
+
+                console.log(presencialResponse)
 
                 const mergedData = [...presencialData, ...hibridaData, ...virtualData];
                 setReunioesAgendadas(mergedData);
@@ -60,7 +73,7 @@ const PagAgendamento = () => {
             const hora = dataHoraArray[1];
             return { ...reuniao, data, hora };
         }
-        return {...reuniao, data: '0', hora:'0'};
+        return { ...reuniao, data: '0', hora: '0' };
     });
 
     // Filtrar reuniões baseado no conteúdo do SearchInput:

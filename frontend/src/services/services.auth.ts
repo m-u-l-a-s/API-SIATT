@@ -1,3 +1,4 @@
+import { cookie } from "../variables";
 import api from "./api";
 
 
@@ -12,36 +13,28 @@ export const authService = {
         return await api.post("auth/login", data)
     },
 
-    setTokenLocalStorage(data: any) {
+    setToken(data: any) {
         localStorage.setItem("token", data)
+        cookie.set('token',data)
+    },
+    
+    setUser(data: string) {
+        cookie.set('user',data)
     },
 
     getToken() {
-        return localStorage.getItem("token")
+        return cookie.get('token')
+    },
+    
+    getUser() {
+        return cookie.get("user")
     },
 
     removeToken() {
-        localStorage.removeItem("token")
+        cookie.remove('token')
     },
 
-    setAdminLocalStorage(data: boolean) {
-        if (data) {
-            localStorage.setItem("admin", '1')
-        } else { localStorage.setItem("admin", '0') }
-    },
-
-    getAdmin() {
-        let admin = localStorage.getItem("admin")
-        switch (admin) {
-            case '1':
-                return true
-            case '0':
-                return false
-            default:
-                return false
-        }
-    },
-    removeAdmin() {
-        localStorage.removeItem("admin")
-    },
+    removeUser() {
+        cookie.remove("user")
+    }
 }
