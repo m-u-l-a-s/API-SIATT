@@ -25,14 +25,29 @@ export class ReuniaoController {
     return this.reuniaoService.findAllPresencial();
   }
 
+  @Get("presencial/:email")
+  findAllPresencialByEmail(@Param("email") email : string) {
+    return this.reuniaoService.findAllPresencialByEmail(email);
+  }
+
   @Get("virtual")
   findAllOnline(){
     return this.reuniaoService.findAllOnline();
   }
 
+  @Get("virtual/:email")
+  findAllVirtualByEmail(@Param("email") email : string) {
+    return this.reuniaoService.findAllPresencialByEmail(email);
+  }
+
   @Get("hibrida")
   findAllHibrido(){
     return this.reuniaoService.findAllHibrido();
+  }
+
+  @Get("hibrida/:email")
+  findAllHibridoByEmail(@Param("email") email : string) {
+    return this.reuniaoService.findAllHibridoByEmail(email);
   }
 
   @Get("user")

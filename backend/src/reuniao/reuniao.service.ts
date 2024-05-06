@@ -88,6 +88,30 @@ export class ReuniaoService {
     return this.reuniaoRepository.query(query);
   }
 
+  async findAllPresencialByEmail(email : string) {
+    const query = `SELECT * FROM reuniao r
+    INNER JOIN usuario u ON u.id = r.solicitanteId 
+    WHERE r.categoria = 'fisica' AND u.email =  '${email}' OR 
+    r.categoria = 'fisica' AND JSON_CONTAINS(r.participantes ,'"${email}"');`
+    return this.reuniaoRepository.query(query);
+  }
+
+  async findAllOnlineByEmail(email : string) {
+    const query = `SELECT * FROM reuniao r
+    INNER JOIN usuario u ON u.id = r.solicitanteId 
+    WHERE r.categoria = 'virtual' AND u.email =  '${email}' OR 
+    r.categoria = 'virtual' AND JSON_CONTAINS(r.participantes ,'"${email}"');`
+    return this.reuniaoRepository.query(query);
+  }
+
+  async findAllHibridoByEmail(email : string) {
+    const query = `SELECT * FROM reuniao r
+    INNER JOIN usuario u ON u.id = r.solicitanteId 
+    WHERE r.categoria = 'hibrida' AND u.email =  '${email}' OR 
+    r.categoria = 'hibrida' AND JSON_CONTAINS(r.participantes ,'"${email}"');`
+    return this.reuniaoRepository.query(query);
+  }
+
   async findAllByEmail(email: string) {
     const user = await this.usuarioService.findOneByEmail(email);
     const query = `SELECT * FROM  reuniao re 
