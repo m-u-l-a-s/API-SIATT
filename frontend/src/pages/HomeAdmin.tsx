@@ -1,4 +1,4 @@
-import { FaCalendarAlt, FaPencilAlt, FaSearch } from "react-icons/fa";
+import { FaCalendarAlt, FaPencilAlt, FaCalendarCheck } from "react-icons/fa";
 import { CardHome } from "../components/CardHome";
 
 export const HomeAdmin = () => {
@@ -29,11 +29,18 @@ export const HomeAdmin = () => {
           </div>
 
           <CardHome
+            icon={<FaCalendarCheck className="h-10 w-8" />}
+            titleCard="Visualizar Agenda"
+            buttonText="Reuniões"
+            buttonLink="/home"
+          ></CardHome>
+
+          {/* <CardHome
             icon={<FaSearch className="h-10 w-7" />}
             titleCard="Pesquisar e Editar"
             buttonText="Pesquisar"
             buttonLink="#"
-          ></CardHome>
+          ></CardHome> */}
         </div>
       </div>
     </>
