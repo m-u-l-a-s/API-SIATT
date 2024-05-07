@@ -7,7 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
-import { api_url } from '../variables';
+// import { api_url } from '../variables';
 import api from '../services/api';
 
 interface MeetingDetailProps {

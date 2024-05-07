@@ -30,8 +30,6 @@ const PagAgendamento = () => {
     const auth = useAuth()
     // const [activeButton, setActiveButton] = useState<string>('');
 
-
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -47,7 +45,6 @@ const PagAgendamento = () => {
                 const hibridaData = await hibridaResponse.data;
                 const virtualData = await virtualResponse.data;
 
-                console.log(presencialResponse)
 
                 const mergedData = [...presencialData, ...hibridaData, ...virtualData];
                 setReunioesAgendadas(mergedData);
@@ -109,7 +106,6 @@ const PagAgendamento = () => {
                     </div>
                     {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
-                            key={reuniao.id}
                             id={reuniao.id}
                             desc={reuniao.pauta}
                             title={reuniao.titulo}
