@@ -13,9 +13,9 @@ export default function ListaEmailsProps(props: ListaEmailsProps) {
   }
 
   return (
-    <div className="email-list max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-2">
+    <div className="email-list overflow-y-auto  rounded-lg p-2">
       {props.emails.map((email, index) => (
-        <div key={index} className="flex items-center space-x-3 border bg-white
+        <div key={index} className="flex items-center space-x-3 border
        border-gray-300 rounded-lg px-3 py-2 w-auto h-7 focus:outline-none
         focus:border-gray-500 focus:ring-gray-400 mb-2">
 

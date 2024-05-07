@@ -47,9 +47,9 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
     }
 
     return (
-        <div className="meeting-item bg-gray-200 m-2 rounded-md">
+        <div className="meeting-item bg-base-300 m-2 rounded-md">
             <div className="meeting-item-title font-bold flex p-2">{title}</div>
-            <ul className="meeting-item-details flex text-gray-600">
+            <ul className="meeting-item-details flex">
                 <li className='p-2 flex'>
                     <CiCalendarDate className='text-2xl mr-2' title='Data da reunião' style={{ cursor: 'pointer' }} /> {date}
                 </li>

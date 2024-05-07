@@ -76,7 +76,7 @@ const CadUsuario = () => {
 
     return (
 
-        <div className="flex items-start justify-center mt-4 space-x-52 text-black font-medium">
+        <div className="flex items-start justify-center mt-4 space-x-52 first-line:font-medium">
 
             <div>
 
@@ -86,25 +86,25 @@ const CadUsuario = () => {
 
                     <div className="space-x-3">
                         <label>Nome:</label>
-                        <input className="bordaInput items-center w-72 h-auto"
+                        <input className="bg-base-300 bordaInput items-center w-72 h-auto"
                             type="text" value={login} onChange={(e) => setLogin(e.target.value)} />
                     </div>
 
                     <div className="space-x-3">
                         <label>E-mail</label>
-                        <input className="bordaInput w-72 h-auto"
+                        <input className="bg-base-300 bordaInput w-72 h-auto"
                             type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
                     <div className="space-x-3">
                         <label>Senha:</label>
-                        <input className="bordaInput w-72 "
+                        <input className="bg-base-300 bordaInput w-72 "
                             type="text" value={senha} onChange={(e) => setSenha(e.target.value)} />
                     </div>
 
                     <div className=" space-x-4">
                         <label>Departamento:</label>
-                        <select id="departamento" className="bordaInput w-56 px-3 py-1"
+                        <select id="departamento" className=" bg-base-300 bordaInput w-56 px-3 py-1"
                             value={departamento} onChange={(e) => setDepartamento(e.target.value)}>
                             <option>Selecione</option>
                             {departamentos.map((departamento, index) => (
@@ -118,7 +118,7 @@ const CadUsuario = () => {
                         <label htmlFor=""> É um Administrador?</label>
                         <select
                             id="nivelPermissao"
-                            className="bordaInput px-3 py-1"
+                            className="bg-base-300 bordaInput px-3 py-1"
                             value={admin ? 'true' : 'false'}
                             onChange={handleAdminChange}
                         >
@@ -138,7 +138,7 @@ const CadUsuario = () => {
                         <label>Nível de permissão:</label>
                         <select
                             id="nivelPermissao"
-                            className="bordaInput px-3 py-1"
+                            className="bg-base-300 bordaInput px-3 py-1"
                             value={permissao} onChange={(e) => setPermissao(e.target.value)}
                             disabled={admin}
                         >

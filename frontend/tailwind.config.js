@@ -4,6 +4,16 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  daisyui: {
+    themes: ['dark', 'fantasy', 'coffee', 'cupcake', 'dracula', 'halloween', 'pastel',
+        { 
+          pastel: {
+            ...require("daisyui/src/theming/themes")["pastel"],
+            // primary: "blue",
+          },
+        }
+      ],
+  },
   theme: {
     extend: {
       colors: {

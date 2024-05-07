@@ -231,7 +231,7 @@ export function FormularioReuniao() {
         <>
             <Tabs state={form} setState={setForm} />
 
-            <div className="flex items-start justify-center mt-4 text-black font-medium">
+            <div className="flex items-start justify-center mt-4 font-medium">
 
                 <form action="" className="justify-center space-x-40 ">
 
@@ -266,7 +266,7 @@ export function FormularioReuniao() {
                             <div className="flex items-start space-x-2">
                                 <label>Título da Reunião:</label>
                                 <input
-                                    className="border bg-white border-gray-300 rounded-lg px-3  w-96 h-8 
+                                    className="border  border-gray-300 rounded-lg px-3  w-96 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
                                     id="tituloReuniao" name="tituloReuniao"
@@ -280,7 +280,7 @@ export function FormularioReuniao() {
 
                             <div className="flex items-start">
                                 <textarea
-                                    className="border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-20 
+                                    className="border  border-gray-300 rounded-lg px-3 py-2 w-full h-20 
 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400"
                                     id="pautaReuniao" name="pautaReuniao"
@@ -289,7 +289,7 @@ export function FormularioReuniao() {
                             {/* 
                             <div className="flex items-start space-x-2">
 
-                                <button className="flex items-center justify-center border bg-white
+                                <button className="flex items-center justify-center border 
                             border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
                             focus:border-gray-500 focus:ring-gray-400"
                                     type="button" id="botaoAnexo" name="botaoAnexo">
@@ -310,7 +310,7 @@ export function FormularioReuniao() {
                                 <label htmlFor=""> E-mail dos convidados: </label>
                                 <input
                                     placeholder="exemplo@exemplo.com"
-                                    className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                                    className="border  border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
                                     value={emailInput}
                                     onChange={handleInputChange}
@@ -318,10 +318,10 @@ export function FormularioReuniao() {
 
                                 <button
                                     onClick={handleAddEmail}
-                                    className="flex items-center justify-center border border-gray-300 bg-white text-gray-700 font-semibold 
-                                    py-2 px-4 w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
+                                    className="flex items-center justify-center align-middle border border-gray-300 font-bold 
+                                     w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
                                 >
-                                    <GrAdd />
+                                    <GrAdd/>
                                 </button>
 
                             </div>
@@ -335,7 +335,7 @@ export function FormularioReuniao() {
                                         onChange={(e) => sugestaoSala(e)}
                                         type="number"
                                         id="nConvidados" name="nConvidados"
-                                        className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 
+                                        className="text-center border  border-gray-300 rounded-lg w-72 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                     </input>
                                 </div>
@@ -348,7 +348,7 @@ export function FormularioReuniao() {
                             {(form === Categoria.VIRTUAL || form === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label> Sala Online:</label>
-                                    <select onChange={e => { setSalaOnlineSelecionada(e.target.value) }} name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                    <select onChange={e => { setSalaOnlineSelecionada(e.target.value) }} name="salas" id="salas" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo online */}
                                         <option value="">Sala Online</option>
                                         {salaOnline.sort((a, b) => {
@@ -377,7 +377,7 @@ export function FormularioReuniao() {
                                 <div className="flex items-start space-x-2">
                                     <label >Sala Presencial:</label>
 
-                                    <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                    <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo presencial */}
                                         <option value="">Sala Presencial</option>
                                         {salaPresencialFiltrada.sort((a, b) => {
@@ -413,8 +413,8 @@ export function FormularioReuniao() {
 
                             <button
                                 type="button"
-                                className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                                className="rounded-lg bg-primary border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
+                             shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
                             focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
                             disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
@@ -424,8 +424,8 @@ export function FormularioReuniao() {
 
                             <button
                                 type="button"
-                                className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
+                                className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
+                         shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
                             hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
                             active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"

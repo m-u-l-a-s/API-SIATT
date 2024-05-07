@@ -5,7 +5,7 @@ export const HomeAdmin = () => {
   return (
     <>
       <div className="flex justify-center items-center h-screen">
-        <div className="flex justify-around space-x-8 text-black font-medium">
+        <div className="flex justify-around space-x-8 font-medium">
           <CardHome
             icon={<FaPencilAlt className="h-10 w-7" />}
             titleCard="Cadastrar Salas / Usuários"

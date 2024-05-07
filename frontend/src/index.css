@@ -8,8 +8,8 @@
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
-  color: black;
-  background-color: white;
+  /* color: black; */
+  /* background-color: theme(); */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

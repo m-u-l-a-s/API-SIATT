@@ -80,8 +80,8 @@ const PagAgendamento = () => {
     // };
 
     return (
-        <div>
-            <div className="conteudo flex flex-col md:flex-row">
+        <div className="">
+            <div className="conteudo flex flex-col md:flex-row fill-current">
                 <div className="coluna-1 md:w-3/3 md:order-1 h-screen p-4 sm:w-screen flex flex-col mb-10">
                     <div className="sub-coluna-1 flex justify-between m-2">
                         {/* <h2 className="text-fonteVermelha text-3xl flex flex-initial">
