@@ -19,6 +19,7 @@
     "react-router-dom": "^6.22.3",
     "react-time-picker": "^6.6.0",
     "sweetalert2": "^11.10.7",
+    "theme-change": "^2.5.0",
     "universal-cookie": "^7.1.4"
   },
   "devDependencies": {
