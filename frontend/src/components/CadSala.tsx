@@ -3,7 +3,7 @@ import { useState } from "react"
 import ConfirmationModal from "./ConfirmationModal"
 import { api_url } from "../variables"
 import { MdDelete } from "react-icons/md"
-import { Navigate, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 interface salaVirtualCad{
     identificacao : string

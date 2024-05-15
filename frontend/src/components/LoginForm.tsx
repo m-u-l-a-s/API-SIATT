@@ -8,7 +8,7 @@ import useAuth from '../hooks/useAuth';
 const LoginForm: React.FC = () => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [loginError, setLoginError] = useState<string | null>(null);
+    const [loginError] = useState<string | null>(null);
     const navigate = useNavigate();
     const auth = useAuth()
 

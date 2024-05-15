@@ -7,7 +7,6 @@ import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
-import useAuth from "../hooks/useAuth";
 
 // type Meeting = {
 //     id: string,
@@ -75,11 +74,6 @@ export function FormularioReuniao() {
     const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
-
-    const [numConvidados, setNumConvidados] = useState();
-
-
-    const auth = useAuth();
 
     //useEffect - popular combos
 
@@ -214,7 +208,6 @@ export function FormularioReuniao() {
 
     const sugestaoSala= (e: any) => {
         const nConvidados = e.target.value
-        setNumConvidados(nConvidados);
 
         const salasFiltradas = salaPresencial.filter((sala) => {
             return sala.ocupacaoMax >= nConvidados 

@@ -19,6 +19,7 @@
     "react-router-dom": "^6.22.3",
     "react-time-picker": "^6.6.0",
     "sweetalert2": "^11.10.7",
+    "theme-change": "^2.5.0",
     "universal-cookie": "^7.1.4"
   },
   "devDependencies": {
@@ -36,7 +37,7 @@
     "eslint-plugin-react-refresh": "^0.4.6",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.5",
     "vite": "^5.2.0"
   }
 }
