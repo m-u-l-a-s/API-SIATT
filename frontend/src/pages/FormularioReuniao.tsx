@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
-import { GrAttachment, GrAdd } from "react-icons/gr";
+import { GrAdd } from "react-icons/gr";
 import CalendarPicker from "../components/DateCalendar";
 import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
 import { Tabs } from "../components/Tabs";
-import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
-import ButtonLimparCampos from "../components/ButtonLimparCampos";
 import InformationModal from "../components/InformationModal";
+import api from "../services/api";
+import { authService } from "../services/services.auth";
+import useAuth from "../hooks/useAuth";
 
 // type Meeting = {
 //     id: string,
@@ -56,13 +56,16 @@ export interface SalaPresencial {
 }
 
 export function FormularioReuniao() {
-    const [alertModal, setAlertModal] = useState(false)
+    const [alertModal, setAlertModal] = useState(false);
 
-    const [form, setForm] = useState(Categoria.PRESENCIAL)
+    const [form, setForm] = useState(Categoria.PRESENCIAL);
     const [emailInput, setEmailInput] = useState<string>('');
     const [emails, setEmails] = useState<string[]>([]);
+
     const [salaOnline, setSalaOnline] = useState<SalaVirtual[]>([]);
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
+    const [salaPresencialFiltrada, setSalaPresencialFiltrada] = useState<SalaPresencial[]>([]);
+
     const [salaOnlineSelecionada, setSalaOnlineSelecionada] = useState<string>('');
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
 
@@ -72,6 +75,11 @@ export function FormularioReuniao() {
     const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
+
+    const [numConvidados, setNumConvidados] = useState();
+
+
+    const auth = useAuth();
 
     //useEffect - popular combos
 
@@ -83,37 +91,34 @@ export function FormularioReuniao() {
     //Rota para popular combo sala online
 
     const getSalaOnline = async () => {
-        fetch('http://localhost:3000/sala-virtual').then(response => {
-            if (!response.ok) {
+
+        api.get(`sala-virtual`).then(resp => {
+            if (resp.status !== 200) {
                 throw new Error('Erro ao realizar a requisição');
             }
-            return response.json();
+            return resp.data
+        }).then(data => {
+            setSalaOnline(data);
+        }).catch(error => {
+            console.error("Ocorreu um erro", error)
         })
-            .then(data => {
-                setSalaOnline(data);
-                // Faça algo com os dados recebidos
-            })
-            .catch(error => {
-                console.error('Ocorreu um erro:', error);
-            });
     }
 
     // Rota para popular combo sala presencial
 
     const getSalaPresencial = async () => {
-        fetch('http://localhost:3000/sala-presencial').then(response => {
-            if (!response.ok) {
+
+        api.get(`sala-presencial`).then(resp => {
+            if (resp.status !== 200) {
                 throw new Error('Erro ao realizar a requisição');
             }
-            return response.json();
+            return resp.data
+        }).then(data => {
+            setSalaPresencial(data);
+            setSalaPresencialFiltrada(data);
+        }).catch(error => {
+            console.error("Ocorreu um erro", error)
         })
-            .then(data => {
-                setSalaPresencial(data);
-                // Faça algo com os dados recebidos
-            })
-            .catch(error => {
-                console.error('Ocorreu um erro:', error);
-            });
     }
 
     //Criação do formulário - função p/salvar no banco
@@ -147,9 +152,9 @@ export function FormularioReuniao() {
     }
 
     //função p/salvar os email no formulário
-    const handleChangeFormEmail = () => {
-        handleChangeForm('email', emails);
-    }
+    // const handleChangeFormEmail = () => {
+    //     handleChangeForm('email', emails);
+    // }
 
     const saveForm = () => {
         switch (form) {
@@ -168,7 +173,7 @@ export function FormularioReuniao() {
         }
 
         let dataReuniao = new Date(dataCalendarioCombo)
-        dataReuniao.setHours(horaInicial-3)
+        dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
         const reuniao =
@@ -180,23 +185,17 @@ export function FormularioReuniao() {
             pauta: formValues.pauta,
             presencial: salaPresencialSelecionada,
             virtual: salaOnlineSelecionada,
-            solicitanteEmail: "mateus@gmail.com",
+            solicitanteEmail: authService.decodificarToken(authService.getToken()),
             participantes: emails
         }
 
-        fetch("http://localhost:3000/reuniao/agendar",
-            {
-                body: JSON.stringify(reuniao),
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-            }).then(resposta => {
-                if (!resposta.ok) {
-                    throw new Error('Erro ao realizar a requisição');
-                }
-                console.log(JSON.stringify(reuniao))
-                console.log(resposta)
-                return resposta.json(); // Retorna os dados da resposta no formato JSON
-            }).then(() => setAlertModal(true))
+        api.post("/reuniao/agendar", reuniao).then(resp => {
+            if (resp.status !== 201) {
+                throw new Error(`Erro ao realizar a requisição: ${resp.status}`);
+            }
+            console.log(resp)
+            return resp.data(); // Retorna os dados da resposta no formato JSON
+        }).then(() => setAlertModal(true))
     }
 
     const handleInputChange = (e: any) => {
@@ -213,12 +212,26 @@ export function FormularioReuniao() {
         }
     };
 
+    const sugestaoSala= (e: any) => {
+        const nConvidados = e.target.value
+        setNumConvidados(nConvidados);
+
+        const salasFiltradas = salaPresencial.filter((sala) => {
+            return sala.ocupacaoMax >= nConvidados 
+        })
+
+        if (salasFiltradas.length < 1) {
+            setSalaPresencialFiltrada([{id: '',identificacao:'Não há nenhuma sala disponível' , local:'',ocupacaoMax: 0, permissao:0 }])
+        } else {
+            setSalaPresencialFiltrada(salasFiltradas)
+        }
+    }
+
     return (
         <>
-            <Navbar />
             <Tabs state={form} setState={setForm} />
 
-            <div className="flex items-start justify-center mt-4 text-black font-medium">
+            <div className="flex items-start justify-center mt-4 font-medium">
 
                 <form action="" className="justify-center space-x-40 ">
 
@@ -253,7 +266,7 @@ export function FormularioReuniao() {
                             <div className="flex items-start space-x-2">
                                 <label>Título da Reunião:</label>
                                 <input
-                                    className="border bg-white border-gray-300 rounded-lg px-3  w-96 h-8 
+                                    className="border  border-gray-300 rounded-lg px-3  w-96 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
                                     id="tituloReuniao" name="tituloReuniao"
@@ -267,16 +280,16 @@ export function FormularioReuniao() {
 
                             <div className="flex items-start">
                                 <textarea
-                                    className="border bg-white border-gray-300 rounded-lg px-3 py-2 w-full h-20 
+                                    className="border  border-gray-300 rounded-lg px-3 py-2 w-full h-20 
 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400"
                                     id="pautaReuniao" name="pautaReuniao"
                                     onChange={e => { handleChangeForm('pauta', e.target.value) }} />
                             </div>
-{/* 
+                            {/* 
                             <div className="flex items-start space-x-2">
 
-                                <button className="flex items-center justify-center border bg-white
+                                <button className="flex items-center justify-center border 
                             border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
                             focus:border-gray-500 focus:ring-gray-400"
                                     type="button" id="botaoAnexo" name="botaoAnexo">
@@ -297,7 +310,7 @@ export function FormularioReuniao() {
                                 <label htmlFor=""> E-mail dos convidados: </label>
                                 <input
                                     placeholder="exemplo@exemplo.com"
-                                    className="border bg-white border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                                    className="border  border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
                                     value={emailInput}
                                     onChange={handleInputChange}
@@ -305,10 +318,10 @@ export function FormularioReuniao() {
 
                                 <button
                                     onClick={handleAddEmail}
-                                    className="flex items-center justify-center border border-gray-300 bg-white text-gray-700 font-semibold 
-                                    py-2 px-4 w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
+                                    className="flex items-center justify-center align-middle border border-gray-300 font-bold 
+                                     w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
                                 >
-                                    <GrAdd />
+                                    <GrAdd/>
                                 </button>
 
                             </div>
@@ -319,9 +332,10 @@ export function FormularioReuniao() {
                                 <div className="flex items-start space-x-2">
                                     <label htmlFor="">Número de Convidados:</label>
                                     <input
+                                        onChange={(e) => sugestaoSala(e)}
                                         type="number"
                                         id="nConvidados" name="nConvidados"
-                                        className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 
+                                        className="text-center border  border-gray-300 rounded-lg w-72 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                     </input>
                                 </div>
@@ -334,7 +348,7 @@ export function FormularioReuniao() {
                             {(form === Categoria.VIRTUAL || form === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label> Sala Online:</label>
-                                    <select onChange={e => { setSalaOnlineSelecionada(e.target.value) }} name="salas" id="salas" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                    <select onChange={e => { setSalaOnlineSelecionada(e.target.value) }} name="salas" id="salas" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo online */}
                                         <option value="">Sala Online</option>
                                         {salaOnline.sort((a, b) => {
@@ -363,10 +377,10 @@ export function FormularioReuniao() {
                                 <div className="flex items-start space-x-2">
                                     <label >Sala Presencial:</label>
 
-                                    <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border bg-white border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                    <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo presencial */}
                                         <option value="">Sala Presencial</option>
-                                        {salaPresencial.sort((a, b) => {
+                                        {salaPresencialFiltrada.sort((a, b) => {
                                             const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
                                             const nomeB = b.identificacao.toUpperCase();
 
@@ -399,8 +413,8 @@ export function FormularioReuniao() {
 
                             <button
                                 type="button"
-                                className="rounded-lg bg-white border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-black shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                                className="rounded-lg bg-primary border-gray-500 py-4 px-20 font-sans text-xs font-bold uppercase 
+                             shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
                             focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
                             disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
@@ -410,8 +424,8 @@ export function FormularioReuniao() {
 
                             <button
                                 type="button"
-                                className="rounded-lg bg-red-600 py-4 px-20 font-sans text-xs font-bold uppercase 
-                            text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
+                                className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
+                         shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
                             hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
                             active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
@@ -421,7 +435,7 @@ export function FormularioReuniao() {
                             </button>
 
                             {alertModal && (
-                                <InformationModal message={"Reunião Agendada com sucesso"} confirmText={"Ok"} onConfirm={() => window.location.href='/'} />
+                                <InformationModal message={"Reunião Agendada com sucesso"} confirmText={"Ok"} onConfirm={() => window.location.href = '/'} />
                             )}
                         </div>
                     </div>

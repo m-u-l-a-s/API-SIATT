@@ -10,19 +10,19 @@ const SearchInput: React.FC<SearchInputProps> = ({ setSearchQuery }) => {
     };
 
     return (
-        <div className="flex items-center max-w-md mx-auto bg-white rounded-lg mt-2 mb-2 mr-2 border" >
+        <div className="flex items-center max-w-md mx-auto bg-base-100 rounded-lg mt-2 mb-2 mr-2 border" >
             <div className="w-full">
                 <input
                     type="search"
-                    className="w-full px-4 py-1 text-gray-800 bg-white rounded-full focus:outline-none"
+                    className="w-full px-4 py-1 text-accent bg-base-100 rounded-full focus:outline-none"
                     placeholder="Pesquisar..."
-                    onChange={handleInputChange} // Call handleInputChange on input change
+                    onChange={handleInputChange}
                 />
             </div>
             <div>
                 <button
                     type="submit"
-                    className="flex items-center justify-center w-12 h-12 text-white rounded-r-lg bg-purple-500"
+                    className="flex items-center justify-center w-12 h-12 text-accent rounded-r-lg"
                 >
                     <svg
                         className="w-5 h-5"

@@ -7,6 +7,8 @@ import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
+// import { api_url } from '../variables';
+import api from '../services/api';
 
 interface MeetingDetailProps {
     id: string;
@@ -40,14 +42,14 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
     };
 
     const deleteMeeting = async () => {
-        await fetch(`http://localhost:3000/reuniao/${id}`, { method: 'DELETE' })
+        await api.delete(`reuniao/${id}`)
         window.location.reload()
     }
 
     return (
-        <div className="meeting-item bg-gray-200 m-2 rounded-md">
+        <div className="meeting-item bg-base-300 m-2 rounded-md">
             <div className="meeting-item-title font-bold flex p-2">{title}</div>
-            <ul className="meeting-item-details flex text-gray-600">
+            <ul className="meeting-item-details flex">
                 <li className='p-2 flex'>
                     <CiCalendarDate className='text-2xl mr-2' title='Data da reunião' style={{ cursor: 'pointer' }} /> {date}
                 </li>
@@ -64,7 +66,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
                 }} className='text-3xl mr-2 align-middle' /></li>
             </ul>
             {deleteModal && (
-                <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Deseja Excluir a reunião' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
+                <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Tem certeza que deseja excluir esta reunião?' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
             )}
 
             {showModal && (
@@ -72,7 +74,6 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
                     message=
 
                     {`${title}\n Pauta: ${desc} \n Sala: ${sala} \n Login: ${login} \n Senha: ${password}`}
-
 
                     confirmText="Ok, fechar"
                     onConfirm={handleConfirmModal}

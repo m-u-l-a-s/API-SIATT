@@ -3,6 +3,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioEntity } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
+import { SrvRecord } from 'dns';
 
 
 @Injectable()
@@ -12,8 +13,16 @@ export class UsuarioService {
     private clienteRepository : Repository<UsuarioEntity>
   ){}
 
-  create(createUsuarioDto: CreateUsuarioDto) {    
-    return this.clienteRepository.save(createUsuarioDto);
+  async create(createUsuarioDto: CreateUsuarioDto) {   
+    const usuario = new UsuarioEntity();
+    usuario.login = createUsuarioDto.email
+    usuario.departamento = createUsuarioDto.departamento
+    usuario.email = createUsuarioDto.email
+    usuario.permissao = createUsuarioDto.permissao
+    usuario.status = createUsuarioDto.status
+    usuario.admin = createUsuarioDto.admin
+    await usuario.setSenha(createUsuarioDto.senha)
+    return this.clienteRepository.save(usuario);
   }
 
   findAll() {
@@ -33,11 +42,10 @@ export class UsuarioService {
         {
           email: user.email,
           login: user.login,
-          diretoria: user.diretoria,
+          departamento: user.departamento,
           permissao: user.permissao,
           status: user.status
         })
-    
   }
 
   remove(id: string) {

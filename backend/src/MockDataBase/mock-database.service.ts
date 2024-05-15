@@ -9,7 +9,7 @@ import { SalaPresencialService } from "src/sala-presencial/sala-presencial.servi
 import { CreateSalaVirtualDto } from "src/sala-virtual/dto/create-sala-virtual.dto";
 import { SalaVirtualEntity } from "src/sala-virtual/entities/sala-virtual.entity";
 import { SalaVirtualService } from "src/sala-virtual/sala-virtual.service";
-import { CreateUsuarioDto } from "src/usuario/dto/create-usuario.dto";
+import { CreateUsuarioDto, DEPARTAMENTO } from "src/usuario/dto/create-usuario.dto";
 import { UsuarioEntity } from "src/usuario/entities/usuario.entity";
 import { UsuarioService } from "src/usuario/usuario.service";
 import { Repository } from "typeorm";
@@ -61,6 +61,7 @@ export class MockDataBase {
             const reuniao = new CreateSalaPresencialDto();
             reuniao.identificacao = `Sala ${400 + index}`
             reuniao.local = `Centro Comercial 2`
+            reuniao.endereco = `PIT - Parque de Inovação Tecnológica São José dos Campos`;
             reuniao.ocupacaoMax = 10;
             reuniao.permissao = 1;
             await this.salaPresencialService.create(reuniao)
@@ -82,11 +83,13 @@ export class MockDataBase {
         const nomes = ['claudia','mateus','jonas','alexandre','joice','alicea','vitor']
         for (let index = 0; index < 7; index++) {
             const user = new CreateUsuarioDto()
-            user.diretoria = true
+            user.departamento = DEPARTAMENTO.TECNICO
             user.email = `${nomes[index]}@gmail.com`
+            user.senha = `fatec`
             user.login = nomes[index]
             user.permissao = 3
             user.status = 1
+            user.admin = true
             await this.usuarioService.create(user)
         }
     }

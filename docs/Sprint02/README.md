@@ -1,6 +1,6 @@
 
 
-# Sprint 2 - Agendamento
+# Sprint 2 - Login
 
 
 <p align="center">
@@ -28,57 +28,34 @@
 
 <br>
 
-Para a primeira Sprint do projeto, adotamos o método ágil de desenvolvimento de produtos, com foco na concepção do MVP (*Minimal Viable Product- Mínimo Produto Viável*). O MVP é a primeira versão do sistema de agendamento de reuniões para a empresa SIATT, já apto para uso, mas ainda com espaço para melhorias futuras. Nesta fase inicial, concentramos nossos esforços em:
-
-- Criação do Wireframe;
-- Modelagem e Criação do Banco de dados;
-- Agendar reuniões: online, presencial, híbridas;
-- Sugestão de salas;
-- Visualizar reuniões agendadas;
+Na segunda sprint do projeto, nossa equipe implementou algumas funcionalidades essenciais para a operacionalização do sistema. Este relatório destaca as atividades realizadas:
 
 
-### Diagrama de Entidade e Relacionamento do Banco de Dados
+1. **Página de Login:**
+   - Criação da página de login, fundamental para a autenticação dos usuários no sistema.
+   - Desenvolvemos uma interface de login intuitiva e segura, garantindo que os usuários possam acessar o portal de forma eficiente e protegida.
 
-Um Diagrama de Entidade e Relacionamento (DER) é um recurso fundamental no desenvolvimento de um banco de dados para um Portal de Agendamento de Reuniões que suporta múltiplos formatos de encontros, tais como: reuniões presenciais, online ou híbridas. Abaixo está uma descrição detalhada de como está estruturado o DER para um sistema desse tipo:
+2. **Perfil do Administrador:**
+   - Implementamos a funcionalidade de perfil do administrador, proporcionando aos responsáveis pela gestão do sistema acesso a recursos específicos de administração.
+   - O perfil do administrador inclui ferramentas para gerenciamento de usuários e salas de reunião, contribuindo para a eficácia na organização das atividades.
 
+3. **Cadastro de Usuários:**
+   - Criamos um formulário de cadastro de usuários, permitindo que novos membros da equipe sejam registrados no sistema.
+   - O cadastro de usuários foi projetado para capturar informações relevantes, como: nome, e-mail, senha, departamento e nível de permissão.
 
-- **Usuário:** Esta entidade é central e representa todos os membros da equipe que interagem com o sistema. Inclui atributos como login, e-mail, departamento, nível de acesso e status (ativo, inativo).
+4. **Cadastro de Salas Online e Presenciais:**
+   - Criamos um formulário para o cadastro de salas de reuniões.
+   - O cadastro das salas foi projetado para capturar informações relevantes, como: tipo de sala (online ou presencial), identificação (número da sala) e nível de permissão. Quando a opção de sala presencial é selecionada, são solicitadas informações adicionais para o cadastro. Esses dados incluem a localização específica da sala dentro do prédio, o endereço completo e a capacidade máxima de ocupação da sala. Essas informações são essenciais para garantir uma gestão precisa e eficiente das salas de reunião presencial.
 
-
-- **Reunião:** Representa cada reunião agendada no sistema, contendo detalhes como título, data, duração, categoria, pauta etc.
-
-
-- **Sala Virtual:** Especificamente para reuniões online, esta entidade descreve as salas virtuais disponíveis, com informações como nome da sala, login, senha e nível de permissão dos participantes (quem pode criar, quem pode entrar).
-
-
-- **Sala Física:** Quando a reunião é presencial, esta entidade representa as salas físicas do espaço de trabalho, contendo dados como nome da sala, local, capacidade e nível de permissão dos participantes.
-
-
-O DER é uma representação visual dessas entidades e relacionamentos, ajudando a entender a estrutura do banco de dados do sistema de agendamento de reuniões.
 
 <br>
 
 
-
-### Modelo Lógico do Banco de Dados
-
-<p align="center">
-      <img src="/docs/img/DER_BD.png" alt="DER do Banco de Dados">
-
-<br>
-
-<br>
-
-<br>
-
-
-
-<span id="backlog">
 
 ## :date: Backlog da Sprint
 
 <p align="center">
-      <img src="/docs/img/Backlog_Sprint01.jpg" alt="Backlog do Produto">
+      <img src="/docs/img/Backlog_Sprint02.jpg" alt="Backlog do Produto">
 
 <br>
 
@@ -88,7 +65,7 @@ O DER é uma representação visual dessas entidades e relacionamentos, ajudando
 ## :fire: Burndown
 
 <p align="center">
-      <img src="/docs/img/Burndown_Sprint01.png" alt="Burndown">
+      <img src="/docs/img/Burndown_Sprint02.png" alt="Burndown">
 
 <br>
 
@@ -98,6 +75,6 @@ O DER é uma representação visual dessas entidades e relacionamentos, ajudando
 ## :key: Histórias de Usuário
 
 <p align="center">
-      <img src="/docs/img/Historia_Usuario_Sprint01.png" alt="Histórias de Usuário">
+      <img src="/docs/img/Historia_Usuario_Sprint02.png" alt="Histórias de Usuário">
 
 <br>

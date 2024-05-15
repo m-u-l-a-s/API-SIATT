@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import ButtonAdd from "../components/ButtonAdd";
 import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
 import { Link } from "react-router-dom";
 import separaDataHora from "../control/utils";
+import { api_url } from "../variables";
+import api from "../services/api";
+import useAuth from "../hooks/useAuth";
+import { authService } from "../services/services.auth";
 
 type Meeting = {
     id: string,
@@ -24,22 +27,24 @@ type Meeting = {
 const PagAgendamento = () => {
     const [reunioesAgendadas, setReunioesAgendadas] = useState<Meeting[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const auth = useAuth()
     // const [activeButton, setActiveButton] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await fetch("http://localhost:3000/reuniao/presencial");
-                const hibridaResponse = await fetch("http://localhost:3000/reuniao/hibrida");
-                const virtualResponse = await fetch("http://localhost:3000/reuniao/virtual");
+                const presencialResponse = await api.get(`reuniao/presencial/${authService.decodificarToken(auth?.token)}`);
+                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida/${authService.decodificarToken(auth?.token)}`);
+                const virtualResponse = await api.get(`${api_url()}reuniao/virtual/${authService.decodificarToken(auth?.token)}`);
 
-                if (!presencialResponse.ok || !hibridaResponse.ok || !virtualResponse.ok) {
+                if (presencialResponse.status !== 200 || hibridaResponse.status !== 200 || virtualResponse.status !== 200) {
                     throw new Error("Não foi possível buscar os dados.");
                 }
 
-                const presencialData = await presencialResponse.json();
-                const hibridaData = await hibridaResponse.json();
-                const virtualData = await virtualResponse.json();
+                const presencialData = await presencialResponse.data;
+                const hibridaData = await hibridaResponse.data;
+                const virtualData = await virtualResponse.data;
+
 
                 const mergedData = [...presencialData, ...hibridaData, ...virtualData];
                 setReunioesAgendadas(mergedData);
@@ -58,7 +63,7 @@ const PagAgendamento = () => {
             const hora = dataHoraArray[1];
             return { ...reuniao, data, hora };
         }
-        return {...reuniao, data: '0', hora:'0'};
+        return { ...reuniao, data: '0', hora: '0' };
     });
 
     // Filtrar reuniões baseado no conteúdo do SearchInput:
@@ -72,9 +77,8 @@ const PagAgendamento = () => {
     // };
 
     return (
-        <div>
-            <Navbar />
-            <div className="conteudo flex flex-col md:flex-row">
+        <div className="">
+            <div className="conteudo flex flex-col md:flex-row fill-current">
                 <div className="coluna-1 md:w-3/3 md:order-1 h-screen p-4 sm:w-screen flex flex-col mb-10">
                     <div className="sub-coluna-1 flex justify-between m-2">
                         {/* <h2 className="text-fonteVermelha text-3xl flex flex-initial">
@@ -126,3 +130,4 @@ const PagAgendamento = () => {
 };
 
 export default PagAgendamento;
+

@@ -12,6 +12,9 @@ export class SalaPresencialEntity {
     identificacao : string
 
     @Column()
+    endereco : string
+
+    @Column()
     permissao : number
 
     @Column()
