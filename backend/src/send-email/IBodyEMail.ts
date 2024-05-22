@@ -1,5 +1,5 @@
 export interface BodyEmail {
-    email : string,
+    emails : string[],
     titulo : string,
     mensagem : string
 }
