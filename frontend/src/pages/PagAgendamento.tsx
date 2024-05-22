@@ -4,10 +4,10 @@ import MeetingDetail from "../components/MeetingDetail";
 import SearchInput from "../components/SearchInput";
 import { Link } from "react-router-dom";
 import separaDataHora from "../control/utils";
-import { api_url } from "../variables";
 import api from "../services/api";
 import useAuth from "../hooks/useAuth";
 import { authService } from "../services/services.auth";
+import { IUsuario } from "../interfaces/usuario";
 
 type Meeting = {
     id: string,
@@ -27,27 +27,32 @@ type Meeting = {
 const PagAgendamento = () => {
     const [reunioesAgendadas, setReunioesAgendadas] = useState<Meeting[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [usuario, setUsuario] = useState<IUsuario>();
     const auth = useAuth()
     // const [activeButton, setActiveButton] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const presencialResponse = await api.get(`reuniao/presencial/${authService.decodificarToken(auth?.token)}`);
-                const hibridaResponse = await api.get(`${api_url()}reuniao/hibrida/${authService.decodificarToken(auth?.token)}`);
-                const virtualResponse = await api.get(`${api_url()}reuniao/virtual/${authService.decodificarToken(auth?.token)}`);
+                const user = await api.get(`usuario/email/${authService.decodificarToken(auth?.token)}`);
+                if (user.status !== 200) {
+                    auth?.logout();
+                    throw new Error("Não foi possível autenticar usuário")
+                }
+                setUsuario(user.data);
+            } catch (error ){
+                console.log(`Erro: ${error}`);
+            }
 
-                if (presencialResponse.status !== 200 || hibridaResponse.status !== 200 || virtualResponse.status !== 200) {
+            try {
+                const reunioes = await api.get(`reuniao/${authService.decodificarToken(auth?.token)}`);
+                if (reunioes.status !== 200) {
                     throw new Error("Não foi possível buscar os dados.");
                 }
 
-                const presencialData = await presencialResponse.data;
-                const hibridaData = await hibridaResponse.data;
-                const virtualData = await virtualResponse.data;
+                const reunioesData = await reunioes.data;
 
-
-                const mergedData = [...presencialData, ...hibridaData, ...virtualData];
-                setReunioesAgendadas(mergedData);
+                setReunioesAgendadas(reunioesData);
             } catch (error) {
                 console.error("Erro: ", error);
             }
@@ -112,6 +117,8 @@ const PagAgendamento = () => {
                             date={reuniao.data}
                             time={reuniao.hora}
                             place={reuniao.categoria}
+                            idSolicitante={reuniao.solicitanteId}
+                            idUsuario={usuario?.id}
                             sala={`Zoom - sala 04`}
                             login={`usuarioSecreto123`}
                             password={`senhaSecreta123`}

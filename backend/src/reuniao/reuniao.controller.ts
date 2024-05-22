@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ReuniaoService } from './reuniao.service';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 
@@ -50,9 +50,9 @@ export class ReuniaoController {
     return this.reuniaoService.findAllHibridoByEmail(email);
   }
 
-  @Get("user")
-  async findAllByEmail(@Body() user : UserRequest){
-    return await this.reuniaoService.findAllByEmail(user.email);
+  @Get(":email")
+  async findAllByEmail(@Param("email") email : string ){
+    return await this.reuniaoService.findAllByEmail(email);
   }
 
   @Get(':id')

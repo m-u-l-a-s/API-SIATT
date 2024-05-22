@@ -9,6 +9,7 @@ import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
 // import { api_url } from '../variables';
 import api from '../services/api';
+import useAuth from '../hooks/useAuth';
 
 interface MeetingDetailProps {
     id: string;
@@ -20,13 +21,16 @@ interface MeetingDetailProps {
     login: string;
     password: string;
     sala: string;
+    idSolicitante : string;
+    idUsuario : string | undefined
 }
 
-const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, time, place, sala, login, password }) => {
+const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, time, place, sala, login, password, idSolicitante, idUsuario }) => {
     const [showModal, setShowModal] = useState(false);
 
-    const [deleteModal, setDeleteModal] = useState(false)
+    const [deleteModal, setDeleteModal] = useState(false);
 
+    const auth = useAuth();
 
     const handleInfoIconClick = () => {
         setShowModal(true);
@@ -61,9 +65,15 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({ id, desc, title, date, ti
                     onClick={handleInfoIconClick}
                 ><BsInfoCircleFill className='text-2xl mr-2 align-middle' /></li>
                 {/* <li className='p-2 flex' title='Editar reunião' style={{ cursor: 'pointer' }}><FaEdit className='text-2xl mr-2 align-middle'/></li> */}
-                <li className='p-2 flex' title='Excluir reunião' style={{ cursor: 'pointer' }}><MdDelete onClick={() => {
-                    setDeleteModal(true)
-                }} className='text-3xl mr-2 align-middle' /></li>
+                
+                {idSolicitante == idUsuario || auth?.user.admin && (
+                    <li className='p-2 flex' title='Excluir reunião' style={{ cursor: 'pointer' }}><MdDelete onClick={() => {
+                        setDeleteModal(true)
+                    }} className='text-3xl mr-2 align-middle' /></li>
+                    ) 
+                }
+
+
             </ul>
             {deleteModal && (
                 <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Tem certeza que deseja excluir esta reunião?' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
