@@ -1,29 +1,32 @@
 import { HttpCode, Injectable } from "@nestjs/common";
 import { MailerService } from "@nestjs-modules/mailer";
-import { BodyEmail } from "./IBodyEMail";
+import { IBodyEmail } from "./IBodyEMail";
 
 
 @Injectable()
 export class SendEmailService {
     constructor(private readonly mailerService: MailerService) { }
 
-    public send(body: BodyEmail): void {
-        body.emails.forEach(email => {
-            this.mailerService.sendMail(
-                {
-                    to: email,
-                    from: 'siatt.connect@gmail.com',
-                    subject: body.titulo,
-                    text: body.mensagem,
-                    html: `<h1>${body.titulo}</h1>
-                            <p>${body.mensagem}</p>`
-                })
-                .then(() => {
-                    return HttpCode(201)
-                })
-                .catch(() => {
-                    throw new Error("Falha ao enviar email!")
-                })
-        })
+    async send(body: IBodyEmail) {
+        await this.mailerService.sendMail(
+            {
+                to: body.emails,
+                from: 'siatt.connect@gmail.com',
+                subject: body.titulo,
+                html: `<h1>${body.titulo}</h1>
+                            <h2>${body.pauta}</h2>
+                            <p> <b>Data: </b> ${body.data}</p>
+                            <p> <b>Hora: </b> ${body.hora}</p>
+                            <p> <b>Duração: </b> ${body.duracao}</p>
+                            <p> <b>Tipo: </b> ${body.categoria}</p>
+                            <p> <b>Sala: </b> ${body.sala}</p>
+                        `
+            })
+            .then((message) => {
+                return message
+            })
+            .catch((error) => {
+                return error
+            })
     }
 }

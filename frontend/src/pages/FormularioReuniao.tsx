@@ -7,7 +7,7 @@ import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
-import useAuth from "../hooks/useAuth";
+import { IBodyEmail } from "../interface/IBodyEmail";
 
 // type Meeting = {
 //     id: string,
@@ -76,11 +76,6 @@ export function FormularioReuniao() {
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
 
-    const [numConvidados, setNumConvidados] = useState();
-
-
-    const auth = useAuth();
-
     //useEffect - popular combos
 
     useEffect(() => {
@@ -146,6 +141,51 @@ export function FormularioReuniao() {
         email: [],
     });
 
+    function adicionaZero(numero : number){
+        if (numero <= 9) 
+            return "0" + numero;
+        else
+            return numero; 
+    }
+
+    function formatarData(dataAtual:Date): string {
+        return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth()+1)).toString() + "/" + dataAtual.getFullYear());
+    }
+
+    const findReuniao = (id : string ) => {
+        let salaSelecionada = salaPresencial.filter( sala => {
+            if (sala.id == id){
+                return sala.identificacao
+            }
+        })
+        return salaSelecionada[0].identificacao;
+    }
+
+    const sendEmail = async () => {
+        let dataFormatada = formatarData(formValues.data)
+        let identificacaoSala = findReuniao(salaPresencialSelecionada)
+        let bodyRequest : IBodyEmail= {
+            emails : emails,
+            data : dataFormatada,
+            hora : `${horaInicial}:${minInicial}`,
+            duracao : `${horaDuracao}:${minDuracao}`,
+            pauta : `${formValues.pauta}`,
+            titulo : formValues.titulo,
+            categoria : form,
+            sala : identificacaoSala,
+        }
+        console.log(bodyRequest)
+
+        try {
+            await api.post("sendEmail", bodyRequest).then(resp => {
+               console.log(resp)
+            }).catch(erro => {
+                console.log(erro)
+            })
+        } catch (error) {
+            console.log(`Erro: ${error}`)
+        }
+    }
     //Função p/salvar as mudanças no formulário
     const handleChangeForm = (key: keyof FormValues, value: any) => {
         setFormValues({ ...formValues, [key]: value })
@@ -176,11 +216,11 @@ export function FormularioReuniao() {
         dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
-        const reuniao =
+        const reuniao : CreateReuniao=
         {
             titulo: formValues.titulo,
             categoria: form,
-            dataHora: dataReuniao.toISOString(),
+            dataHora: new Date(dataReuniao.toISOString()),
             duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
             pauta: formValues.pauta,
             presencial: salaPresencialSelecionada,
@@ -189,13 +229,14 @@ export function FormularioReuniao() {
             participantes: emails
         }
 
-        api.post("/reuniao/agendar", reuniao).then(resp => {
-            if (resp.status !== 201) {
-                throw new Error(`Erro ao realizar a requisição: ${resp.status}`);
-            }
-            console.log(resp)
-            return resp.data(); // Retorna os dados da resposta no formato JSON
-        }).then(() => setAlertModal(true))
+        try {
+            api.post("reuniao/agendar", reuniao).then(resp => {
+                console.log(resp)
+            }).then(() => setAlertModal(true))
+        } catch (error) {
+            console.log("Erro: "+error)
+        }
+        sendEmail();
     }
 
     const handleInputChange = (e: any) => {
@@ -214,7 +255,6 @@ export function FormularioReuniao() {
 
     const sugestaoSala= (e: any) => {
         const nConvidados = e.target.value
-        setNumConvidados(nConvidados);
 
         const salasFiltradas = salaPresencial.filter((sala) => {
             return sala.ocupacaoMax >= nConvidados 

@@ -11,8 +11,6 @@ import { MockDataBase } from './MockDataBase/mock-database.service';
 import { MockDataBaseModule } from './MockDataBase/mock-database.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
-import { from } from 'rxjs';
 import { SendEmailModule } from './send-email/send-email.module';
 
 @Module({
