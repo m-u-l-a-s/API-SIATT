@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CiCalendarDate } from "react-icons/ci";
 import { CiLocationOn } from "react-icons/ci";
 import { FaEdit, FaFileDownload } from "react-icons/fa";
@@ -11,21 +11,7 @@ import ConfirmationModal from './ConfirmationModal';
 import api from '../services/api';
 import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-
-interface MeetingDetailProps {
-    id: string;
-    title: string;
-    desc: string;
-    date: string;
-    time: string;
-    duracao: number;
-    place: string;
-    login: string;
-    password: string;
-    sala: string;
-    idSolicitante : string;
-    idUsuario : string | undefined
-}
+import { MeetingDetailProps } from '../interfaces/MeetingDetails';
 
 const MeetingDetail: React.FC<MeetingDetailProps> = ( props:MeetingDetailProps) => {
     const [showModal, setShowModal] = useState(false);

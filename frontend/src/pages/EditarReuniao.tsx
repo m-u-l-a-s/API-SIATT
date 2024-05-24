@@ -8,6 +8,8 @@ import api from "../services/api";
 import { authService } from "../services/services.auth";
 import { IBodyEmail } from "../interface/IBodyEmail";
 import { useLocation} from "react-router-dom";
+import { MeetingDetailProps } from '../interfaces/MeetingDetails';
+
 
 // type Meeting = {
 //     id: string,
@@ -94,7 +96,7 @@ export function EditarReuniao() {
     }
 
     useEffect(() => {
-        const reuniao = location.state.key;
+        const reuniao : MeetingDetailProps = location.state.key;
         setTitulo(reuniao.title);
         setPauta(reuniao.desc);
         setHoraInicial(parseInt(reuniao.time.split(":")[0]));
@@ -110,7 +112,8 @@ export function EditarReuniao() {
 
         setDataCalendarioCombo(`${dia}/${mes}/${ano}`);
 
-        
+        setEmails(reuniao.participantes)
+        setSalaPresencialSelecionada(reuniao.sala)
 
 
         getSalaOnline();
@@ -491,10 +494,8 @@ export function EditarReuniao() {
                             {(form === Categoria.PRESENCIAL || form === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label >Sala Presencial:</label>
-
-                                    <select onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
+                                    <select value={salaPresencialSelecionada} onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         {/* popular combo presencial */}
-                                        <option value="">Sala Presencial</option>
                                         {salaPresencialFiltrada.sort((a, b) => {
                                             const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
                                             const nomeB = b.identificacao.toUpperCase();
