@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { IoCalendarOutline } from 'react-icons/io5'; 
+import { IoCalendarOutline } from 'react-icons/io5';
 
-interface propsData{
-  dataCallBack:Function
+interface propsData {
+  date: string;
+  dataCallBack: Function
 }
 
-const CalendarPicker  = (props:propsData) => {
+const CalendarPicker = (props: propsData) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date | null) => {
@@ -17,6 +18,9 @@ const CalendarPicker  = (props:propsData) => {
     setSelectedDate(date);
     props.dataCallBack(date.toISOString());
   };
+
+
+  
 
   return (
     <div className="flex items-center">

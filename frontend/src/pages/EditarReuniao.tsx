@@ -70,12 +70,12 @@ export function EditarReuniao() {
     const [emails, setEmails] = useState<string[]>([]);
     const [titulo, setTitulo] = useState<string>("");
     const [pauta, setPauta] = useState<string>("");
-    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
+    const [dataCalendarioCombo, setDataCalendarioCombo] =  useState<string>('');
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
     const [horaDuracao, setHoraDuracao] = useState<number>(0);
     const [minDuracao, setMinDuracao] = useState<number>(0);
-    
+
 
     const [salaOnline, setSalaOnline] = useState<SalaVirtual[]>([]);
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
@@ -84,9 +84,9 @@ export function EditarReuniao() {
     const [salaOnlineSelecionada, setSalaOnlineSelecionada] = useState<string>('');
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
 
-   
 
-    
+
+
 
     //useEffect - popular combos
 
@@ -96,11 +96,11 @@ export function EditarReuniao() {
         setPauta(reuniao.desc);
         setHoraInicial(parseInt(reuniao.time.split(":")[0]));
         setMinInicial(parseInt(reuniao.time.split(":")[1]));
-       // setHoraDuracao(reuniao.duracao/60);
-        //setMinDuracao(reuniao.duracao%60);
-        console.log(reuniao.time);
+        setHoraDuracao(Math.floor(reuniao.duracao / 60));
+        setMinDuracao(reuniao.duracao % 60);
+        setDataCalendarioCombo(reuniao.dataCalendarioCombo);
+        console.log(reuniao.dataCalendarioCombo);
         
-
 
 
         getSalaOnline();
@@ -166,22 +166,22 @@ export function EditarReuniao() {
     });
 
 
-    
 
-    function adicionaZero(numero : number){
-        if (numero <= 9) 
+
+    function adicionaZero(numero: number) {
+        if (numero <= 9)
             return "0" + numero;
         else
-            return numero; 
+            return numero;
     }
 
-    function formatarData(dataAtual:Date): string {
-        return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth()+1)).toString() + "/" + dataAtual.getFullYear());
+    function formatarData(dataAtual: Date): string {
+        return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth() + 1)).toString() + "/" + dataAtual.getFullYear());
     }
 
-    const findReuniao = (id : string ) => {
-        let salaSelecionada = salaPresencial.filter( sala => {
-            if (sala.id == id){
+    const findReuniao = (id: string) => {
+        let salaSelecionada = salaPresencial.filter(sala => {
+            if (sala.id == id) {
                 return sala.identificacao
             }
         })
@@ -191,21 +191,21 @@ export function EditarReuniao() {
     const sendEmail = async () => {
         let dataFormatada = formatarData(formValues.data)
         let identificacaoSala = findReuniao(salaPresencialSelecionada)
-        let bodyRequest : IBodyEmail= {
-            emails : emails,
-            data : dataFormatada,
-            hora : `${horaInicial}:${minInicial}`,
-            duracao : `${horaDuracao}:${minDuracao}`,
-            pauta : `${formValues.pauta}`,
-            titulo : formValues.titulo,
-            categoria : form,
-            sala : identificacaoSala,
+        let bodyRequest: IBodyEmail = {
+            emails: emails,
+            data: dataFormatada,
+            hora: `${horaInicial}:${minInicial}`,
+            duracao: `${horaDuracao}:${minDuracao}`,
+            pauta: `${formValues.pauta}`,
+            titulo: formValues.titulo,
+            categoria: form,
+            sala: identificacaoSala,
         }
         console.log(bodyRequest)
 
         try {
             await api.post("sendEmail", bodyRequest).then(resp => {
-               console.log(resp)
+                console.log(resp)
             }).catch(erro => {
                 console.log(erro)
             })
@@ -238,15 +238,15 @@ export function EditarReuniao() {
     };
 
 
-    const sugestaoSala= (e: any) => {
+    const sugestaoSala = (e: any) => {
         const nConvidados = e.target.value
 
         const salasFiltradas = salaPresencial.filter((sala) => {
-            return sala.ocupacaoMax >= nConvidados 
+            return sala.ocupacaoMax >= nConvidados
         })
 
         if (salasFiltradas.length < 1) {
-            setSalaPresencialFiltrada([{id: '',identificacao:'Não há nenhuma sala disponível' , local:'',ocupacaoMax: 0, permissao:0 }])
+            setSalaPresencialFiltrada([{ id: '', identificacao: 'Não há nenhuma sala disponível', local: '', ocupacaoMax: 0, permissao: 0 }])
         } else {
             setSalaPresencialFiltrada(salasFiltradas)
         }
@@ -273,7 +273,7 @@ export function EditarReuniao() {
         dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
-        const reuniao : CreateReuniao=
+        const reuniao: CreateReuniao =
         {
             titulo: formValues.titulo,
             categoria: form,
@@ -291,12 +291,12 @@ export function EditarReuniao() {
                 console.log(resp)
             }).then(() => setAlertModal(true))
         } catch (error) {
-            console.log("Erro: "+error)
+            console.log("Erro: " + error)
         }
         sendEmail();
     }
 
-   
+
 
     const fetchReuniaoData = async (id: string) => {
         try {
@@ -316,16 +316,16 @@ export function EditarReuniao() {
                         email: resp.data.participantes,
 
                     })
-                    
+
 
                 }
 
             )
 
 
-        }catch(error) {
-                console.error("Erro ao carregar os dados da reunião", error);
-            }
+        } catch (error) {
+            console.error("Erro ao carregar os dados da reunião", error);
+        }
 
 
     };
@@ -336,7 +336,7 @@ export function EditarReuniao() {
 
     return (
         <>
-           
+
 
             <div className="flex items-start justify-center mt-4 font-medium">
 
@@ -350,15 +350,17 @@ export function EditarReuniao() {
                                 <div className="flex items-start space-x-4">
                                     <label
                                         htmlFor="dataReuniao">Data:</label>
-                                    <CalendarPicker dataCallBack={setDataCalendarioCombo} /> {/* CHAMANDO DATA PICKER?  */}
+                                   <CalendarPicker dataCallBack={setDataCalendarioCombo} 
+                                    date={dataCalendarioCombo} />
+
                                 </div>
 
                                 <div className="ml-4">
                                     <label
                                         htmlFor="horarioReuniao"
                                         className="pr-4">Hora:</label>
-                                    <TimeChoser horaCallBack={setHoraInicial} minCallBack={setMinInicial} 
-                                    horaInicial={`${horaInicial}`} minutoInicial={`${minInicial}`}  />
+                                    <TimeChoser horaCallBack={setHoraInicial} minCallBack={setMinInicial}
+                                        horaInicial={`${horaInicial}`} minutoInicial={`${minInicial}`} />
                                 </div>
                             </div>
 
@@ -367,7 +369,7 @@ export function EditarReuniao() {
                                 <label
                                     htmlFor="tempoDuracao">Duração:</label>
                                 <TimeChoser horaCallBack={setHoraDuracao} minCallBack={setMinDuracao}
-                                 horaInicial={`${horaDuracao}`} minutoInicial={`${minDuracao}`}/>
+                                    horaInicial={`${horaDuracao}`} minutoInicial={`${minDuracao}`} />
 
                             </div>
 
@@ -379,8 +381,8 @@ export function EditarReuniao() {
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
                                     id="tituloReuniao" name="tituloReuniao"
-                                    value= {titulo}
-                                    onChange={e => { setTitulo( e.target.value) }} />
+                                    value={titulo}
+                                    onChange={e => { setTitulo(e.target.value) }} />
                             </div>
 
 
@@ -432,7 +434,7 @@ export function EditarReuniao() {
                                     className="flex items-center justify-center align-middle border border-gray-300 font-bold 
                                      w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
                                 >
-                                    <GrAdd/>
+                                    <GrAdd />
                                 </button>
 
                             </div>
@@ -531,7 +533,7 @@ export function EditarReuniao() {
                                 data-ripple-light="true"
                                 onClick={saveForm}
                             >
-                                Agendar
+                                Salvar alterações
                             </button>
 
                             {alertModal && (

@@ -44,6 +44,11 @@ const TimeChoser= (props:propsData) => {
         };
     }, []);
 
+    useEffect(() => {
+        setHour(props.horaInicial);
+        setMinute(props.minutoInicial);
+    }, [props.horaInicial, props.minutoInicial]);
+
     return (
         <div className="relative inline-block text-left" ref={timePickerRef}>
             <div className="inline-block">
