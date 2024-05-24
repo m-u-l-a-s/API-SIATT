@@ -2,13 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { MdAccessTime } from "react-icons/md";
 
 interface propsData{
+    horaInicial: string,
+    minutoInicial: string,
     horaCallBack:Function,
     minCallBack:Function
   }
 
 const TimeChoser= (props:propsData) => {
-    const [hour, setHour] = useState("00");
-    const [minute, setMinute] = useState("00");
+    const [hour, setHour] = useState(props.horaInicial);
+    const [minute, setMinute] = useState(props.minutoInicial);
     const [showTimePicker, setShowTimePicker] = useState(false);
     const timePickerRef = useRef<HTMLDivElement>(null);
 

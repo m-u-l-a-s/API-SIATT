@@ -116,6 +116,7 @@ const PagAgendamento = () => {
                             title={reuniao.titulo}
                             date={reuniao.data}
                             time={reuniao.hora}
+                            duracao={reuniao.duracao}
                             place={reuniao.categoria}
                             idSolicitante={reuniao.solicitanteId}
                             idUsuario={usuario?.id}

@@ -120,7 +120,8 @@ export class ReuniaoService {
   }
 
   async findOne(id: string) {
-    return this.reuniaoRepository.findOneBy({ id: id });
+    const query = `select * from reuniao r where r.id = '${id}';`;
+    return await this.reuniaoRepository.query(query)
   }
 
 

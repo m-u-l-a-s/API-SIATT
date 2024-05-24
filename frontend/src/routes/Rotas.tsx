@@ -7,6 +7,8 @@ import PagAgendamento from "../pages/PagAgendamento";
 import { IsLogged } from "./IsLogged";
 import { Private } from "./Private";
 import PagCadastro from "../pages/PagCadastro";
+import { EditarReuniao } from "../pages/EditarReuniao";
+
 
 
 export const Rotas = () => {
@@ -20,6 +22,8 @@ export const Rotas = () => {
       {/* Rotas De usuários logados */}
       <Route path="/Home" element={<IsLogged page={PagAgendamento} />} />
       <Route path="/Home/Agendamento" element={<IsLogged page={FormularioReuniao} />} />
+      <Route path="/Home/EditarReuniao/:id" element={<IsLogged page={EditarReuniao} />} />
+
       {/* Rotas De usuários logados */}
 
       {/* Rotas publicas */}
