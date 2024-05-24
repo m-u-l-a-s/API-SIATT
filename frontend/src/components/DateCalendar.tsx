@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IoCalendarOutline } from 'react-icons/io5';
 
 interface propsData {
-  date: string;
+  date: Date | null | undefined;
   dataCallBack: Function
 }
 
 const CalendarPicker = (props: propsData) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null | undefined>(props.date);
 
   const handleDateChange = (date: Date | null) => {
     if (date === null) {
@@ -17,10 +17,7 @@ const CalendarPicker = (props: propsData) => {
     }
     setSelectedDate(date);
     props.dataCallBack(date.toISOString());
-  };
-
-
-  
+  };  
 
   return (
     <div className="flex items-center">

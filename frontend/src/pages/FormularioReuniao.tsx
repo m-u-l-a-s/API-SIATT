@@ -283,14 +283,14 @@ export function FormularioReuniao() {
                                 <div className="flex items-start space-x-4">
                                     <label
                                         htmlFor="dataReuniao">Data:</label>
-                                    <CalendarPicker dataCallBack={setDataCalendarioCombo} /> {/* CHAMANDO DATA PICKER?  */}
+                                    <CalendarPicker dataCallBack={setDataCalendarioCombo} date={null} /> {/* CHAMANDO DATA PICKER?  */}
                                 </div>
 
                                 <div className="ml-4">
                                     <label
                                         htmlFor="horarioReuniao"
                                         className="pr-4">Hora:</label>
-                                    <TimeChoser horaCallBack={setHoraInicial} minCallBack={setMinInicial} />
+                                    <TimeChoser horaCallBack={setHoraInicial} minCallBack={setMinInicial} horaInicial={"00"} minutoInicial={"00"} />
                                 </div>
                             </div>
 
@@ -298,7 +298,7 @@ export function FormularioReuniao() {
 
                                 <label
                                     htmlFor="tempoDuracao">Duração:</label>
-                                <TimeChoser horaCallBack={setHoraDuracao} minCallBack={setMinDuracao} />
+                                <TimeChoser horaCallBack={setHoraDuracao} minCallBack={setMinDuracao} horaInicial={"00"} minutoInicial={"00"} />
 
                             </div>
 

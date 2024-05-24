@@ -3,12 +3,11 @@ import { GrAdd } from "react-icons/gr";
 import CalendarPicker from "../components/DateCalendar";
 import ListaEmails from "../components/ListaEmails";
 import TimeChoser from "../components/TimeChoser";
-import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
 import { IBodyEmail } from "../interface/IBodyEmail";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation} from "react-router-dom";
 
 // type Meeting = {
 //     id: string,
@@ -40,6 +39,7 @@ export interface CreateReuniao {
     solicitanteEmail: string | undefined
     participantes: any | undefined
 }
+
 export interface SalaVirtual {
     id: string
     identificacao: string
@@ -57,25 +57,21 @@ export interface SalaPresencial {
 }
 
 export function EditarReuniao() {
-
-    const { id } = useParams();
-    const navigate = useNavigate();
     const location = useLocation();
-
 
     const [alertModal, setAlertModal] = useState(false);
 
     const [form, setForm] = useState(Categoria.PRESENCIAL);
     const [emailInput, setEmailInput] = useState<string>('');
     const [emails, setEmails] = useState<string[]>([]);
+    const [dataCalendarioCombo, setDataCalendarioCombo] =  useState<string>('');
+    
     const [titulo, setTitulo] = useState<string>("");
     const [pauta, setPauta] = useState<string>("");
-    const [dataCalendarioCombo, setDataCalendarioCombo] =  useState<string>('');
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
     const [horaDuracao, setHoraDuracao] = useState<number>(0);
     const [minDuracao, setMinDuracao] = useState<number>(0);
-
 
     const [salaOnline, setSalaOnline] = useState<SalaVirtual[]>([]);
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
@@ -85,10 +81,17 @@ export function EditarReuniao() {
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
 
 
-
-
-
     //useEffect - popular combos
+    const getDataReuniao = () : Date=> {
+        const reuniao = location.state.key;
+        const dataList = reuniao.date.split("-")
+
+        const dia = dataList[2]
+        const mes = dataList[1]
+        const ano = dataList[0]
+
+        return new Date(ano, parseInt(mes)-1, dia);
+    }
 
     useEffect(() => {
         const reuniao = location.state.key;
@@ -98,8 +101,15 @@ export function EditarReuniao() {
         setMinInicial(parseInt(reuniao.time.split(":")[1]));
         setHoraDuracao(Math.floor(reuniao.duracao / 60));
         setMinDuracao(reuniao.duracao % 60);
-        setDataCalendarioCombo(reuniao.dataCalendarioCombo);
-        console.log(reuniao.dataCalendarioCombo);
+
+        const dataList = reuniao.date.split("-")
+
+        const dia = dataList[2]
+        const mes = dataList[1]
+        const ano = dataList[0]
+
+        setDataCalendarioCombo(`${dia}/${mes}/${ano}`);
+
         
 
 
@@ -298,37 +308,29 @@ export function EditarReuniao() {
 
 
 
-    const fetchReuniaoData = async (id: string) => {
-        try {
-            await api.get(`reuniao/id/${id}`).then(
-                resp => {
-                    console.log(resp.data);
-                    setTitulo(resp.data.titulo);
-                    setFormValues({
-                        titulo: resp.data.titulo,
-                        categoria: resp.data.categoria,
-                        data: new Date(resp.data.dataHora),
-                        hora: '',
-                        duracao: resp.data.duracao,
-                        pauta: resp.data.pauta,
-                        presencial: resp.data.presencial,
-                        virtual: resp.data.virtual,
-                        email: resp.data.participantes,
-
-                    })
-
-
-                }
-
-            )
-
-
-        } catch (error) {
-            console.error("Erro ao carregar os dados da reunião", error);
-        }
-
-
-    };
+    // const fetchReuniaoData = async (id: string) => {
+    //     try {
+    //         await api.get(`reuniao/id/${id}`).then(
+    //             resp => {
+    //                 console.log(resp.data);
+    //                 setTitulo(resp.data.titulo);
+    //                 setFormValues({
+    //                     titulo: resp.data.titulo,
+    //                     categoria: resp.data.categoria,
+    //                     data: new Date(resp.data.dataHora),
+    //                     hora: '',
+    //                     duracao: resp.data.duracao,
+    //                     pauta: resp.data.pauta,
+    //                     presencial: resp.data.presencial,
+    //                     virtual: resp.data.virtual,
+    //                     email: resp.data.participantes,
+    //                 })
+    //             }
+    //         )
+    //     } catch (error) {
+    //         console.error("Erro ao carregar os dados da reunião", error);
+    //     }
+    // };
 
 
 
@@ -351,7 +353,7 @@ export function EditarReuniao() {
                                     <label
                                         htmlFor="dataReuniao">Data:</label>
                                    <CalendarPicker dataCallBack={setDataCalendarioCombo} 
-                                    date={dataCalendarioCombo} />
+                                    date={getDataReuniao()} />
 
                                 </div>
 
