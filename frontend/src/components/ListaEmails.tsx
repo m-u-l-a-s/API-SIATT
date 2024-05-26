@@ -1,3 +1,5 @@
+import { MdDelete } from "react-icons/md";
+
 interface ListaEmailsProps {
   emails: string[];
   setEmails: Function;
@@ -22,12 +24,8 @@ export default function ListaEmailsProps(props: ListaEmailsProps) {
           <span className="p-4">{email}</span>
 
           <div className="flex items-center justify-end w-full">
-            <button
-              onClick={(e) => onDelete(index,e)}
-              className="text-gray-500 hover:text-gray-700 rounded-full focus:outline-none"
-            >
-              X
-            </button>
+          <MdDelete onClick={(e) => onDelete(index,e)}/>
+            
           </div>
 
         </div>
