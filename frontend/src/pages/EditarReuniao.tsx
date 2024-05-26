@@ -6,10 +6,10 @@ import TimeChoser from "../components/TimeChoser";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
-import { IBodyEmail } from "../interface/IBodyEmail";
-import { useLocation} from "react-router-dom";
+import { IBodyEmail } from "../interfaces/IBodyEmail";
+import { useLocation } from "react-router-dom";
 import { MeetingDetailProps } from '../interfaces/MeetingDetails';
-
+import { ReuniaoPresencialDTO } from "../interfaces/ReuniaoPresencialDTO";
 
 // type Meeting = {
 //     id: string,
@@ -63,11 +63,11 @@ export function EditarReuniao() {
 
     const [alertModal, setAlertModal] = useState(false);
 
-    const [form, setForm] = useState(Categoria.PRESENCIAL);
+    const [form] = useState(Categoria.PRESENCIAL);
     const [emailInput, setEmailInput] = useState<string>('');
     const [emails, setEmails] = useState<string[]>([]);
-    const [dataCalendarioCombo, setDataCalendarioCombo] =  useState<string>('');
-    
+    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>('');
+
     const [titulo, setTitulo] = useState<string>("");
     const [pauta, setPauta] = useState<string>("");
     const [horaInicial, setHoraInicial] = useState<number>(0);
@@ -84,7 +84,7 @@ export function EditarReuniao() {
 
 
     //useEffect - popular combos
-    const getDataReuniao = () : Date=> {
+    const getDataReuniao = (): Date => {
         const reuniao = location.state.key;
         const dataList = reuniao.date.split("-")
 
@@ -92,11 +92,12 @@ export function EditarReuniao() {
         const mes = dataList[1]
         const ano = dataList[0]
 
-        return new Date(ano, parseInt(mes)-1, dia);
+        return new Date(ano, parseInt(mes) - 1, dia);
     }
 
+    //Para popular os campos com as informações da reunião
     useEffect(() => {
-        const reuniao : MeetingDetailProps = location.state.key;
+        const reuniao: MeetingDetailProps = location.state.key;
         setTitulo(reuniao.title);
         setPauta(reuniao.desc);
         setHoraInicial(parseInt(reuniao.time.split(":")[0]));
@@ -153,33 +154,6 @@ export function EditarReuniao() {
         })
     }
 
-    //Criação do formulário - função p/salvar no banco
-    type FormValues = {
-        titulo: string,
-        categoria: Categoria,
-        data: Date,
-        hora: string,
-        duracao: number,
-        pauta: string,
-        presencial: string,
-        virtual: string,
-        email: string[],
-    }
-
-    const [formValues, setFormValues] = useState<FormValues>({
-        titulo: '',
-        categoria: Categoria.PRESENCIAL,
-        data: new Date,
-        hora: '',
-        duracao: 0,
-        pauta: '',
-        presencial: '',
-        virtual: '',
-        email: [],
-    });
-
-
-
 
     function adicionaZero(numero: number) {
         if (numero <= 9)
@@ -193,12 +167,12 @@ export function EditarReuniao() {
     }
 
     const findReuniao = (id: string) => {
-        let salaSelecionada = salaPresencial.filter(sala => {
-            if (sala.id == id) {
-                return sala.identificacao
+        for (let salaSelecionada of salaPresencial) {
+            if (salaSelecionada.id == id) {
+                return salaSelecionada.identificacao
             }
-        })
-        return salaSelecionada[0].identificacao;
+        }
+        return ""
     }
 
     const sendEmail = async () => {
@@ -229,6 +203,7 @@ export function EditarReuniao() {
     //Função p/salvar as mudanças no formulário
     const handleChangeForm = (key: keyof FormValues, value: any) => {
         setFormValues({ ...formValues, [key]: value })
+        console.log("Form Values:", formValues);
     }
 
     //função p/salvar os email no formulário
@@ -265,8 +240,35 @@ export function EditarReuniao() {
         }
     }
 
+    //Criação do formulário - função p/salvar no banco
+    type FormValues = {
+        titulo: string,
+        categoria: Categoria,
+        data: Date,
+        hora: string,
+        duracao: number,
+        pauta: string,
+        presencial: string,
+        virtual: string,
+        email: string[],
 
-    const saveForm = () => {
+    }
+
+    const [formValues, setFormValues] = useState<FormValues>({
+        titulo: '',
+        categoria: Categoria.PRESENCIAL,
+        data: new Date,
+        hora: '',
+        duracao: 0,
+        pauta: '',
+        presencial: '',
+        virtual: '',
+        email: [],
+
+    });
+
+
+    const saveForm = async (id: string) => {
         switch (form) {
             case Categoria.PRESENCIAL:
                 setSalaOnlineSelecionada('');
@@ -286,27 +288,29 @@ export function EditarReuniao() {
         dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
-        const reuniao: CreateReuniao =
+
+        const reuniao : ReuniaoPresencialDTO =
         {
-            titulo: formValues.titulo,
+            titulo: titulo,
             categoria: form,
-            dataHora: new Date(dataReuniao.toISOString()),
+            dataHora: dataReuniao,
             duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
-            pauta: formValues.pauta,
+            pauta: pauta,
             presencial: salaPresencialSelecionada,
             virtual: salaOnlineSelecionada,
             solicitanteEmail: authService.decodificarToken(authService.getToken()),
-            participantes: emails
+            participantes: emails,
         }
 
         try {
-            api.post("reuniao/agendar", reuniao).then(resp => {
+            console.log(reuniao)
+            await api.put(`reuniao/${id}`,reuniao).then(resp => {
                 console.log(resp)
             }).then(() => setAlertModal(true))
         } catch (error) {
-            console.log("Erro: " + error)
+            console.log("Erro: ao salvar reunião " + error)
         }
-        sendEmail();
+        // sendEmail();
     }
 
 
@@ -355,8 +359,8 @@ export function EditarReuniao() {
                                 <div className="flex items-start space-x-4">
                                     <label
                                         htmlFor="dataReuniao">Data:</label>
-                                   <CalendarPicker dataCallBack={setDataCalendarioCombo} 
-                                    date={getDataReuniao()} />
+                                    <CalendarPicker dataCallBack={setDataCalendarioCombo}
+                                        date={getDataReuniao()} />
 
                                 </div>
 
@@ -387,7 +391,10 @@ export function EditarReuniao() {
                                     type="text"
                                     id="tituloReuniao" name="tituloReuniao"
                                     value={titulo}
-                                    onChange={e => { setTitulo(e.target.value) }} />
+                                    onChange={(e) => {
+                                        setTitulo(e.target.value);
+                                        handleChangeForm('titulo', e.target.value);
+                                    }} />
                             </div>
 
 
@@ -402,7 +409,10 @@ export function EditarReuniao() {
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400"
                                     id="pautaReuniao" name="pautaReuniao"
                                     value={pauta}
-                                    onChange={e => { handleChangeForm('pauta', e.target.value) }} />
+                                    onChange={e => {
+                                        handleChangeForm('pauta', e.target.value);
+                                        setPauta(e.target.value);
+                                    }} />
                             </div>
                             {/* 
                             <div className="flex items-start space-x-2">
@@ -534,7 +544,7 @@ export function EditarReuniao() {
                             hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
                             active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
-                                onClick={saveForm}
+                                onClick={() => saveForm(location.state.key.id)}
                             >
                                 Salvar alterações
                             </button>

@@ -7,7 +7,7 @@ import { Tabs } from "../components/Tabs";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
-import { IBodyEmail } from "../interface/IBodyEmail";
+import { IBodyEmail } from "../interfaces/IBodyEmail";
 
 // type Meeting = {
 //     id: string,
