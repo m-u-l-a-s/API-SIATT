@@ -297,7 +297,7 @@ export function FormularioReuniao() {
 
             <div className="flex items-start justify-center mt-4 font-medium">
 
-                <form action="" className="justify-center space-x-40 ">
+                <form action="" className="justify-center space-x-40">
 
                     <div className="flex  justify-center space-x-40" >
 
@@ -479,9 +479,9 @@ export function FormularioReuniao() {
                             <button
                                 type="button"
                                 className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
-                         shadow-md shadow-pink-500/20 transition-all hover:shadow-lg 
-                            hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
-                            active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                                focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
+                                disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
                                 onClick={saveForm}
                             >
