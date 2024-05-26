@@ -1,5 +1,6 @@
-import { FaCalendarAlt, FaPencilAlt, FaCalendarCheck } from "react-icons/fa";
+import { FaCalendarAlt, FaPencilAlt, FaCalendarCheck, FaAddressBook } from "react-icons/fa";
 import { CardHome } from "../components/CardHome";
+
 
 export const HomeAdmin = () => {
   return (
@@ -33,6 +34,17 @@ export const HomeAdmin = () => {
             titleCard="Visualizar Agenda"
             buttonText="Reuniões"
             buttonLink="/home"
+          ></CardHome>
+
+          <div className="flex flex-col w-1 bg-gray-500 space-y-5">
+            <span className="text-gray-500"> . </span>
+          </div>
+
+          <CardHome
+            icon={<FaAddressBook className="h-10 w-8" />}
+            titleCard="Visualizar Cadastros"
+            buttonText="Registros"
+            buttonLink="/home/ListarCadastrados"
           ></CardHome>
 
           {/* <CardHome

@@ -111,6 +111,7 @@ const PagAgendamento = () => {
                     </div>
                     {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
+                            key={reuniao.id}
                             id={reuniao.id}
                             desc={reuniao.pauta}
                             title={reuniao.titulo}

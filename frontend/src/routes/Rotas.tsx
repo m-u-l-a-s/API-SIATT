@@ -8,6 +8,7 @@ import { IsLogged } from "./IsLogged";
 import { Private } from "./Private";
 import PagCadastro from "../pages/PagCadastro";
 import { EditarReuniao } from "../pages/EditarReuniao";
+import ListarCadastrados from "../pages/ListarCadastrados";
 
 
 
@@ -17,6 +18,7 @@ export const Rotas = () => {
       {/* Rotas privada */}
       <Route path="/" element={<Private page={HomeAdmin} />} />
       <Route path="/Cadastro" element={<Private page={PagCadastro} />} />
+      <Route path="/home/ListarCadastrados" element={<Private page={ListarCadastrados} />} />
       {/* Rotas privada */}
 
       {/* Rotas De usuários logados */}
