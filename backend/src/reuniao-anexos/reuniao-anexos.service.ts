@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReuniaoAnexoDto } from './dto/create-reuniao-anexo.dto';
+import { ReuniaoAnexo } from './entities/reuniao-anexo.entity';
+import { bodyFile } from './dto/anexo.dto';
+import { Request } from 'express';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReuniaoAnexosService {
-  create(createReuniaoAnexoDto: CreateReuniaoAnexoDto) {
-    return 'This action adds a new reuniaoAnexo';
-  }
+    constructor(
+        @InjectRepository(ReuniaoAnexo)
+        private readonly anexosRepository : Repository<ReuniaoAnexo>
+    ){}
 
-  findAll() {
-    return `This action returns all reuniaoAnexos`;
-  }
+    async salvarArquivo( req : Request, reuniaoId : string,arquivo : Express.Multer.File){
+        const anexo : ReuniaoAnexo = new ReuniaoAnexo();
+        anexo.nomeArquivo = arquivo.filename;
+        anexo.tamanhoArquivo = arquivo.size;
+        anexo.tipoArquivo = arquivo.mimetype;
+        anexo.reuniaoId = reuniaoId;
+        anexo.url = `${req.protocol}://${req.get("host")}/anexos/${req.params.email}/${arquivo.filename}`
 
-  findOne(id: number) {
-    return `This action returns a #${id} reuniaoAnexo`;
-  }
-
-  update(id: number, updateReuniaoAnexoDto: CreateReuniaoAnexoDto) {
-    return `This action updates a #${id} reuniaoAnexo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} reuniaoAnexo`;
-  }
+        return await this.anexosRepository.save(anexo)
+    }
 }
