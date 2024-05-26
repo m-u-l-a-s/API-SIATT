@@ -8,6 +8,9 @@ import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
 import { IBodyEmail } from "../interfaces/IBodyEmail";
+import UploadFiles from "../components/uploadfiles";
+import useAuth from "../hooks/useAuth";
+
 
 // type Meeting = {
 //     id: string,
@@ -55,6 +58,11 @@ export interface SalaPresencial {
     local: string
 }
 
+interface FileWithId {
+    id: string;
+    file: File;
+  }
+
 export function FormularioReuniao() {
     const [alertModal, setAlertModal] = useState(false);
 
@@ -75,6 +83,10 @@ export function FormularioReuniao() {
     const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
+
+    const [files, setFiles] = useState<FileWithId[]>([]);
+    
+    const auth = useAuth();
 
     //useEffect - popular combos
 
@@ -232,6 +244,18 @@ export function FormularioReuniao() {
         try {
             api.post("reuniao/agendar", reuniao).then(resp => {
                 console.log(resp)
+                const idReuniao = resp.data.id;
+                for (let anexo of files) {
+                    const formData = new FormData;
+                    formData.append("file",anexo.file)
+                    formData.append("reuniaoId",idReuniao)
+
+                    try {
+                        api.post(`reuniao-anexos/upload/${authService.decodificarToken(auth?.token)}`,formData);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
             }).then(() => setAlertModal(true))
         } catch (error) {
             console.log("Erro: "+error)
@@ -326,20 +350,10 @@ export function FormularioReuniao() {
                                     id="pautaReuniao" name="pautaReuniao"
                                     onChange={e => { handleChangeForm('pauta', e.target.value) }} />
                             </div>
-                            {/* 
-                            <div className="flex items-start space-x-2">
 
-                                <button className="flex items-center justify-center border 
-                            border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
-                            focus:border-gray-500 focus:ring-gray-400"
-                                    type="button" id="botaoAnexo" name="botaoAnexo">
-
-                                    <GrAttachment className="mr-2" />
-                                    Anexar documento
-
-                                </button>
-                            </div> */}
-
+                            <div className="flex">
+                                <UploadFiles file={files} setFile={setFiles}/>
+                            </div>
                         </div>
 
                         {/* SEGUNDA COLUNA DO FORMULARIO */}
@@ -448,7 +462,7 @@ export function FormularioReuniao() {
                     </div>
 
                     <div>
-                        <div className="flex  items-center justify-between mt-9 text-black font-medium px-56  -space-x-">
+                        <div className="flex mb-2 items-center justify-between mt-9 text-black font-medium px-56  -space-x-">
 
 
                             <button
