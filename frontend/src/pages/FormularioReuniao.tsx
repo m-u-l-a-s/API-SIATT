@@ -8,7 +8,7 @@ import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
 import { IBodyEmail } from "../interface/IBodyEmail";
-
+import UploadFiles from "../components/UploadFiles";
 // type Meeting = {
 //     id: string,
 //     titulo: string,
@@ -326,20 +326,10 @@ export function FormularioReuniao() {
                                     id="pautaReuniao" name="pautaReuniao"
                                     onChange={e => { handleChangeForm('pauta', e.target.value) }} />
                             </div>
-                            {/* 
-                            <div className="flex items-start space-x-2">
 
-                                <button className="flex items-center justify-center border 
-                            border-gray-300 rounded-lg px-3 py-2 w-full h-10 focus:outline-none
-                            focus:border-gray-500 focus:ring-gray-400"
-                                    type="button" id="botaoAnexo" name="botaoAnexo">
-
-                                    <GrAttachment className="mr-2" />
-                                    Anexar documento
-
-                                </button>
+                            {/* <div className="">
+                                <UploadFiles/>
                             </div> */}
-
                         </div>
 
                         {/* SEGUNDA COLUNA DO FORMULARIO */}
