@@ -56,21 +56,43 @@ export class ReuniaoService {
   }
 
   async update(id: string, reuniaoDTO: CreateReuniaoDto) {
-    const reuniao = await this.findOne(id);
+    const reuniao : ReuniaoEntity = await this.reuniaoRepository.findOneBy({id : id});
     if (reuniao) {
-      reuniao.titulo = reuniaoDTO.titulo;
-      reuniao.categoria = reuniaoDTO.categoria;
-      reuniao.dataHora = reuniaoDTO.dataHora;
-      reuniao.duracao = reuniaoDTO.duracao;
-      reuniao.pauta = reuniaoDTO.pauta;
-      reuniao.participantes = reuniaoDTO.participantes;
-      if (reuniaoDTO.presencial !== null) { reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial) }
-      if (reuniaoDTO.virtual !== null ) { reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual); }
-      reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
-      
-      return await this.reuniaoRepository.update(id, reuniao);
+      try {
+        reuniao.titulo = reuniaoDTO.titulo;
+        reuniao.categoria = reuniaoDTO.categoria;
+        reuniao.dataHora = reuniaoDTO.dataHora;
+        reuniao.duracao = reuniaoDTO.duracao;
+        reuniao.pauta = reuniaoDTO.pauta;
+        reuniao.participantes = reuniaoDTO.participantes;
+
+        if (reuniaoDTO.presencial !== "") {
+          try {
+            reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
+        if (reuniaoDTO.virtual !== "") {
+          try {
+            reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual);
+          } catch (error) {
+            console.log(error)
+          }
+        }
+          
+        try {
+          reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
+        } catch (error) {
+            console.log(error)
+        }
+        
+        return await this.reuniaoRepository.save(reuniao);
+      } catch (error) {
+        console.log(error)
+      }
     }
-    return
   }
 
   async findAllPresencial() {
@@ -120,7 +142,8 @@ export class ReuniaoService {
   }
 
   async findOne(id: string) {
-    return this.reuniaoRepository.findOneBy({ id: id });
+    const query = `select * from reuniao r where r.id = '${id}';`;
+    return await this.reuniaoRepository.query(query)
   }
 
 

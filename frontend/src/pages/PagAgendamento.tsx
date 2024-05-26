@@ -50,7 +50,7 @@ const PagAgendamento = () => {
                     throw new Error("Não foi possível buscar os dados.");
                 }
 
-                const reunioesData = await reunioes.data;
+                const reunioesData : Meeting[] = await reunioes.data;
 
                 setReunioesAgendadas(reunioesData);
             } catch (error) {
@@ -116,6 +116,8 @@ const PagAgendamento = () => {
                             title={reuniao.titulo}
                             date={reuniao.data}
                             time={reuniao.hora}
+                            duracao={reuniao.duracao}
+                            participantes={reuniao.participantes}
                             place={reuniao.categoria}
                             idSolicitante={reuniao.solicitanteId}
                             idUsuario={usuario?.id}

@@ -55,7 +55,7 @@ export class ReuniaoController {
     return await this.reuniaoService.findAllByEmail(email);
   }
 
-  @Get(':id')
+  @Get('id/:id')
   findOne(@Param('id') id: string) {
     return this.reuniaoService.findOne(id);
   }
