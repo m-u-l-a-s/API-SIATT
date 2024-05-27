@@ -68,8 +68,8 @@ export function EditarReuniao() {
     const [emails, setEmails] = useState<string[]>([]);
     const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>('');
 
-    const [titulo, setTitulo] = useState<string>("");
-    const [pauta, setPauta] = useState<string>("");
+    const [titulo, setTitulo] = useState<string>(location.state.key.title);
+    const [pauta, setPauta] = useState<string>(location.state.key.desc);
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
     const [horaDuracao, setHoraDuracao] = useState<number>(0);
@@ -98,6 +98,9 @@ export function EditarReuniao() {
     //Para popular os campos com as informações da reunião
     useEffect(() => {
         const reuniao: MeetingDetailProps = location.state.key;
+
+        console.log(reuniao)
+
         setTitulo(reuniao.title);
         setPauta(reuniao.desc);
         setHoraInicial(parseInt(reuniao.time.split(":")[0]));
@@ -114,11 +117,17 @@ export function EditarReuniao() {
         setDataCalendarioCombo(`${dia}/${mes}/${ano}`);
 
         setEmails(reuniao.participantes)
-        setSalaPresencialSelecionada(reuniao.sala)
-
+  
 
         getSalaOnline();
         getSalaPresencial();
+
+        if (reuniao.salaPresencial) {
+            setSalaPresencialSelecionada(reuniao.salaPresencial)
+        }
+        if (reuniao.salaVirtual) {
+            setSalaOnlineSelecionada(reuniao.salaVirtual)
+        }
     }, []);
 
     //Rota para popular combo sala online
@@ -310,7 +319,7 @@ export function EditarReuniao() {
         } catch (error) {
             console.log("Erro: ao salvar reunião " + error)
         }
-        // sendEmail();
+        sendEmail();
     }
 
 

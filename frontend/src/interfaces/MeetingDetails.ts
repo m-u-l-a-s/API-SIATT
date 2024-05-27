@@ -7,10 +7,9 @@ export interface MeetingDetailProps {
     time: string;
     duracao: number;
     place: string;
-    login: string;
-    password: string;
-    sala: string;
-    idSolicitante : string;
-    idUsuario : string | undefined
-    participantes : string[]
+    salaPresencial: string | null;
+    salaVirtual: string | null;
+    idSolicitante: string;
+    idUsuario: string | undefined
+    participantes: string[]
 }

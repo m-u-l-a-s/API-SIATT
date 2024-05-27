@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CiCalendarDate, CiLocationOn } from "react-icons/ci";
 import { FaEdit, FaFileDownload } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -14,6 +14,8 @@ import { getAnexos } from '../services/getAnexos';
 const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) => {
     const [showModal, setShowModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const [mensagem, setMensagem] = useState("")
+
     const auth = useAuth();
     const navigate = useNavigate();
 
@@ -34,6 +36,14 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
         navigate(`/Home/EditarReuniao/${props.id}`, { state: { key: reuniao } });
         console.log(props.id);
     };
+
+    useEffect(() => {
+        if (props.salaPresencial) {
+            api.get(`sala-presencial/${props.salaPresencial}`).then(resp => {
+                setMensagem(`${props.title}\n Pauta: ${props.desc} \n Sala: ${resp.data.identificacao}`)
+            })
+        }
+    })
 
     return (
         <div className="meeting-item bg-base-300 m-2 rounded-md">
@@ -57,8 +67,9 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                 <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Tem certeza que deseja excluir esta reunião?' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
             )}
             {showModal && (
+                
                 <InformationModal
-                    message={`${props.title}\n Pauta: ${props.desc} \n Sala: ${props.sala} \n Login: ${props.login} \n Senha: ${props.password}`}
+                    message={mensagem}
                     confirmText="Ok, fechar"
                     onConfirm={handleConfirmModal}
                 />
