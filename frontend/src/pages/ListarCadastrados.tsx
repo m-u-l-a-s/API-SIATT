@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { TabsAdmin } from "../components/TabsAdmin";
 import api from "../services/api";
 import UserDetails from "../components/UserDetails";
@@ -159,8 +159,8 @@ const ListarCadastrados = () => {
                             idUsuario={usuario?.id}
                             sala={reuniao.salaPresencialId ? `Presencial - sala ${reuniao.salaPresencialId}` : `Virtual - sala ${reuniao.salaVirtualId}`}
                             login={reuniao.login}
-                            password={reuniao.senha}
-                        />
+                            password={reuniao.senha} 
+                       />
                     ))}
                 </div>
             )}

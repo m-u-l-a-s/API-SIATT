@@ -9,7 +9,6 @@ import useAuth from "../hooks/useAuth";
 import { authService } from "../services/services.auth";
 import { IUsuario } from "../interfaces/usuario";
 import { anexo } from "../interfaces/anexo";
-import axios from "axios";
 
 type Meeting = {
     id: string,
@@ -136,7 +135,6 @@ const PagAgendamento = () => {
                     </div>
                     {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
-                            getAnexos={getAnexos}
                             key={reuniao.id}
                             id={reuniao.id}
                             desc={reuniao.pauta}
