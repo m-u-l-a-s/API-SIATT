@@ -13,4 +13,5 @@ export interface MeetingDetailProps {
     idSolicitante : string;
     idUsuario : string | undefined
     participantes : string[]
+    getAnexos : Function
 }
