@@ -8,6 +8,8 @@ import api from "../services/api";
 import useAuth from "../hooks/useAuth";
 import { authService } from "../services/services.auth";
 import { IUsuario } from "../interfaces/usuario";
+import { anexo } from "../interfaces/anexo";
+import axios from "axios";
 
 type Meeting = {
     id: string,
@@ -40,19 +42,20 @@ const PagAgendamento = () => {
                     throw new Error("Não foi possível autenticar usuário")
                 }
                 setUsuario(user.data);
-            } catch (error ){
+            } catch (error) {
                 console.log(`Erro: ${error}`);
             }
 
             try {
-                const reunioes = await api.get(`reuniao/${authService.decodificarToken(auth?.token)}`);
-                if (reunioes.status !== 200) {
-                    throw new Error("Não foi possível buscar os dados.");
-                }
-
-                const reunioesData : Meeting[] = await reunioes.data;
-
-                setReunioesAgendadas(reunioesData);
+                await api.get(`reuniao/${authService.decodificarToken(auth?.token)}`)
+                    .then(resp => {
+                        if (resp.status !== 200) {
+                            throw new Error("Não foi possível buscar os dados.");
+                        }
+                        const reunioesData: Meeting[] = resp.data;
+                        console.log(reunioesData)
+                        setReunioesAgendadas(reunioesData);
+                    })
             } catch (error) {
                 console.error("Erro: ", error);
             }
@@ -76,6 +79,28 @@ const PagAgendamento = () => {
         reuniao.titulo.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    const getAnexos = async (idReuniao: string, e : any) => {
+        e.preventDefault()
+        await api.get(`reuniao-anexos/reuniao/${idReuniao}`)
+            .then(async resp => {
+                const anexos: anexo[] = resp.data
+                console.log(anexos)
+
+                for (let anexo of anexos) {
+                    const response = await fetch(anexo.url);
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+
+                    const link = document.createElement('a')
+                    link.href = url
+                    let fileName = `${anexo.nomeArquivo.split("-")[0]}.${anexo.nomeArquivo.split(".")[1]}`
+                    link.setAttribute('download', fileName);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            })
+    }
     // const handleFilterClick = (filterType: string) => {
     //     setActiveButton(filterType);
     //     // You can apply additional logic here based on the filter type
@@ -111,6 +136,7 @@ const PagAgendamento = () => {
                     </div>
                     {filteredReunioes.map((reuniao) => (
                         <MeetingDetail
+                            getAnexos={getAnexos}
                             key={reuniao.id}
                             id={reuniao.id}
                             desc={reuniao.pauta}

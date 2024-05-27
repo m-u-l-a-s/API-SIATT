@@ -43,7 +43,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                 </li>
                 <li className='p-2 flex'> {props.time} </li>
                 <li className='p-2 flex'> <CiLocationOn className='text-2xl mr-2' title='Local da reunião' style={{ cursor: 'pointer' }} />{props.place}</li>
-                <li className='p-2 flex' title='Fazer download da ata' style={{ cursor: 'pointer' }}><FaFileDownload className='text-2xl mr-2 align-middle' /></li>
+                <li className='p-2 flex' title='Fazer download da ata' style={{ cursor: 'pointer' }}><FaFileDownload onClick={(e) => props.getAnexos(props.id, e)} className='text-2xl mr-2 align-middle' /></li>
                 <li className='p-2 flex ml-auto' title='Mais informações' style={{ cursor: 'pointer' }} onClick={handleInfoIconClick}><BsInfoCircleFill className='text-2xl mr-2 align-middle' /></li>
                 {(props.idSolicitante === props.idUsuario || auth?.user?.admin) && (
                     <li className='p-2 flex' title='Editar reunião' style={{ cursor: 'pointer' }} onClick={() => handleEditar(props)}><FaEdit className='text-2xl mr-2 align-middle' /></li>

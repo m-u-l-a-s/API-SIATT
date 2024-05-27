@@ -7,6 +7,7 @@ import { bodyFile } from './dto/anexo.dto';
 import * as fs from 'fs'
 import { join } from 'path';
 import { ReadStream } from 'typeorm/platform/PlatformTools';
+import { ReuniaoAnexo } from './entities/reuniao-anexo.entity';
 
 @Controller('reuniao-anexos')
 export class ReuniaoAnexosController {
@@ -23,8 +24,15 @@ export class ReuniaoAnexosController {
     return this.reuniaoAnexosService.salvarArquivo(req, body.reuniaoId, file);
   }
 
+  @Get("reuniao/:idReuniao")
+  async getAnexosByReuniao(
+    @Param('idReuniao') idReuniao: string
+  ) : Promise<ReuniaoAnexo[]> {
+    return this.reuniaoAnexosService.getAnexos(idReuniao)
+  }
+
   @Get(":email/:arquivo")
-  getAnexosByReuniao(
+  getAnexo(
     @Param('email') email: string,
     @Param('arquivo') arquivo: string
   ): StreamableFile {
