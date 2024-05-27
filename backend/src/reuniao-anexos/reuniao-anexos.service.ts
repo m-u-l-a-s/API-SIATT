@@ -4,6 +4,10 @@ import { bodyFile } from './dto/anexo.dto';
 import { Request } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as fs from 'fs'
+import { join } from 'path';
+import { Query } from 'mysql2/typings/mysql/lib/protocol/sequences/Query';
+
 
 @Injectable()
 export class ReuniaoAnexosService {
@@ -18,7 +22,7 @@ export class ReuniaoAnexosService {
         anexo.tamanhoArquivo = arquivo.size;
         anexo.tipoArquivo = arquivo.mimetype;
         anexo.reuniaoId = reuniaoId;
-        anexo.url = `${req.protocol}://${req.get("host")}/anexos/${req.params.email}/${arquivo.filename}`
+        anexo.url = `${req.protocol}://${req.get("host")}/reuniao-anexos/${req.params.email}/${arquivo.filename}`
 
         return await this.anexosRepository.save(anexo)
     }
