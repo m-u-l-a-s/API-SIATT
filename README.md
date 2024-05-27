@@ -9,9 +9,9 @@
 <p align="center">
     <a href="#sobre">Sobre</a>  |  
     <a href="#backlogs">Backlog do Produto</a>  |  
-    <a href="#planejamento">Planejamento das Sprints
-</a>  |  
-    <a href="#historiausuario">Histórias de Usuário</a>  |  
+    <a href="#requisitosfuncionais">Lista de Requisitos Funcionais</a>  | 
+    <a href="#requisitosnfuncionais">Lista de Requisitos Não Funcionais</a>  | 
+    <a href="#planejamento">Planejamento das Sprints</a>  |   
     <a href="#tecnologias">Tecnologias</a>  |  
     <a href="#equipe">Equipe</a>  |  
     <a href="#focal">Focal Point</a>  
@@ -49,7 +49,7 @@ As entregas de valor de cada sprint estão mais detalhadas nos relatórios dispo
 |:--:|:----------:|:-------------------|:-------------------------------------------------:|
 | 01 | 14/04/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint01/README.md) |
 | 02 | 05/05/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint02/README.md) |
-| 03 | 26/05/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint03/README.md) |
+| 03 | 26/05/2024 | :white_check_mark: Concluído | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint03/README.md) |
 | 04 | 16/06/2024 | 🚧 Em desenvolvimento | [Ver relatório](https://github.com/m-u-l-a-s/API-SIATT/tree/develop/docs/Sprint04/README.md) |
 
 → [Voltar ao topo](#topo)
@@ -59,23 +59,28 @@ As entregas de valor de cada sprint estão mais detalhadas nos relatórios dispo
 ## :dart: Backlog do Produto
 
 <p align="center">
-      <img src="/docs/img/Backlog_do_produto.png" alt="Backlog do Produto">
+      <img src="/docs/img/Backlog_do_produto.jpg" alt="Backlog do Produto">
+
+<span id="requisitosfuncionais">
+
+## :dart: Lista de Requisitos Funcionais
+
+<p align="center">
+      <img src="/docs/img/Requisitos_Funcionais.jpg" alt="Lista de Requisitos Funcionais">
+
+<span id="requisitosnfuncionais">
+
+## :dart: Lista de Requisitos Não Funcionais
+
+<p align="center">
+      <img src="/docs/img/Requisitos_NFuncionais.jpg" alt="Lista de Requisitos Não Funcionais">
 
 <span id="planejamento">
 
 ## :dart: Planejamento das Sprints
 
 <p align="center">
-      <img src="/docs/img/Planejamento_das_sprints.png" alt="Planejamento das Sprints">
-
-
-<span id="historiausuario">
-
-## :dart: Histórias de Usuário
-
-<p align="center">
-      <img src="/docs/img/historias_de_usuario.png" alt="Histórias de Usuário">
-
+      <img src="/docs/img/Planejamento_das_sprints.jpg" alt="Planejamento das Sprints">
 
 → [Voltar ao topo](#topo)
 
@@ -148,6 +153,7 @@ As seguintes ferramentas, linguagens, bibliotecas e tecnologias foram usadas na 
 | Scrum Master  | Claudia de Carlos Braga Secco    |            [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/cláudia-braga-79b6b2278/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/ClaudiaCBS)             |
 |   Dev Team    | Alexandre Jonas de Souza Fonseca | [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/alexandre-jonas-de-souza-fonseca-989920181/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/AlexandreJonas) |
 |   Dev Team    | Alicea Paula de Lima Rocha       |     [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/alícea-paula-de-lima-rocha-bab682157/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/alicearocha)      |
+|   Dev Team    | Jean Rodrigues                   |          [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/jean-rodrigues-0569a0251/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/JeanRodrigues1)          |
 |   Dev Team    | Jonas Alves Bueno                |                  [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/jonas-alves/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/dodekafonos)                  |
 |   Dev Team    | Mateus de Sousa Raimundo         |           [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/mateus-sousa-ba976423a/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/MateusdiSousa)            |
 |   Dev Team    | Vitor Faria Morais               |          [![Linkedin Badge](https://img.shields.io/badge/Linkedin-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/vitor-faria-morais-330b19204/) [![GitHub Badge](https://img.shields.io/badge/GitHub-111217?style=flat-square&logo=github&logoColor=white)](https://github.com/vmorais111)          |
