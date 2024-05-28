@@ -10,6 +10,8 @@ import { DataGuard } from './data.guard';
 import { MockDataBase } from './MockDataBase/mock-database.service';
 import { MockDataBaseModule } from './MockDataBase/mock-database.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { SendEmailModule } from './send-email/send-email.module';
 
 @Module({
   imports: [
@@ -30,15 +32,31 @@ import { AuthModule } from './auth/auth.module';
     SalaVirtualModule,
     SalaPresencialModule,
     MockDataBaseModule,
-    AuthModule
+    AuthModule,
+    MailerModule.forRoot({
+      transport : {
+        host : 'smtp.mailgun.org',
+        secure : false,
+        port : 587,
+        auth : {
+          user : process.env.USER_EMAIL,
+          pass : process.env.PASSWORD_EMAIL
+        },
+        ignoreTLS : true
+      },
+      defaults : {
+        from : ''
+      }
+    }),
+    SendEmailModule
   ],
   controllers: [],
   providers: [DataGuard, MockDataBase],
 })
-export class AppModule implements OnModuleInit{
-  constructor(private readonly dataGuard : DataGuard){}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly dataGuard: DataGuard) { }
 
   async onModuleInit() {
-    await this.dataGuard.canActivate(null);   
+    await this.dataGuard.canActivate(null);
   }
 }

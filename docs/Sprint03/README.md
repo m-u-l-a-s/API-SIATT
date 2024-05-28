@@ -1,25 +1,16 @@
-
-
-# Sprint 3 - Agendamento
-
+# Sprint 3 - Editar e Anexos
 
 <p align="center">
       <img src="/docs/img/Logo_Mulas.png" alt="Logo da Equipe Mulas">
 
-
-
 <hr>
 <br>
 <p align="center">
-  <a href ="#backlog"> Backlog da Sprint </a>  | 
-  <a href ="#burndown"> Burndown </a>  |
-  <a href ="#historia"> Histórias de Usuários </a>  
+  <a href ="#backlog"> Backlog da Sprint 3 </a>  | 
+  <a href ="#burndown"> Burndown </a>  
 </p>
 
-
-
 </p>
-
 
 <br>
 <br>
@@ -28,76 +19,46 @@
 
 <br>
 
-Para a primeira Sprint do projeto, adotamos o método ágil de desenvolvimento de produtos, com foco na concepção do MVP (*Minimal Viable Product- Mínimo Produto Viável*). O MVP é a primeira versão do sistema de agendamento de reuniões para a empresa SIATT, já apto para uso, mas ainda com espaço para melhorias futuras. Nesta fase inicial, concentramos nossos esforços em:
+<br>
 
-- Criação do Wireframe;
-- Modelagem e Criação do Banco de dados;
-- Agendar reuniões: online, presencial, híbridas;
-- Sugestão de salas;
-- Visualizar reuniões agendadas;
+Na terceira sprint do projeto, nossa equipe focou em aprimorar a gestão das reuniões, tornando o sistema mais dinâmico e funcional. As principais atividades realizadas foram voltadas para permitir a edição de reuniões já cadastradas e a capacidade de anexar arquivos diretamente nas reuniões. Essas melhorias visam facilitar a organização e a troca de informações entre os usuários, garantindo uma experiência mais completa e eficiente. Este relatório detalha as implementações e os avanços alcançados:
 
+1. **Anexar Arquivos nas Reuniões:**
 
-### Diagrama de Entidade e Relacionamento do Banco de Dados
+   - Implementamos a funcionalidade de anexar arquivos diretamente nas reuniões, permitindo que os participantes compartilhem documentos e materiais relevantes de forma prática e organizada.
+   - Os arquivos podem ser carregados durante a criação das reuniões, facilitando o acesso a informações importantes para todos os envolvidos.
 
-Um Diagrama de Entidade e Relacionamento (DER) é um recurso fundamental no desenvolvimento de um banco de dados para um Portal de Agendamento de Reuniões que suporta múltiplos formatos de encontros, tais como: reuniões presenciais, online ou híbridas. Abaixo está uma descrição detalhada de como está estruturado o DER para um sistema desse tipo:
+2. **Notificação por E-mail:**
 
+   - Desenvolvemos um sistema de notificações por e-mail, que informa os usuários sobre as reuniões que irão participar.
+   - As notificações são enviadas automaticamente, proporcionando uma comunicação eficiente e garantindo que os usuários estejam sempre cientes das suas responsabilidades e compromissos.
 
-- **Usuário:** Esta entidade é central e representa todos os membros da equipe que interagem com o sistema. Inclui atributos como login, e-mail, departamento, nível de acesso e status (ativo, inativo).
+3. **Exclusão de Reuniões:**
 
+   - Adicionamos a funcionalidade de exclusão de reuniões, permitindo que apenas os usuários comuns que criaram a reunião e os administradores possam remover reuniões agendadas do sistema. Demais usuários não possuem permissão para realizar essa ação.
 
-- **Reunião:** Representa cada reunião agendada no sistema, contendo detalhes como título, data, duração, categoria, pauta etc.
+4. **Exclusão de Usuários e Salas Cadastradas:**
 
+   - Implementamos a funcionalidade que permite aos administradores excluir usuários e salas cadastradas, mantendo o sistema atualizado e organizado.
 
-- **Sala Virtual:** Especificamente para reuniões online, esta entidade descreve as salas virtuais disponíveis, com informações como nome da sala, login, senha e nível de permissão dos participantes (quem pode criar, quem pode entrar).
-
-
-- **Sala Física:** Quando a reunião é presencial, esta entidade representa as salas físicas do espaço de trabalho, contendo dados como nome da sala, local, capacidade e nível de permissão dos participantes.
-
-
-O DER é uma representação visual dessas entidades e relacionamentos, ajudando a entender a estrutura do banco de dados do sistema de agendamento de reuniões.
+5. **Edição da Página de Reunião:**
+   - Permitimos a edição das reuniões já cadastradas, oferecendo aos usuários a flexibilidade de atualizar informações incorretas ou desatualizadas
+   - Esta funcionalidade foi projetada para ser intuitiva e acessível, facilitando o gerenciamento de reuniões por todos os participantes.
 
 <br>
 
-
-
-### Modelo Lógico do Banco de Dados
+## :date: Backlog da Sprint 3
 
 <p align="center">
-      <img src="/docs/img/DER_BD.png" alt="DER do Banco de Dados">
+      <img src="/docs/img/Backlog_Sprint03.png" alt="Backlog da Sprint 3">
 
 <br>
-
-<br>
-
-<br>
-
-
-
-<span id="backlog">
-
-## :date: Backlog da Sprint
-
-<p align="center">
-      <img src="/docs/img/Backlog_Sprint01.jpg" alt="Backlog do Produto">
-
-<br>
-
 
 <span id="burndown">
 
 ## :fire: Burndown
 
 <p align="center">
-      <img src="/docs/img/Burndown_Sprint01.png" alt="Burndown">
-
-<br>
-
-
-<span id="historia">
-
-## :key: Histórias de Usuário
-
-<p align="center">
-      <img src="/docs/img/Historia_Usuario_Sprint01.png" alt="Histórias de Usuário">
+      <img src="/docs/img/Burndown_Sprint03.png" alt="Burndown Sprint 3">
 
 <br>

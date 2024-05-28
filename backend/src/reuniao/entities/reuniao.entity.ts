@@ -1,3 +1,4 @@
+import { ReuniaoAnexo } from "src/reuniao-anexos/entities/reuniao-anexo.entity";
 import { SalaPresencialEntity } from "src/sala-presencial/entities/sala-presencial.entity";
 import { SalaVirtualEntity } from "src/sala-virtual/entities/sala-virtual.entity";
 import { UsuarioEntity } from "src/usuario/entities/usuario.entity";
@@ -35,6 +36,9 @@ export class ReuniaoEntity {
 
     @Column({type : 'json'})
     participantes : JSON
+
+    @OneToMany(() => ReuniaoAnexo, anexos => anexos)
+    anexos : ReuniaoAnexo[];
 
     @ManyToOne(() => SalaPresencialEntity , salaPresencial => salaPresencial.reunioes)
     salaPresencial : SalaPresencialEntity

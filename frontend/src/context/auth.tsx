@@ -1,8 +1,9 @@
 import { createContext, useState } from "react";
 import { Login, authService } from "../services/services.auth";
+import { IUsuario } from "../interfaces/usuario";
 
 interface AuthContextType {
-    user : any
+    user : IUsuario
     token: string | null
     login: Function
     logout: Function
