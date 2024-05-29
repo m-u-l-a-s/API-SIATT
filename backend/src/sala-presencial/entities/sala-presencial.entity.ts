@@ -23,6 +23,6 @@ export class SalaPresencialEntity {
     @Column()
     local : string
 
-    @OneToMany(() => ReuniaoEntity, reuniao => reuniao.salaPresencial)
+    @OneToMany(() => ReuniaoEntity, reuniao => reuniao.salaPresencial, {cascade : true})
     reunioes : ReuniaoEntity[]
 }
