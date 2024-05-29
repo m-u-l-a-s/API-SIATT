@@ -36,7 +36,7 @@ export class MockDataBase {
         private readonly reuniao : Repository<ReuniaoEntity>
         
         ) { 
-            this.salaPresencialService = new SalaPresencialService(salaPresencial);
+            this.salaPresencialService = new SalaPresencialService(salaPresencial, reuniao);
             this.salaVirtualService = new SalaVirtualService(salaVirtual);
             this.usuarioService = new UsuarioService(usuario);
             this.reuniaoService = new ReuniaoService(reuniao,this.usuarioService, this.salaPresencialService, this.salaVirtualService);
