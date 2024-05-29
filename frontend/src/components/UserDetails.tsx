@@ -40,10 +40,10 @@ const UserDetails: React.FC<UserDetailsProps> = (props: UserDetailsProps) => {
         window.location.reload();
     };
 
-    // const handleEdit = (user: UserDetailsProps) => {
-    //     navigate(`/Home/EditarUsuario/${props.id}`, { state: { key: user } });
-    //     console.log(props.id);
-    // };
+    const handleEdit = (user: UserDetailsProps) => {
+        navigate(`/Home/EditarUsuario/${props.id}`, { state: { key: user } });
+        console.log(props.id);
+    };
 
     return (
         <div className="user-item bg-base-300 m-2 rounded-md">
@@ -73,9 +73,9 @@ const UserDetails: React.FC<UserDetailsProps> = (props: UserDetailsProps) => {
 
                 {auth?.user.admin && (
                     <>
-                        {/* <li className='p-2 flex' title='Editar usuário' style={{ cursor: 'pointer' }} onClick={() => handleEdit(props)}>
+                        <li className='p-2 flex' title='Editar usuário' style={{ cursor: 'pointer' }} onClick={() => handleEdit(props)}>
                             <FaEdit className='text-2xl mr-2 align-middle' />
-                        </li> */}
+                        </li>
                         <li className='p-2 flex' title='Excluir usuário' style={{ cursor: 'pointer' }} onClick={() => setDeleteModal(true)}>
                             <MdDelete className='text-3xl mr-2 align-middle' />
                         </li>
