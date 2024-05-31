@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ReuniaoService } from './reuniao.service';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
+import { ReuniaoAnexosService } from 'src/reuniao-anexos/reuniao-anexos.service';
 
 interface UserRequest{
   email : string
@@ -8,7 +9,8 @@ interface UserRequest{
 
 @Controller('reuniao')
 export class ReuniaoController {
-  constructor(private readonly reuniaoService: ReuniaoService) {}
+  constructor(private readonly reuniaoService: ReuniaoService,
+    private readonly reuniaoAnexoService: ReuniaoAnexosService) {}
 
   @Post("agendar")
   async create(@Body() createReuniaoDto : CreateReuniaoDto){
@@ -67,6 +69,7 @@ export class ReuniaoController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
+    this.reuniaoAnexoService.excluirAnexos(id)
     return this.reuniaoService.remove(id);
   }
 }

@@ -31,4 +31,11 @@ export class ReuniaoAnexosService {
         const query : string = `SELECT * FROM anexos a WHERE a.reuniaoIdId = "${idReuniao}"`
         return await this.anexosRepository.query(query);
     }
+
+    // função para excluir todos os anexos associados a uma reunião especifica
+    async excluirAnexos(idReuniao : string) {
+        const query : string = `delete from anexos a where a.reuniaoIdId = "${idReuniao}"`
+        return await this.anexosRepository.query(query);
+    }
+
 }
