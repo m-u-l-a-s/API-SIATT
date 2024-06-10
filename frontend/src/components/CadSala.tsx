@@ -331,7 +331,9 @@ const CadSala = () => {
 
             {modalCadastro && (
               <ConfirmationModal
-              message="Cadastrar salas?" cancelText="Não" confirmText="Sim"
+              message="Cadastrar salas?" 
+              cancelText="Não" 
+              confirmText="Sim"
               onCancel={()=>setModalCadastro(false)}
               onConfirm={handlePostList}
               />

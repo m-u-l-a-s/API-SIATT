@@ -3,6 +3,9 @@ import { api_url } from "../variables";
 import { MdDelete } from "react-icons/md";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
+import ConfirmationModal from '../components/ConfirmationModal';
+import { useNavigate } from 'react-router-dom';
+
 
 
 interface Usuario {
@@ -20,6 +23,7 @@ interface Usuario {
 
 const CadUsuario = () => {
     const [alertModal, setAlertModal] = useState(false)
+    const [modalCadastro, setModalCadastro] = useState(false);
     const [login, setLogin] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [senha, setSenha] = useState<string>('');
@@ -27,6 +31,8 @@ const CadUsuario = () => {
     const [permissao, setPermissao] = useState<string>('');
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [admin, setAdmin] = useState<boolean | undefined>(undefined)
+
+    const navigate = useNavigate()
 
     const [departamentos, setDepartamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
 
@@ -72,6 +78,9 @@ const CadUsuario = () => {
                 .then(() => setAlertModal(true))
         })
         console.log('Usuários cadastrados:', usuarios);
+        
+        setModalCadastro(false);
+        navigate('/');
     };
 
     return (
@@ -194,12 +203,18 @@ const CadUsuario = () => {
 
                     <button
                         className="btnAmarelos"
-                        onClick={handleCadastrarUsuarios}>Cadastrar</button>
+                        onClick={() => setModalCadastro(true)}>Cadastrar</button>
 
-                    {alertModal && (
-                        <InformationModal message={"Cadastro Realizado com Sucesso"} confirmText={"Ok"} onConfirm={() => window.location.href = '/'} />
+                    {modalCadastro && (
+                      <ConfirmationModal 
+                      confirmText='Sim' 
+                      cancelText='Cancelar' 
+                      message='Tem certeza que deseja concluir esta ação?' 
+                      onCancel={() => setModalCadastro(false)} 
+                      onConfirm={handleCadastrarUsuarios} />
                     )}
 
+ 
                 </div>
 
             </div>

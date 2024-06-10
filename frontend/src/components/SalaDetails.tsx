@@ -37,7 +37,7 @@ const SalaDetails: React.FC<SalaDetailsProps> = (props: SalaDetailsProps) => {
     };
 
     const deleteSala = async () => {
-        await api.delete(`sala/${props.id}`);
+        await api.delete(`sala-presencial/${props.id}`);
         window.location.reload();
     };
 
