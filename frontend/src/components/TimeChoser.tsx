@@ -58,7 +58,7 @@ const TimeChoser= (props:propsData) => {
             <input
                 type="text"
                 readOnly
-                className="w-24 rounded-lg border border-gray-300 text-gray-900 px-3 py-2
+                className="w-24 rounded-lg border border-gray-300 primary px-3 py-2
                 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-indigo-500
                 focus:border-indigo-500 sm:text-sm"
                 value={`${hour}:${minute}`}
