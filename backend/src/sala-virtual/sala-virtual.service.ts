@@ -53,4 +53,9 @@ export class SalaVirtualService {
       return HttpCode(404)
     }
   }
+
+  async findSalaVirtualByPermissao (permissao: number){
+    const query: string = `SELECT * FROM sala_virtual a where a.permissao<=${permissao}`
+    return await this.salaVirtualRepository.query(query);
+  }
 }

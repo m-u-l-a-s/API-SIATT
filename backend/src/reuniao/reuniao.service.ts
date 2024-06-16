@@ -146,7 +146,10 @@ export class ReuniaoService {
     return await this.reuniaoRepository.query(query)
   }
 
-
+  async findAllByDate(dataDia: string){
+    const query : string = `SELECT * FROM reuniao r where r.dataHora between '${dataDia} 00:00:00' and '${dataDia} 23:59:59';`
+    return await this.reuniaoRepository.query(query);
+  }
 
   remove(id: string) {
     const reuniao = this.reuniaoRepository.findOneBy({ id: id });

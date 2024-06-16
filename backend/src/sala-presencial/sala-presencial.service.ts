@@ -56,4 +56,9 @@ export class SalaPresencialService {
     }
     return await this.salaPresencialRepository.delete(id)
   }
+
+  async findSalaPresencialByPermissao (permissao:number){
+    const query: string = `SELECT * FROM sala_presencial a where a.permissao<=${permissao}`
+    return await this.salaPresencialRepository.query(query);
+  }
 }

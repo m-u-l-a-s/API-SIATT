@@ -10,20 +10,24 @@ import { authService } from "../services/services.auth";
 import { IBodyEmail } from "../interfaces/IBodyEmail";
 import UploadFiles from "../components/uploadfiles";
 import useAuth from "../hooks/useAuth";
+import { IUsuario } from "../interfaces/usuario";
+import separaDataHora from "../control/utils";
 
 
-// type Meeting = {
-//     id: string,
-//     titulo: string,
-//     dataHora: string,
-//     duracao: number,
-//     categoria: string,
-//     pauta: string,
-//     participantes: string[],
-//     solicitanteId: string,
-//     salaPresencialId: string,
-//     salaVirtualId: string | null,
-// };
+export interface Reuniao{
+    categoria: string
+    data: string 
+    dataHora: string 
+    duracao: number 
+    hora:string 
+    id: string | undefined
+    participantes: string[] 
+    pauta: string 
+    salaPresencialId: string 
+    salaVirtualId: string 
+    solicitanteId: string 
+    titulo : string 
+}
 
 export enum Categoria {
     VIRTUAL = "virtual",
@@ -39,7 +43,7 @@ export interface CreateReuniao {
     pauta: string | undefined
     presencial: string | undefined
     virtual: string | undefined
-    solicitanteEmail: string | undefined
+    solicitanteEmail: string | undefined | null
     participantes: any | undefined
 }
 export interface SalaVirtual {
@@ -51,17 +55,18 @@ export interface SalaVirtual {
 }
 
 export interface SalaPresencial {
-    id: string
-    identificacao: string
-    permissao: number
-    ocupacaoMax: number
-    local: string
+    endereco : string
+    id : string
+    identificacao : string
+    local : string
+    ocupacaoMax : number
+    permissao : number
 }
 
 interface FileWithId {
     id: string;
     file: File;
-  }
+}
 
 export function FormularioReuniao() {
     const [alertModal, setAlertModal] = useState(false);
@@ -85,7 +90,9 @@ export function FormularioReuniao() {
     const [minInicial, setMinInicial] = useState<number>(0);
 
     const [files, setFiles] = useState<FileWithId[]>([]);
-    
+
+    const [reunioes, setReunioes] = useState<Reuniao[]>([]);
+
     const auth = useAuth();
 
     //useEffect - popular combos
@@ -95,37 +102,139 @@ export function FormularioReuniao() {
         getSalaPresencial();
     }, [])
 
-    //Rota para popular combo sala online
+    //useEffect - bloqueio da lista de salas em horário ocupados por outras reuniões
 
-    const getSalaOnline = async () => {
+    useEffect(()=> {
+        getReunioesByDate(String(dataCalendarioCombo));
+        checkVacancy();
+    },[dataCalendarioCombo,horaDuracao, horaInicial,minDuracao,minInicial])
 
-        api.get(`sala-virtual`).then(resp => {
+
+    const getReunioesByDate = async (dataDia:string) => {
+        const diaEtHora: any = separaDataHora(dataDia)
+        try {
+            const resp = await api.get(`reuniao/dataDia/${diaEtHora[0]}`);
             if (resp.status !== 200) {
                 throw new Error('Erro ao realizar a requisição');
             }
-            return resp.data
-        }).then(data => {
-            setSalaOnline(data);
-        }).catch(error => {
-            console.error("Ocorreu um erro", error)
-        })
+            // console.log(resp)
+            const reunioesData = resp.data.map((reuniao: any) => {
+                const dataHoraArray = separaDataHora(reuniao.dataHora);
+                if (dataHoraArray) {
+                    const [data, hora] = dataHoraArray;
+                    return { ...reuniao, data, hora };
+                }
+                return { ...reuniao, data: '0', hora: '0' };
+            });
+            setReunioes(reunioesData);
+        } catch (error) {
+            console.error("Ocorreu um erro", error);
+        }
+    };
+
+    const checkVacancy = () => {
+
+        // lógica: todas os horários possíveis dentro de um dia estão entro 0 e 1440 minutos
+        // transformando o horario selecionado (tanto seu inicio quanto seu fim) em um número
+        // em min, é possível comparar se tal intervalo de tempo está contido ou intercala
+        // com o intervalo de tempo das reuniões existentes
+
+        const formatTimeReuniao = (tempo:string) =>{
+            const tempoFormatada = tempo.split(":")
+            const hora:number = Number(tempoFormatada[0])
+            const min:number = Number(tempoFormatada[1])
+            return (hora*60)+min
+        }
+
+        const formatTimeOther = (h1:number,m1:number) =>{
+            return (h1*60)+m1
+        }
+
+        function isInsideOrOverlaps(A_start: number, A_end: number, B_start: number, B_end: number): boolean {
+            // Check if A is completely inside B
+            const isInside = A_start >= B_start && A_end <= B_end;
+
+            // Check if A overlaps with B
+            const overlaps = (A_start <= B_end && A_end >= B_start) || (B_start <= A_end && B_end >= A_start);
+
+            return isInside || overlaps;
+        }
+
+
+        if (reunioes.length !== 0 ){
+            const salasReunioesPresencial = reunioes.map((r)=>r.salaPresencialId);
+            const salasReunioesVirtual = reunioes.map((r)=>r.salaVirtualId);
+
+            let controleSalasVrt: any = [];
+            let controleSalasPrs: any = [];
+
+            const tempoMinReuniao = reunioes.map((r)=>formatTimeReuniao(r.hora));
+            const tempoMaxReuniao = reunioes.map((r)=>formatTimeReuniao(r.hora)+r.duracao);
+	        const tempoMinSistema = formatTimeOther(horaInicial,minInicial)
+            const tempoMaxSistema = formatTimeOther(horaInicial,minInicial) + formatTimeOther(horaDuracao,minDuracao);
+
+            for (let i = 0; i<tempoMinReuniao.length;i++){
+                if (isInsideOrOverlaps(tempoMinSistema,tempoMaxSistema,tempoMinReuniao[i],tempoMaxReuniao[i])){
+                     controleSalasPrs=[...controleSalasPrs,salasReunioesPresencial[i]];
+                     controleSalasVrt=[...controleSalasVrt,salasReunioesVirtual[i]];
+                }
+            };
+
+            console.log(controleSalasPrs,controleSalasVrt)
+            
+	        if(controleSalasVrt.length !== 0 || controleSalasPrs.length !== 0){
+            	const updateSalaPresencial = salaPresencial.filter(item => !controleSalasPrs.includes(item.id));
+            	const updateSalaVirtual = salaOnline.filter(item => !controleSalasVrt.includes(item.id));
+
+            	console.log(updateSalaPresencial,updateSalaVirtual)
+                console.log(salaPresencial,salaOnline)
+
+                setSalaOnline(updateSalaVirtual)
+                setSalaPresencial(updateSalaPresencial)
+	        }else{
+                getSalaOnline()
+                getSalaPresencial()
+            }
+        }
+
     }
 
-    // Rota para popular combo sala presencial
+    // Rota para popular combo sala online c/base na permissão do usuario
+
+    const getSalaOnline = async () => {
+        await api.get(`usuario/email/${authService.decodificarToken(auth?.token)}`).then(async resp => {
+            const user: IUsuario = resp.data
+
+            await api.get(`sala-virtual/permissao/${user.permissao}`).then(resp => {
+                if (resp.status !== 200) {
+                    throw new Error('Erro ao realizar a requisição');
+                }
+                return resp.data
+            }).then(data => {
+                setSalaOnline(data);
+            }).catch(error => {
+                console.error("Ocorreu um erro", error)
+            })
+        });
+
+    }
+
+    // Rota para popular combo sala presencial c/base na permissão do usuario
 
     const getSalaPresencial = async () => {
+        await api.get(`usuario/email/${authService.decodificarToken(auth?.token)}`).then(async resp => {
+            const user: IUsuario = resp.data
 
-        api.get(`sala-presencial`).then(resp => {
-            if (resp.status !== 200) {
-                throw new Error('Erro ao realizar a requisição');
-            }
-            return resp.data
-        }).then(data => {
-            setSalaPresencial(data);
-            setSalaPresencialFiltrada(data);
-        }).catch(error => {
-            console.error("Ocorreu um erro", error)
-        })
+            await api.get(`sala-presencial/permissao/${user.permissao}`).then(resp => {
+                if (resp.status !== 200) {
+                    throw new Error('Erro ao realizar a requisição');
+                }
+                setSalaPresencial(resp.data)
+                setSalaPresencialFiltrada(resp.data)
+            }).catch(error => {
+                console.error("Ocorreu um erro", error)
+            })
+        });
     }
 
     //Criação do formulário - função p/salvar no banco
@@ -153,20 +262,20 @@ export function FormularioReuniao() {
         email: [],
     });
 
-    function adicionaZero(numero : number){
-        if (numero <= 9) 
+    function adicionaZero(numero: number) {
+        if (numero <= 9)
             return "0" + numero;
         else
-            return numero; 
+            return numero;
     }
 
-    function formatarData(dataAtual:Date): string {
-        return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth()+1)).toString() + "/" + dataAtual.getFullYear());
+    function formatarData(dataAtual: Date): string {
+        return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth() + 1)).toString() + "/" + dataAtual.getFullYear());
     }
 
-    const findReuniao = (id : string ) => {
-        let salaSelecionada = salaPresencial.filter( sala => {
-            if (sala.id == id){
+    const findReuniao = (id: string) => {
+        let salaSelecionada = salaPresencial.filter(sala => {
+            if (sala.id == id) {
                 return sala.identificacao
             }
         })
@@ -176,21 +285,21 @@ export function FormularioReuniao() {
     const sendEmail = async () => {
         let dataFormatada = formatarData(formValues.data)
         let identificacaoSala = findReuniao(salaPresencialSelecionada)
-        let bodyRequest : IBodyEmail= {
-            emails : emails,
-            data : dataFormatada,
-            hora : `${horaInicial}:${minInicial}`,
-            duracao : `${horaDuracao}:${minDuracao}`,
-            pauta : `${formValues.pauta}`,
-            titulo : formValues.titulo,
-            categoria : form,
-            sala : identificacaoSala,
+        let bodyRequest: IBodyEmail = {
+            emails: emails,
+            data: dataFormatada,
+            hora: `${horaInicial}:${minInicial}`,
+            duracao: `${horaDuracao}:${minDuracao}`,
+            pauta: `${formValues.pauta}`,
+            titulo: formValues.titulo,
+            categoria: form,
+            sala: identificacaoSala,
         }
         console.log(bodyRequest)
 
         try {
             await api.post("sendEmail", bodyRequest).then(resp => {
-               console.log(resp)
+                console.log(resp)
             }).catch(erro => {
                 console.log(erro)
             })
@@ -202,11 +311,6 @@ export function FormularioReuniao() {
     const handleChangeForm = (key: keyof FormValues, value: any) => {
         setFormValues({ ...formValues, [key]: value })
     }
-
-    //função p/salvar os email no formulário
-    // const handleChangeFormEmail = () => {
-    //     handleChangeForm('email', emails);
-    // }
 
     const saveForm = () => {
         switch (form) {
@@ -228,7 +332,8 @@ export function FormularioReuniao() {
         dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
-        const reuniao : CreateReuniao=
+
+        const reuniao: CreateReuniao =
         {
             titulo: formValues.titulo,
             categoria: form,
@@ -247,18 +352,18 @@ export function FormularioReuniao() {
                 const idReuniao = resp.data.id;
                 for (let anexo of files) {
                     const formData = new FormData;
-                    formData.append("file",anexo.file)
-                    formData.append("reuniaoId",idReuniao)
+                    formData.append("file", anexo.file)
+                    formData.append("reuniaoId", idReuniao)
 
                     try {
-                        api.post(`reuniao-anexos/upload/${authService.decodificarToken(auth?.token)}`,formData);
+                        api.post(`reuniao-anexos/upload/${authService.decodificarToken(auth?.token)}`, formData);
                     } catch (error) {
                         console.log(error);
                     }
                 }
             }).then(() => setAlertModal(true))
         } catch (error) {
-            console.log("Erro: "+error)
+            console.log("Erro: " + error)
         }
         sendEmail();
     }
@@ -277,15 +382,15 @@ export function FormularioReuniao() {
         }
     };
 
-    const sugestaoSala= (e: any) => {
+    const sugestaoSala = (e: any) => {
         const nConvidados = e.target.value
 
         const salasFiltradas = salaPresencial.filter((sala) => {
-            return sala.ocupacaoMax >= nConvidados 
+            return sala.ocupacaoMax >= nConvidados
         })
 
         if (salasFiltradas.length < 1) {
-            setSalaPresencialFiltrada([{id: '',identificacao:'Não há nenhuma sala disponível' , local:'',ocupacaoMax: 0, permissao:0 }])
+            setSalaPresencialFiltrada([{ id: '', identificacao: 'Não há nenhuma sala disponível', endereco: '', local: '', ocupacaoMax: 0, permissao: 0 }])
         } else {
             setSalaPresencialFiltrada(salasFiltradas)
         }
@@ -352,7 +457,7 @@ export function FormularioReuniao() {
                             </div>
 
                             <div className="flex">
-                                <UploadFiles file={files} setFile={setFiles}/>
+                                <UploadFiles file={files} setFile={setFiles} />
                             </div>
                         </div>
 
@@ -375,7 +480,7 @@ export function FormularioReuniao() {
                                     className="flex items-center justify-center align-middle border border-gray-300 font-bold 
                                      w-8 h-8 rounded-full cursor-pointer hover:bg-gray-100"
                                 >
-                                    <GrAdd/>
+                                    <GrAdd />
                                 </button>
 
                             </div>

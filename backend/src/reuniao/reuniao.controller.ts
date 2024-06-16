@@ -62,6 +62,11 @@ export class ReuniaoController {
     return this.reuniaoService.findOne(id);
   }
 
+  @Get('/dataDia/:dataDia')
+  async findAllByDate(@Param('dataDia') dataDia:string){
+    return await this.reuniaoService.findAllByDate(dataDia);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body() reuniaoDTO: CreateReuniaoDto) {
     return this.reuniaoService.update(id, reuniaoDTO);

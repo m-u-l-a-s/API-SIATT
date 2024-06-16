@@ -39,7 +39,7 @@ export const authService = {
     decodificarToken (token : string | null | undefined){
         if (token) {
             const decode = jwtDecode(token)
-            return decode.email
+            return decode?.email
         }
         return null
     }

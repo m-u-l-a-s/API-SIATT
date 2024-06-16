@@ -21,6 +21,11 @@ export class SalaVirtualController {
     return this.salaVirtualService.findOne(id);
   }
 
+  @Get('/permissao/:permissao')
+  async GetSalaVirtualByPermissao(@Param('permissao') permissao: number){
+    return await this.salaVirtualService.findSalaVirtualByPermissao(permissao);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSalaVirtualDto: CreateSalaVirtualDto) {
     return this.salaVirtualService.update(id, updateSalaVirtualDto);

@@ -24,10 +24,10 @@ const ListarCadastrados = () => {
     const auth = useAuth();
 
     useEffect(() => {
+        fetchUsuario();
         getUsuarios();
         getSalas();
         getReunioes();
-        fetchUsuario();
     }, []);
 
     const fetchUsuario = async () => {
@@ -37,7 +37,9 @@ const ListarCadastrados = () => {
                 auth?.logout();
                 throw new Error("Não foi possível autenticar usuário");
             }
-            setUsuario(user.data);
+            const userData: IUsuario = user.data;
+            setUsuario(userData);
+            console.log(usuario)
         } catch (error) {
             console.log(`Erro: ${error}`);
         }
