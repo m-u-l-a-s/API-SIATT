@@ -1,4 +1,4 @@
-import { Categoria } from "../pages/FormularioReuniao"
+import { Categoria } from "../interfaces/CreateReuniaoDto"
 
 interface openTab {
     state: Categoria

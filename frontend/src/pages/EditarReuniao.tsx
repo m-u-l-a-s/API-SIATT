@@ -10,7 +10,7 @@ import { IBodyEmail } from "../interfaces/IBodyEmail";
 import { useLocation } from "react-router-dom";
 import { MeetingDetailProps } from '../interfaces/MeetingDetails';
 import { ReuniaoPresencialDTO } from "../interfaces/ReuniaoPresencialDTO";
-
+import { Categoria } from "../interfaces/CreateReuniaoDto";
 // type Meeting = {
 //     id: string,
 //     titulo: string,
@@ -24,11 +24,6 @@ import { ReuniaoPresencialDTO } from "../interfaces/ReuniaoPresencialDTO";
 //     salaVirtualId: string | null,
 // };
 
-export enum Categoria {
-    VIRTUAL = "virtual",
-    PRESENCIAL = "fisica",
-    HIBRIDA = "hibrida"
-}
 
 export interface CreateReuniao {
     titulo: string | undefined
@@ -297,6 +292,11 @@ export function EditarReuniao() {
         dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
+        const emailSolicitante = authService.decodificarToken(authService.getToken())
+        if (!emailSolicitante) {
+            throw new Error("Email solicitante não existe");
+            
+        }
 
         const reuniao : ReuniaoPresencialDTO =
         {
@@ -307,7 +307,7 @@ export function EditarReuniao() {
             pauta: pauta,
             presencial: salaPresencialSelecionada,
             virtual: salaOnlineSelecionada,
-            solicitanteEmail: authService.decodificarToken(authService.getToken()),
+            solicitanteEmail: emailSolicitante,
             participantes: emails,
         }
 

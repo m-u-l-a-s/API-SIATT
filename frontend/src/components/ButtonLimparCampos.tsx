@@ -1,18 +1,11 @@
-import React from "react";
+import { useState } from "react";
 
-export default function ButtonLimparCampos() {
-     const [showModal, setShowModal] = React.useState(false);
+interface ButtonLimparCampos {
+     functionLimparCampos: Function
+}
 
-     // const limparDados = () => {
-     //      setValues({
-     //           dataReuniao: "",
-     //           horarioReuniao: "",
-     //           tempoDuracao: "",
-     //           tituloReuniao: "",
-     //           pautaReuniao: "",
-     //           emailInput: "",
-     //           nConvidados:""
-     //      });
+export default function ButtonLimparCampos(props : ButtonLimparCampos) {
+     const [showModal, setShowModal] = useState(false);
 
      return (
           <>
@@ -52,17 +45,20 @@ export default function ButtonLimparCampos() {
                                              <button
                                                   className="bg-yellow-300 text-black active:bg-yellow-300 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                                   type="button"
-                                                  onClick={() => setShowModal(false)}
-                                             >
-                                                  Sim, limpar tudo.
-                                             </button>
-                                        </div>
+                                                  onClick={() => {
+                                                       props.functionLimparCampos()
+                                                       setShowModal(false)
+                                                  }}>
+                                             Sim, limpar tudo.
+                                        </button>
                                    </div>
                               </div>
                          </div>
-                         <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-                    </>
-               ) : null}
+                    </div>
+               <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+          </>
+     ) : null
+}
           </>
      );
 }
