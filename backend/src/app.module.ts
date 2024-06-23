@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { ReuniaoModule } from './reuniao/reuniao.module';
 import { ReuniaoAnexosModule } from './reuniao-anexos/reuniao-anexos.module';
-import { SalaVirtualModule } from './sala-virtual/sala-virtual.module';
 import { SalaPresencialModule } from './sala-presencial/sala-presencial.module';
 import { DataGuard } from './data.guard';
 import { MockDataBase } from './MockDataBase/mock-database.service';
@@ -12,6 +11,7 @@ import { MockDataBaseModule } from './MockDataBase/mock-database.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { SendEmailModule } from './send-email/send-email.module';
+import { ZoomModule } from './zoom/zoom.module';
 
 @Module({
   imports: [
@@ -29,7 +29,6 @@ import { SendEmailModule } from './send-email/send-email.module';
     UsuarioModule,
     ReuniaoModule,
     ReuniaoAnexosModule,
-    SalaVirtualModule,
     SalaPresencialModule,
     MockDataBaseModule,
     AuthModule,
@@ -48,7 +47,8 @@ import { SendEmailModule } from './send-email/send-email.module';
         from : ''
       }
     }),
-    SendEmailModule
+    SendEmailModule,
+    ZoomModule,
   ],
   controllers: [],
   providers: [DataGuard, MockDataBase],

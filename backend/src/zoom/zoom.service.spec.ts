@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SalaVirtualService } from './sala-virtual.service';
+import { ZoomService } from './zoom.service';
 
-describe('SalaVirtualService', () => {
-  let service: SalaVirtualService;
+describe('ZoomService', () => {
+  let service: ZoomService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SalaVirtualService],
+      providers: [ZoomService],
     }).compile();
 
-    service = module.get<SalaVirtualService>(SalaVirtualService);
+    service = module.get<ZoomService>(ZoomService);
   });
 
   it('should be defined', () => {
