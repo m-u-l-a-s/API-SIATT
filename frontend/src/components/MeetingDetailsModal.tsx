@@ -1,4 +1,7 @@
+import { Categoria } from "../interfaces/CreateReuniaoDto"
+
 interface MeetingDetailsModal {
+    categoria: string
     titulo: string
     pauta: string
     participantes: string[]
@@ -20,23 +23,29 @@ export const MeetingDetailsModal = (props: MeetingDetailsModal) => {
                             <p><b>Título:</b> {props.titulo}</p>
                             <p><b>Pauta:</b> {props.pauta}</p>
 
-                            {isLink && (
-                                <p><b>Endereço: </b><a className="link " href={props.local}>reunião no zoom</a></p>
+                            {props.categoria == Categoria.VIRTUAL && (
+                                <p><b>Endereço: </b><a target="_blank" className="link " href={props.local}>reunião no zoom</a></p>
                             )}
 
-                            {!isLink && (
+                            {props.categoria == Categoria.PRESENCIAL && (
                                 <p><b>Local: </b>{props.local}</p>
                             )}
 
-            
-                                <p><b>Participantes: </b></p>
-                                <ul>
-                                    {props.participantes.map(p => {
-                                        return (
-                                            <li className="ml-4">{p}</li>
-                                        )
-                                    })}
-                                </ul>
+                            {props.categoria == Categoria.HIBRIDA && (
+                                <>
+                                    <p><b>Endereço: </b><a target="_blank" className="link" href={props.local.split(" | ")[1]}>reunião no zoom</a></p>
+                                    <p><b>Local: </b>{props.local.split(" | ")[0]}</p>
+                                </>
+                            )}
+
+                            <p><b>Participantes: </b></p>
+                            <ul>
+                                {props.participantes.map(p => {
+                                    return (
+                                        <li className="ml-4">{p}</li>
+                                    )
+                                })}
+                            </ul>
                         </div>
                         {/*footer*/}
                         <div className="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">

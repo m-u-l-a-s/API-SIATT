@@ -11,6 +11,7 @@ import { MeetingDetailProps } from '../interfaces/MeetingDetails';
 import { getAnexos } from '../services/getAnexos';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { MeetingDetailsModal } from './MeetingDetailsModal';
+import { Categoria } from '../interfaces/CreateReuniaoDto';
 
 
 const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) => {
@@ -46,7 +47,13 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
             })
         }
 
-        if (props.joinUrl) {
+        if (props.categoria == Categoria.HIBRIDA && props.joinUrl) {
+            api.get(`sala-presencial/${props.salaPresencial}`).then(resp => {
+                setLocal(`${resp.data.identificacao} | ${props.joinUrl}`)
+            })
+        }
+
+        if (props.categoria == Categoria.VIRTUAL && props.joinUrl) {
             setLocal(props.joinUrl)
         }
     })
@@ -81,6 +88,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
             {showModal && (
                 
                 <MeetingDetailsModal
+                    categoria={props.categoria}
                     titulo={props.titulo}
                     pauta={props.pauta}
                     local={local}
