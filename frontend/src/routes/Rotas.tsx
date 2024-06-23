@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { FormularioReuniao } from "../pages/FormularioReuniao";
 import { HomeAdmin } from "../pages/HomeAdmin";
-// import CadUsuario from "../pages/CadUsuario";
 import Login from "../pages/Login";
 import PagAgendamento from "../pages/PagAgendamento";
 import { IsLogged } from "./IsLogged";
@@ -10,6 +9,7 @@ import PagCadastro from "../pages/PagCadastro";
 import { EditarReuniao } from "../pages/EditarReuniao";
 import ListarCadastrados from "../pages/ListarCadastrados";
 import ZoomRedirect from "../components/ZoomRedirect";
+import EditarUsuario from "../pages/EditarUsuario";
 
 
 
@@ -27,7 +27,7 @@ export const Rotas = () => {
       <Route path="/Home/Agendamento" element={<IsLogged page={FormularioReuniao} />} />
       <Route path="/Home/EditarReuniao/:id" element={<IsLogged page={EditarReuniao} />} />
       <Route path="/zoom" element={<ZoomRedirect/>} />
-
+      <Route path="/Home/EditarUsuario/:id" element={<IsLogged page={EditarUsuario} />} />
       {/* Rotas De usuários logados */}
 
       {/* Rotas publicas */}

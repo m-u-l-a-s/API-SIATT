@@ -3,12 +3,16 @@ import { CreateSalaPresencialDto } from './dto/create-sala-presencial.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SalaPresencialEntity } from './entities/sala-presencial.entity';
 import { Repository } from 'typeorm';
+import { ReuniaoEntity } from 'src/reuniao/entities/reuniao.entity';
+import { privateDecrypt } from 'crypto';
 
 @Injectable()
 export class SalaPresencialService {
   constructor(
     @InjectRepository(SalaPresencialEntity)
-    private readonly salaPresencialRepository: Repository<SalaPresencialEntity>
+    private readonly salaPresencialRepository: Repository<SalaPresencialEntity>,
+    @InjectRepository(ReuniaoEntity)
+    private readonly reuniaoRepository : Repository<ReuniaoEntity>
   ) { }
 
   async create(salaPresencialDto: CreateSalaPresencialDto) {
@@ -39,12 +43,22 @@ export class SalaPresencialService {
   }
 
   async remove(id: string) {
-    const salaRemove = await this.salaPresencialRepository.findOneBy({id : id});
-    if (salaRemove != null){
-      return await this.salaPresencialRepository.remove(salaRemove);
+    const salaPresencial : SalaPresencialEntity = await this.salaPresencialRepository.findOneBy({id:id})
+
+    salaPresencial
+
+    const reunioes : ReuniaoEntity[] = await this.reuniaoRepository.findBy({salaPresencial : salaPresencial })
+
+    reunioes
+
+    for (let reuniao of reunioes) {
+      await this.reuniaoRepository.delete({id: reuniao.id})
     }
-    else {
-      return HttpCode(404);
-    }
+    return await this.salaPresencialRepository.delete(id)
+  }
+
+  async findSalaPresencialByPermissao (permissao:number){
+    const query: string = `SELECT * FROM sala_presencial a where a.permissao<=${permissao}`
+    return await this.salaPresencialRepository.query(query);
   }
 }

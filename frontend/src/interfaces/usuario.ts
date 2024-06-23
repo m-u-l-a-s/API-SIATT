@@ -2,8 +2,8 @@ export interface IUsuario {
     user : any
     id ?: string
     login : string
-    senha : string
     email : string
+    senha : string
     departamento : DEPARTAMENTO
     permissao : number
     status : number   

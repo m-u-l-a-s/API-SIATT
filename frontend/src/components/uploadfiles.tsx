@@ -44,7 +44,7 @@ const UploadFiles = (props: Props) => {
 
         <label
           htmlFor="fileInput"
-          className="bordaInput shadow-md shadow-gray-500 transition-all hover:shadow-lg hover:shadow-gray-500 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
+          className="bg-neutral bordaInput shadow-md shadow-gray-500 transition-all hover:shadow-lg hover:shadow-gray-500 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none px-3 py-2 border border-gray-300 rounded-lg cursor-pointer"
         >
           Anexar documentos
         </label>

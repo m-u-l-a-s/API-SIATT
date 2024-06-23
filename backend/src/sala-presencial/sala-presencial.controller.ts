@@ -16,6 +16,11 @@ export class SalaPresencialController {
     return this.salaPresencialService.findAll();
   }
 
+  @Get('/permissao/:permissao')
+  async GetSalaPresencialByPermissao(@Param('permissao') permissao: number){
+    return await this.salaPresencialService.findSalaPresencialByPermissao(permissao);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.salaPresencialService.findOne(id);

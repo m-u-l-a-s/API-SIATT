@@ -37,15 +37,15 @@ export class UsuarioService {
     return await this.clienteRepository.findOneBy({email: email});
   }
 
-  update(id: string, user: CreateUsuarioDto) {
-      return this.clienteRepository.update(id, 
-        {
-          email: user.email,
-          login: user.login,
-          departamento: user.departamento,
-          permissao: user.permissao,
-          status: user.status
-        })
+  async update(id: string, user: CreateUsuarioDto) {
+      const userAtual = await this.findOne(id)
+      userAtual.admin = user.admin
+      userAtual.login = user.login
+      userAtual.email = user.email
+      userAtual.departamento = user.departamento
+      userAtual.permissao = user.permissao
+      userAtual.status = user.status
+      return await this.clienteRepository.update(id,userAtual)
   }
 
   remove(id: string) {

@@ -39,4 +39,13 @@ export class ReuniaoAnexosController {
     const file: fs.ReadStream = fs.createReadStream(join(process.cwd(), `/anexos/${email}/${arquivo}`));
     return new StreamableFile(file);
   }
+
+  //Rota para excluir todos os anexos associados a uma reunião
+  @Delete("deleteAnexos/:idReuniao")
+  async excluirAnexos(
+    @Param('idReuniao') idReuniao: string
+  ) {
+    return this.reuniaoAnexosService.excluirAnexos(idReuniao)
+  }
+  
 }

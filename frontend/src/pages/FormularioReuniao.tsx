@@ -18,6 +18,24 @@ import { Categoria } from "../interfaces/CreateReuniaoDto";
 import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
 import { ZoomMeetingDto } from "../interfaces/ZoomMeetingDto";
 import axios from "axios";
+import { IUsuario } from "../interfaces/usuario";
+import separaDataHora from "../control/utils";
+
+
+export interface Reuniao {
+    categoria: string
+    data: string
+    dataHora: string
+    duracao: number
+    hora: string
+    id: string | undefined
+    participantes: string[]
+    pauta: string
+    salaPresencialId: string
+    salaVirtualId: string
+    solicitanteId: string
+    titulo: string
+}
 
 interface FileWithId {
     id: string;
@@ -43,6 +61,8 @@ export function FormularioReuniao() {
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
     const [alertModal, setAlertModal] = useState<boolean>(false);
 
+    const [reunioes, setReunioes] = useState<Reuniao[]>([]);
+
     const auth = useAuth();
 
     const clientID = 'zt6lhdUVTteosZ9p7x_NA'
@@ -55,24 +75,117 @@ export function FormularioReuniao() {
         getSalaPresencial();
     }, [])
 
-    //Rota para popular combo sala online
+    //useEffect - bloqueio da lista de salas em horário ocupados por outras reuniões
 
 
-    const getSalaPresencial = async () => {
+    useEffect(() => {
+        getReunioesByDate(String(dataCalendarioCombo));
+        checkVacancy();
+    }, [dataCalendarioCombo, horaDuracao, horaInicial, minDuracao, minInicial])
 
-        api.get(`sala-presencial`).then(resp => {
+
+    const getReunioesByDate = async (dataDia: string) => {
+        const diaEtHora: any = separaDataHora(dataDia)
+        try {
+            const resp = await api.get(`reuniao/dataDia/${diaEtHora[0]}`);
             if (resp.status !== 200) {
                 throw new Error('Erro ao realizar a requisição');
             }
-            return resp.data
-        }).then(data => {
-            setSalaPresencial(data);
-            setSalaPresencialFiltrada(data);
-        }).catch(error => {
-            console.error("Ocorreu um erro", error)
-        })
+            // console.log(resp)
+            const reunioesData = resp.data.map((reuniao: any) => {
+                const dataHoraArray = separaDataHora(reuniao.dataHora);
+                if (dataHoraArray) {
+                    const [data, hora] = dataHoraArray;
+                    return { ...reuniao, data, hora };
+                }
+                return { ...reuniao, data: '0', hora: '0' };
+            });
+            setReunioes(reunioesData);
+        } catch (error) {
+            console.error("Ocorreu um erro", error);
+        }
+    };
+
+    const checkVacancy = () => {
+
+        // lógica: todas os horários possíveis dentro de um dia estão entro 0 e 1440 minutos
+        // transformando o horario selecionado (tanto seu inicio quanto seu fim) em um número
+        // em min, é possível comparar se tal intervalo de tempo está contido ou intercala
+        // com o intervalo de tempo das reuniões existentes
+
+        const formatTimeReuniao = (tempo: string) => {
+            const tempoFormatada = tempo.split(":")
+            const hora: number = Number(tempoFormatada[0])
+            const min: number = Number(tempoFormatada[1])
+            return (hora * 60) + min
+        }
+
+        const formatTimeOther = (h1: number, m1: number) => {
+            return (h1 * 60) + m1
+        }
+
+        function isInsideOrOverlaps(A_start: number, A_end: number, B_start: number, B_end: number): boolean {
+            // Check if A is completely inside B
+            const isInside = A_start >= B_start && A_end <= B_end;
+
+            // Check if A overlaps with B
+            const overlaps = (A_start <= B_end && A_end >= B_start) || (B_start <= A_end && B_end >= A_start);
+
+            return isInside || overlaps;
+        }
+
+
+        if (reunioes.length !== 0) {
+            const salasReunioesPresencial = reunioes.map((r) => r.salaPresencialId);
+            const salasReunioesVirtual = reunioes.map((r) => r.salaVirtualId);
+
+            let controleSalasVrt: any = [];
+            let controleSalasPrs: any = [];
+
+            const tempoMinReuniao = reunioes.map((r) => formatTimeReuniao(r.hora));
+            const tempoMaxReuniao = reunioes.map((r) => formatTimeReuniao(r.hora) + r.duracao);
+            const tempoMinSistema = formatTimeOther(horaInicial, minInicial)
+            const tempoMaxSistema = formatTimeOther(horaInicial, minInicial) + formatTimeOther(horaDuracao, minDuracao);
+
+            for (let i = 0; i < tempoMinReuniao.length; i++) {
+                if (isInsideOrOverlaps(tempoMinSistema, tempoMaxSistema, tempoMinReuniao[i], tempoMaxReuniao[i])) {
+                    controleSalasPrs = [...controleSalasPrs, salasReunioesPresencial[i]];
+                    controleSalasVrt = [...controleSalasVrt, salasReunioesVirtual[i]];
+                }
+            };
+
+            console.log(controleSalasPrs, controleSalasVrt)
+
+            if (controleSalasVrt.length !== 0 || controleSalasPrs.length !== 0) {
+                const updateSalaPresencial = salaPresencial.filter(item => !controleSalasPrs.includes(item.id));
+
+                console.log(updateSalaPresencial)
+
+                setSalaPresencial(updateSalaPresencial)
+            } else {
+                getSalaPresencial()
+            }
+        }
+
     }
 
+    // Rota para popular combo sala presencial c/base na permissão do usuario
+
+    const getSalaPresencial = async () => {
+        await api.get(`usuario/email/${authService.decodificarToken(auth?.token)}`).then(async resp => {
+            const user: IUsuario = resp.data
+
+            await api.get(`sala-presencial/permissao/${user.permissao}`).then(resp => {
+                if (resp.status !== 200) {
+                    throw new Error('Erro ao realizar a requisição');
+                }
+                setSalaPresencial(resp.data)
+                setSalaPresencialFiltrada(resp.data)
+            }).catch(error => {
+                console.error("Ocorreu um erro", error)
+            })
+        });
+    }
     function adicionaZero(numero: number) {
         if (numero <= 9)
             return "0" + numero;
@@ -83,7 +196,6 @@ export function FormularioReuniao() {
     function formatarData(dataAtual: Date): string {
         return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth() + 1)).toString() + "/" + dataAtual.getFullYear());
     }
-
     const getDataCombo = (): Date => {
         try {
             if (dataCalendarioCombo) {
@@ -117,6 +229,7 @@ export function FormularioReuniao() {
             duracao: `${horaDuracao}:${minDuracao}`,
             pauta: `${pauta}`,
             titulo: titulo,
+
             categoria: form,
             sala: identificacaoSala,
         }
@@ -132,7 +245,7 @@ export function FormularioReuniao() {
             console.log(`Erro: ${error}`)
         }
     }
-    const saveForm = (join_url ?: string) => {
+    const saveForm = (join_url?: string) => {
 
         const solicitanteEmail = authService.decodificarToken(authService.getToken());
         if (!solicitanteEmail) {
@@ -145,6 +258,7 @@ export function FormularioReuniao() {
         if (form == Categoria.VIRTUAL) {
             setSalaPresencialSelecionada("")
         }
+
 
         const reuniao: CreateReuniao =
         {
@@ -164,7 +278,6 @@ export function FormularioReuniao() {
                 console.log(resp)
                 const idReuniao = resp.data.id;
                 await salvarArquivos(idReuniao)
-
             }).then(() => setAlertModal(true))
         } catch (error) {
             console.log("Erro: " + error)
@@ -203,6 +316,7 @@ export function FormularioReuniao() {
 
         if (salasFiltradas.length < 1) {
             setSalaPresencialFiltrada([{ id: '', identificacao: 'Não há nenhuma sala disponível', local: '', ocupacaoMax: 0, permissao: 0 }])
+
         } else {
             setSalaPresencialFiltrada(salasFiltradas)
         }
@@ -251,7 +365,7 @@ export function FormularioReuniao() {
             }
         } catch (error) {
             console.log(error)
-        } 
+        }
     }
 
     return (
@@ -394,5 +508,3 @@ export function FormularioReuniao() {
         </>
     )
 }
-
-export { Categoria };

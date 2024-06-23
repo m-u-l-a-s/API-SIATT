@@ -23,7 +23,7 @@ export class UsuarioController {
 
   @Get('/email/:email')
   findByEmail(@Param('email') email : string){
-    return 
+    return this.usuarioService.findOneByEmail(email)
   }
 
   @Put(':id')

@@ -1,25 +1,16 @@
-
-
-# Sprint 4 - Agendamento
-
+# Sprint 4 - Finalização
 
 <p align="center">
       <img src="/docs/img/Logo_Mulas.png" alt="Logo da Equipe Mulas">
 
-
-
 <hr>
 <br>
 <p align="center">
-  <a href ="#backlog"> Backlog da Sprint </a>  | 
-  <a href ="#burndown"> Burndown </a>  |
-  <a href ="#historia"> Histórias de Usuários </a>  
+  <a href ="#backlog"> Backlog da Sprint 4 </a>  | 
+  <a href ="#burndown"> Burndown </a>  
 </p>
 
-
-
 </p>
-
 
 <br>
 <br>
@@ -28,76 +19,47 @@
 
 <br>
 
-Para a primeira Sprint do projeto, adotamos o método ágil de desenvolvimento de produtos, com foco na concepção do MVP (*Minimal Viable Product- Mínimo Produto Viável*). O MVP é a primeira versão do sistema de agendamento de reuniões para a empresa SIATT, já apto para uso, mas ainda com espaço para melhorias futuras. Nesta fase inicial, concentramos nossos esforços em:
-
-- Criação do Wireframe;
-- Modelagem e Criação do Banco de dados;
-- Agendar reuniões: online, presencial, híbridas;
-- Sugestão de salas;
-- Visualizar reuniões agendadas;
-
-
-### Diagrama de Entidade e Relacionamento do Banco de Dados
-
-Um Diagrama de Entidade e Relacionamento (DER) é um recurso fundamental no desenvolvimento de um banco de dados para um Portal de Agendamento de Reuniões que suporta múltiplos formatos de encontros, tais como: reuniões presenciais, online ou híbridas. Abaixo está uma descrição detalhada de como está estruturado o DER para um sistema desse tipo:
-
-
-- **Usuário:** Esta entidade é central e representa todos os membros da equipe que interagem com o sistema. Inclui atributos como login, e-mail, departamento, nível de acesso e status (ativo, inativo).
-
-
-- **Reunião:** Representa cada reunião agendada no sistema, contendo detalhes como título, data, duração, categoria, pauta etc.
-
-
-- **Sala Virtual:** Especificamente para reuniões online, esta entidade descreve as salas virtuais disponíveis, com informações como nome da sala, login, senha e nível de permissão dos participantes (quem pode criar, quem pode entrar).
-
-
-- **Sala Física:** Quando a reunião é presencial, esta entidade representa as salas físicas do espaço de trabalho, contendo dados como nome da sala, local, capacidade e nível de permissão dos participantes.
-
-
-O DER é uma representação visual dessas entidades e relacionamentos, ajudando a entender a estrutura do banco de dados do sistema de agendamento de reuniões.
-
 <br>
 
+Na quarta sprint, nossa equipe focou na implementação e melhorias das seguintes partes do projeto:
 
+**1. Modais de Confirmação**: Foram implementados modais de confirmação para operações críticas, garantindo que o usuário confirme suas ações antes que elas sejam executadas, aumentando a segurança e a usabilidade da plataforma.
 
-### Modelo Lógico do Banco de Dados
+**2. Excluir Sala**: Foi adicionada a funcionalidade para excluir salas de reunião, permitindo uma gestão mais eficiente dos recursos disponíveis.
 
-<p align="center">
-      <img src="/docs/img/DER_BD.png" alt="DER do Banco de Dados">
+**3. Excluir Reunião**: Foi adicionada a funcionalidade para excluir reuniões agendadas, permitindo uma maior flexibilidade na gestão dos compromissos.
+
+**4. Editar Usuário**: Foi implementada a opção de editar os dados dos usuários, possibilitando que informações incorretas sejam corrigidas e mantidas atualizadas.
+
+**5. Editar Sala**: Foi incluída a funcionalidade para editar as informações das salas de reunião, facilitando a administração e a atualização das características das salas.
+
+**6. Correção das Cores dos Campos, Hora e Duração**: Foram realizadas correções nas cores dos seguintes campos: horário e duração das reuniões, visando melhorar a clareza visual e a experiência do usuário.
+
+**7. Sugestão de Nível e Disponibilidade**: Foi ajustado no sistema a sugestão de nível de acesso e disponibilidade das salas, para que salas não estejam disponíveis no mesmo horário de reuniões já agendadas e assim evitar conflitos.
+
+**8. Integração do Zoom**: Foi realizada a integração da plataforma com o Zoom, possibilitando o agendamento e a realização de reuniões online diretamente através desse sistema.
+
+**9. Ata da Reunião**: Foi implementada a funcionalidade de geração de atas de reunião, facilitando o registro e a documentação das discussões e decisões tomadas.
+
+**10. Sugestão de Email**: Foi desenvolvida uma funcionalidade para sugestão de emails, ajudando na comunicação e no envio de convites para as reuniões de forma mais eficiente.
+
 
 <br>
-
-<br>
-
-<br>
-
-
 
 <span id="backlog">
 
-## :date: Backlog da Sprint
+## :date: Backlog da Sprint 4
 
 <p align="center">
-      <img src="/docs/img/Backlog_Sprint01.jpg" alt="Backlog do Produto">
+      <img src="/docs/img/Backlog_Sprint04.png" alt="Backlog da Sprint 4">
 
 <br>
-
 
 <span id="burndown">
 
 ## :fire: Burndown
 
 <p align="center">
-      <img src="/docs/img/Burndown_Sprint01.png" alt="Burndown">
-
-<br>
-
-
-<span id="historia">
-
-## :key: Histórias de Usuário
-
-<p align="center">
-      <img src="/docs/img/Historia_Usuario_Sprint01.png" alt="Histórias de Usuário">
+      <img src="/docs/img/Burndown_Sprint04.png" alt="Burndown Sprint 4">
 
 <br>
