@@ -22,7 +22,7 @@ const CadUsuario = () => {
     const [permissao, setPermissao] = useState<string>('1');
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
-    const [departamentos, setDepartamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo" ]);
+    const [departamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo" ]);
 
     const handleAdicionarUsuario = (event: any) => {
         if(permissao == undefined){

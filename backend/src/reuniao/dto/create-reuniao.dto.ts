@@ -7,8 +7,8 @@ export class CreateReuniaoDto
     dataHora : Date
     duracao : number
     pauta : string
-    presencial : string
-    virtual : string
+    joinUrl ?: string
+    presencial ?: string
     solicitanteEmail : string
     participantes : any
 }

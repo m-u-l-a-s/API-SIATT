@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { api_url } from "../variables";
 import { MdDelete } from "react-icons/md";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
@@ -28,7 +27,7 @@ const CadUsuario = () => {
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [admin, setAdmin] = useState<boolean | undefined>(undefined)
 
-    const [departamentos, setDepartamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
+    const [departamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
 
     const handleAdicionarUsuario = (event: any) => {
         if (permissao == undefined) {

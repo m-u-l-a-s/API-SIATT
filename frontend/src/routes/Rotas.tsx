@@ -9,6 +9,7 @@ import { Private } from "./Private";
 import PagCadastro from "../pages/PagCadastro";
 import { EditarReuniao } from "../pages/EditarReuniao";
 import ListarCadastrados from "../pages/ListarCadastrados";
+import ZoomRedirect from "../components/ZoomRedirect";
 
 
 
@@ -25,6 +26,7 @@ export const Rotas = () => {
       <Route path="/Home" element={<IsLogged page={PagAgendamento} />} />
       <Route path="/Home/Agendamento" element={<IsLogged page={FormularioReuniao} />} />
       <Route path="/Home/EditarReuniao/:id" element={<IsLogged page={EditarReuniao} />} />
+      <Route path="/zoom" element={<ZoomRedirect/>} />
 
       {/* Rotas De usuários logados */}
 

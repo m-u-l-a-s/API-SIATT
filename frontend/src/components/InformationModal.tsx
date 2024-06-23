@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 interface ConfirmationModalProps {
-  message: string;
+  message: string | any;
   confirmText: string;
   onConfirm: () => void;
 }
@@ -19,9 +19,9 @@ const InformationModal: FC<ConfirmationModalProps> = ({
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             {/*body*/}
             <div className="relative p-6 flex-auto">
-              <p className="my-4 text-blueGray-500 text-lg leading-relaxed">
+              <div className="my-4 text-blueGray-500 text-lg leading-relaxed">
                 {message}
-              </p>
+              </div>
             </div>
             {/*footer*/}
             <div className="flex items-center justify-center p-6 border-t border-solid border-blueGray-200 rounded-b">

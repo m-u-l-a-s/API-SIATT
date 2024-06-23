@@ -10,7 +10,7 @@ import { IBodyEmail } from "../interfaces/IBodyEmail";
 import { useLocation } from "react-router-dom";
 import { MeetingDetailProps } from '../interfaces/MeetingDetails';
 import { ReuniaoPresencialDTO } from "../interfaces/ReuniaoPresencialDTO";
-
+import { Categoria } from "../interfaces/CreateReuniaoDto";
 // type Meeting = {
 //     id: string,
 //     titulo: string,
@@ -24,11 +24,6 @@ import { ReuniaoPresencialDTO } from "../interfaces/ReuniaoPresencialDTO";
 //     salaVirtualId: string | null,
 // };
 
-export enum Categoria {
-    VIRTUAL = "virtual",
-    PRESENCIAL = "fisica",
-    HIBRIDA = "hibrida"
-}
 
 export interface CreateReuniao {
     titulo: string | undefined
@@ -101,8 +96,8 @@ export function EditarReuniao() {
 
         console.log(reuniao)
 
-        setTitulo(reuniao.title);
-        setPauta(reuniao.desc);
+        setTitulo(reuniao.titulo);
+        setPauta(reuniao.pauta);
         setHoraInicial(parseInt(reuniao.time.split(":")[0]));
         setMinInicial(parseInt(reuniao.time.split(":")[1]));
         setHoraDuracao(Math.floor(reuniao.duracao / 60));
@@ -124,9 +119,6 @@ export function EditarReuniao() {
 
         if (reuniao.salaPresencial) {
             setSalaPresencialSelecionada(reuniao.salaPresencial)
-        }
-        if (reuniao.salaVirtual) {
-            setSalaOnlineSelecionada(reuniao.salaVirtual)
         }
     }, []);
 
@@ -297,6 +289,11 @@ export function EditarReuniao() {
         dataReuniao.setHours(horaInicial - 3)
         dataReuniao.setMinutes(minInicial)
 
+        const emailSolicitante = authService.decodificarToken(authService.getToken())
+        if (!emailSolicitante) {
+            throw new Error("Email solicitante não existe");
+            
+        }
 
         const reuniao : ReuniaoPresencialDTO =
         {
@@ -307,7 +304,7 @@ export function EditarReuniao() {
             pauta: pauta,
             presencial: salaPresencialSelecionada,
             virtual: salaOnlineSelecionada,
-            solicitanteEmail: authService.decodificarToken(authService.getToken()),
+            solicitanteEmail: emailSolicitante,
             participantes: emails,
         }
 
