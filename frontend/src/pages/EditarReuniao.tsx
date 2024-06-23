@@ -96,8 +96,8 @@ export function EditarReuniao() {
 
         console.log(reuniao)
 
-        setTitulo(reuniao.title);
-        setPauta(reuniao.desc);
+        setTitulo(reuniao.titulo);
+        setPauta(reuniao.pauta);
         setHoraInicial(parseInt(reuniao.time.split(":")[0]));
         setMinInicial(parseInt(reuniao.time.split(":")[1]));
         setHoraDuracao(Math.floor(reuniao.duracao / 60));
@@ -119,9 +119,6 @@ export function EditarReuniao() {
 
         if (reuniao.salaPresencial) {
             setSalaPresencialSelecionada(reuniao.salaPresencial)
-        }
-        if (reuniao.salaVirtual) {
-            setSalaOnlineSelecionada(reuniao.salaVirtual)
         }
     }, []);
 

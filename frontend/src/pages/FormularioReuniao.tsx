@@ -16,7 +16,8 @@ import { SalaPresencial } from "../interfaces/ISalaPresencial";
 import { CreateReuniao } from "../interfaces/CreateReuniaoDto";
 import { Categoria } from "../interfaces/CreateReuniaoDto";
 import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
-import { Link } from "react-router-dom";
+import { ZoomMeetingDto } from "../interfaces/ZoomMeetingDto";
+import axios from "axios";
 
 interface FileWithId {
     id: string;
@@ -40,8 +41,13 @@ export function FormularioReuniao() {
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
     const [salaPresencialFiltrada, setSalaPresencialFiltrada] = useState<SalaPresencial[]>([]);
     const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
-    const [alertModal, setAlertModal] = useState(false);
+    const [alertModal, setAlertModal] = useState<boolean>(false);
+
     const auth = useAuth();
+
+    const clientID = 'zt6lhdUVTteosZ9p7x_NA'
+    const redirectUri = encodeURIComponent('http://localhost:5173/zoom')
+    const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectUri}`;
 
     //useEffect - popular combos
 
@@ -126,13 +132,20 @@ export function FormularioReuniao() {
             console.log(`Erro: ${error}`)
         }
     }
-    const saveForm = () => {
+    const saveForm = (join_url ?: string) => {
+
         const solicitanteEmail = authService.decodificarToken(authService.getToken());
         if (!solicitanteEmail) {
             console.log("Email do solicitante não existe!")
             return
         }
+
         const dataReuniao = getDataCombo()
+
+        if (form == Categoria.VIRTUAL) {
+            setSalaPresencialSelecionada("")
+        }
+
         const reuniao: CreateReuniao =
         {
             titulo: titulo,
@@ -140,9 +153,10 @@ export function FormularioReuniao() {
             dataHora: dataReuniao,
             duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
             pauta: pauta,
-            presencial: salaPresencialSelecionada,
+            salapresencial: salaPresencialSelecionada,
             solicitanteEmail: solicitanteEmail,
-            participantes: emails
+            participantes: emails,
+            joinUrl: join_url
         }
 
         try {
@@ -192,6 +206,52 @@ export function FormularioReuniao() {
         } else {
             setSalaPresencialFiltrada(salasFiltradas)
         }
+    }
+
+
+    const autenticarUsuario = () => {
+        const authTab = window.open(zoomAuthUrl, '_blank', 'width=500,height=600');
+
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data[0] === 'authenticated') {
+                authTab?.close()
+                authService.setZoomToken(event.data[1].access_token)
+                auth?.setZoomToken(event.data[1].access_token)
+                window.removeEventListener('message', handleMessage)
+                AgendarReuniaoZoom()
+            }
+        }
+
+        window?.addEventListener('message', handleMessage)
+    }
+
+    const AgendarReuniaoZoom = async () => {
+        try {
+            if (form == Categoria.HIBRIDA || form == Categoria.VIRTUAL) {
+                if (dataCalendarioCombo) {
+                    const zoomMeeting: ZoomMeetingDto = {
+                        topic: titulo,
+                        agenda: pauta,
+                        start_time: getDataCombo().toISOString(),
+                        duration: ((60 * Number(horaDuracao)) + Number(minDuracao)),
+                        meeting_invites: emails
+                    }
+                    await axios.post("http://localhost:3000/zoom/schedule", zoomMeeting,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${authService.getZoomToken()}`
+                            }
+                        }
+                    ).then(resp => {
+                        saveForm(resp.data.join_url)
+                    }).catch(error => {
+                        console.error(error)
+                    })
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        } 
     }
 
     return (
@@ -310,10 +370,11 @@ export function FormularioReuniao() {
             {form == Categoria.VIRTUAL && (
                 <div>
                     <div className="items-center text-black font-medium ">
-                        <Link className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
-                                shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
-                                focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
-                                disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" to={''}>Agendar</Link>
+                        <a target="_blank" className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
+                    shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                    focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
+                    disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            onClick={autenticarUsuario}>Agendar</a>
                     </div>
                 </div>
             )}
@@ -322,13 +383,16 @@ export function FormularioReuniao() {
             {form == Categoria.HIBRIDA && (
                 <div>
                     <div className="items-center text-black font-medium ">
-                        <Link className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
-                                shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
-                                focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
-                                disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" to={''}>Agendar</Link>
+                        <a target="_blank" className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
+                        shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
+                        focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
+                        disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            onClick={autenticarUsuario}>Agendar</a>
                     </div>
                 </div>
             )}
         </>
     )
 }
+
+export { Categoria };

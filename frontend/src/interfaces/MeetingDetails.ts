@@ -1,15 +1,17 @@
+import { Categoria } from "./CreateReuniaoDto";
+
 export interface MeetingDetailProps {
     // key: string;
     id: string;
-    title: string;
-    desc: string;
+    titulo: string;
+    pauta: string;
     date: string;
     time: string;
     duracao: number;
-    place: string;
+    categoria : Categoria | string
     salaPresencial: string | null;
-    salaVirtual: string | null;
     idSolicitante: string;
     idUsuario: string | undefined
     participantes: string[]
+    joinUrl ?: string | null
 }

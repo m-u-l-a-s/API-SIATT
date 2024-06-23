@@ -148,18 +148,16 @@ const ListarCadastrados = () => {
                         <MeetingDetail
                             key={reuniao.id}
                             id={reuniao.id}
-                            title={reuniao.titulo}
-                            desc={reuniao.pauta}
+                            titulo={reuniao.titulo}
+                            pauta={reuniao.pauta}
                             date={reuniao.data}
                             time={reuniao.hora}
                             duracao={reuniao.duracao}
                             participantes={reuniao.participantes}
-                            place={reuniao.categoria}
+                            categoria={reuniao.categoria}
                             idSolicitante={reuniao.solicitanteId}
                             idUsuario={usuario?.id}
-                            sala={reuniao.salaPresencialId ? `Presencial - sala ${reuniao.salaPresencialId}` : `Virtual - sala ${reuniao.salaVirtualId}`}
-                            login={reuniao.login}
-                            password={reuniao.senha} 
+                            salaPresencial={reuniao.salaPresencialId ? `Presencial - sala ${reuniao.salaPresencialId}` : `Virtual - sala ${reuniao.salaVirtualId}`}
                        />
                     ))}
                 </div>

@@ -8,7 +8,6 @@ import api from "../services/api";
 import useAuth from "../hooks/useAuth";
 import { authService } from "../services/services.auth";
 import { IUsuario } from "../interfaces/usuario";
-import { anexo } from "../interfaces/anexo";
 
 type Meeting = {
     id: string,
@@ -20,7 +19,7 @@ type Meeting = {
     participantes: string[],
     solicitanteId: string,
     salaPresencialId: string,
-    salaVirtualId: string | null,
+    joinUrl: string | null,
     login: string;
     senha: string;
 };
@@ -115,26 +114,20 @@ const PagAgendamento = () => {
                         <MeetingDetail
                             key={reuniao.id}
                             id={reuniao.id}
-                            desc={reuniao.pauta}
-                            title={reuniao.titulo}
+                            pauta={reuniao.pauta}
+                            titulo={reuniao.titulo}
                             date={reuniao.data}
                             time={reuniao.hora}
                             duracao={reuniao.duracao}
                             participantes={reuniao.participantes}
-                            place={reuniao.categoria}
+                            categoria={reuniao.categoria}
+                            salaPresencial={reuniao.salaPresencialId}
+                            joinUrl={reuniao.joinUrl}
                             idSolicitante={reuniao.solicitanteId}
                             idUsuario={usuario?.id}
-                            salaPresencial={reuniao.salaPresencialId}
-                            salaVirtual={reuniao.salaVirtualId}
                         />
                     ))}
                 </div>
-
-                {/* Não exluir! Calendário vai entrar na segunda sprint. */}
-                {/* <div className="coluna-2 mt-4 md:w-1/3 md:order-2 h-screen p-4 sm:w-screen">
-                    <Calendar />
-                </div> */}
-
             </div>
         </div>
     );

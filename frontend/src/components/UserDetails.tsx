@@ -1,14 +1,12 @@
 // src/components/UserDetails.tsx
 
 import React, { useState } from 'react';
-import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
 import api from '../services/api';
 import useAuth from '../hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 
 interface UserDetailsProps {
     id: string;
@@ -25,8 +23,6 @@ const UserDetails: React.FC<UserDetailsProps> = (props: UserDetailsProps) => {
     const [deleteModal, setDeleteModal] = useState(false);
 
     const auth = useAuth();
-    const navigate = useNavigate();
-
     const handleInfoIconClick = () => {
         setShowModal(true);
     };
