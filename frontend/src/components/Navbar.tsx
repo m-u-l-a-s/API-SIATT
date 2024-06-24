@@ -90,7 +90,10 @@ const Navbar = () => {
               </div>
 
               <div className={`absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${isProfileMenuOpen ? 'block' : 'hidden'} `} role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex={-1}>
-              
+             
+                {/* <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-0">Seu perfil</a>
+                <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-1">Configurações</a> */}
+
                 <div className="flex space-x-4">
                 {auth?.user?.user && (
                   <a href="/" className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Home</a>

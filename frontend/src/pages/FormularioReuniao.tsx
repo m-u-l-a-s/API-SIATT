@@ -35,6 +35,44 @@ export interface Reuniao {
     salaVirtualId: string
     solicitanteId: string
     titulo: string
+=======
+
+// type Meeting = {
+//     id: string,
+//     titulo: string,
+//     dataHora: string,
+//     duracao: number,
+//     categoria: string,
+//     pauta: string,
+//     participantes: string[],
+//     solicitanteId: string,
+//     salaPresencialId: string,
+//     salaVirtualId: string | null,
+// };
+
+export enum Categoria {
+    VIRTUAL = "virtual",
+    PRESENCIAL = "fisica",
+    HIBRIDA = "hibrida"
+}
+
+export interface CreateReuniao {
+    titulo: string | undefined
+    categoria: Categoria | undefined
+    dataHora: Date | undefined
+    duracao: number | undefined
+    pauta: string | undefined
+    presencial: string | undefined
+    virtual: string | undefined
+    solicitanteEmail: string | undefined
+    participantes: any | undefined
+}
+export interface SalaVirtual {
+    id: string
+    identificacao: string
+    login: string
+    senha: string
+    permissao: number
 }
 
 interface FileWithId {
@@ -68,6 +106,12 @@ export function FormularioReuniao() {
     const clientID = 'zt6lhdUVTteosZ9p7x_NA'
     const redirectUri = encodeURIComponent('http://localhost:5173/zoom')
     const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectUri}`;
+    const [horaDuracao, setHoraDuracao] = useState<number>(0);
+    const [minDuracao, setMinDuracao] = useState<number>(0);
+
+    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
+    const [horaInicial, setHoraInicial] = useState<number>(0);
+    const [minInicial, setMinInicial] = useState<number>(0);
 
     //useEffect - popular combos
 
@@ -309,7 +353,9 @@ export function FormularioReuniao() {
         }
     };
 
-    const sugestaoSala = () => {
+    const sugestaoSala= (e: any) => {
+        const nConvidados = e.target.value
+
         const salasFiltradas = salaPresencial.filter((sala) => {
             return sala.ocupacaoMax >= numConvidados
         })
