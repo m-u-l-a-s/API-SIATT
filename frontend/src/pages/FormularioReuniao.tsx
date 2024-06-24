@@ -264,7 +264,7 @@ export function FormularioReuniao() {
         return salaSelecionada[0].identificacao;
     }
 
-    const sendEmail = async () => {
+    const sendEmail = async (joinUrl ?: string) => {
         let identificacaoSala = findReuniao(salaPresencialSelecionada)
         let bodyRequest: IBodyEmail = {
             emails: emails,
@@ -273,9 +273,9 @@ export function FormularioReuniao() {
             duracao: `${horaDuracao}:${minDuracao}`,
             pauta: `${pauta}`,
             titulo: titulo,
-
             categoria: form,
             sala: identificacaoSala,
+            link : joinUrl
         }
         console.log(bodyRequest)
 
@@ -327,7 +327,7 @@ export function FormularioReuniao() {
             console.log("Erro: " + error)
         }
 
-        sendEmail();
+        sendEmail(join_url);
     }
     const salvarArquivos = (idReuniao: string) => {
         for (let anexo of files) {

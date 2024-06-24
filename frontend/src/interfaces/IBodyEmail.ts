@@ -6,5 +6,6 @@ export interface IBodyEmail {
     pauta : string,
     titulo : string,
     categoria : string,
-    sala : string
+    sala ?: string
+    link ?: string
 }

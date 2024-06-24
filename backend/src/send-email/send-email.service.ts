@@ -8,6 +8,16 @@ export class SendEmailService {
     constructor(private readonly mailerService: MailerService) { }
 
     async send(body: IBodyEmail) {
+        let link = ""
+        let sala = ""
+
+        if (body.link) {
+            link = `<p> <b>Link da reunião: </b> ${body.link}</p>`
+        }
+
+        if (body.sala) {
+            sala = `<p> <b>Sala: </b> ${body.sala}</p>`
+        } 
         await this.mailerService.sendMail(
             {
                 to: body.emails,
@@ -19,7 +29,8 @@ export class SendEmailService {
                             <p> <b>Hora: </b> ${body.hora}</p>
                             <p> <b>Duração: </b> ${body.duracao}</p>
                             <p> <b>Tipo: </b> ${body.categoria}</p>
-                            <p> <b>Sala: </b> ${body.sala}</p>
+                            ${sala}
+                            ${link}
                         `
             })
             .then((message) => {
