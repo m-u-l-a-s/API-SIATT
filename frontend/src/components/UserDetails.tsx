@@ -7,6 +7,8 @@ import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
 import api from '../services/api';
 import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { FaEdit } from 'react-icons/fa';
 
 interface UserDetailsProps {
     id: string;
@@ -21,6 +23,7 @@ interface UserDetailsProps {
 const UserDetails: React.FC<UserDetailsProps> = (props: UserDetailsProps) => {
     const [showModal, setShowModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const nav = useNavigate()
 
     const auth = useAuth();
     const handleInfoIconClick = () => {
@@ -37,7 +40,7 @@ const UserDetails: React.FC<UserDetailsProps> = (props: UserDetailsProps) => {
     };
 
     const handleEdit = (user: UserDetailsProps) => {
-        navigate(`/Home/EditarUsuario/${props.id}`, { state: { key: user } });
+        nav(`/Home/EditarUsuario/${props.id}`, { state: { key: user } });
         console.log(props.id);
     };
 

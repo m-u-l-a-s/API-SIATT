@@ -18,7 +18,7 @@ export enum Tipo {
 const ListarCadastrados = () => {
     const [currentTab, setCurrentTab] = useState<Tipo>(Tipo.USUARIO);
     const [usuarios, setUsuarios] = useState<any[]>([]);
-    const [salas, setSalas] = useState<{ presencial: any[]; virtual: any[] }>({ presencial: [], virtual: [] });
+    const [salas, setSalas] = useState<{ presencial: any[]}>({ presencial: []});
     const [reunioes, setReunioes] = useState<any[]>([]);
     const [usuario, setUsuario] = useState<IUsuario | undefined>();
     const auth = useAuth();
@@ -59,18 +59,16 @@ const ListarCadastrados = () => {
 
     const getSalas = async () => {
         try {
-            const [presencialResponse, virtualResponse] = await Promise.all([
+            const [presencialResponse] = await Promise.all([
                 api.get(`sala-presencial`),
-                api.get(`sala-virtual`)
             ]);
 
-            if (presencialResponse.status !== 200 || virtualResponse.status !== 200) {
+            if (presencialResponse.status !== 200 ) {
                 throw new Error("Erro ao realizar a requisição!");
             }
 
             const data = {
                 presencial: presencialResponse.data,
-                virtual: virtualResponse.data
             };
             setSalas(data);
         } catch (error) {
@@ -129,17 +127,6 @@ const ListarCadastrados = () => {
                             permissao={sala.permissao}
                             ocupacaoMax={sala.ocupacaoMax}
                             local={sala.local}
-                        />
-                    ))}
-                    <h2 className="font-bold p-2">Salas Virtuais</h2>
-                    {salas.virtual.map((sala) => (
-                        <SalaDetails
-                            key={sala.id}
-                            id={sala.id}
-                            identificacao={sala.identificacao}
-                            login={sala.login}
-                            senha={sala.senha}
-                            permissao={sala.permissao}
                         />
                     ))}
                 </div>
