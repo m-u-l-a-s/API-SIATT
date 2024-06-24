@@ -2,13 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { MdAccessTime } from "react-icons/md";
 
 interface propsData{
+    horaInicial: string,
+    minutoInicial: string,
     horaCallBack:Function,
     minCallBack:Function
   }
 
 const TimeChoser= (props:propsData) => {
-    const [hour, setHour] = useState("00");
-    const [minute, setMinute] = useState("00");
+    const [hour, setHour] = useState(props.horaInicial);
+    const [minute, setMinute] = useState(props.minutoInicial);
     const [showTimePicker, setShowTimePicker] = useState(false);
     const timePickerRef = useRef<HTMLDivElement>(null);
 
@@ -42,6 +44,11 @@ const TimeChoser= (props:propsData) => {
         };
     }, []);
 
+    useEffect(() => {
+        setHour(props.horaInicial);
+        setMinute(props.minutoInicial);
+    }, [props.horaInicial, props.minutoInicial]);
+
     return (
         <div className="relative inline-block text-left" ref={timePickerRef}>
             <div className="inline-block">
@@ -51,7 +58,7 @@ const TimeChoser= (props:propsData) => {
             <input
                 type="text"
                 readOnly
-                className="w-24 rounded-lg border border-gray-300 text-gray-900 px-3 py-2
+                className="w-24 rounded-lg border border-gray-300 primary px-3 py-2
                 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-indigo-500
                 focus:border-indigo-500 sm:text-sm"
                 value={`${hour}:${minute}`}

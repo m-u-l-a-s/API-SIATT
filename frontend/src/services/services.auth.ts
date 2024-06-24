@@ -42,5 +42,13 @@ export const authService = {
             return decode?.email
         }
         return null
+    },
+
+    setZoomToken(data : string){
+        localStorage.setItem("ZOOM_TOKEN",data)
+    },
+
+    getZoomToken(){
+        return localStorage.getItem("ZOOM_TOKEN")
     }
 }

@@ -1,33 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Req, StreamableFile } from '@nestjs/common';
 import { ReuniaoAnexosService } from './reuniao-anexos.service';
-import { CreateReuniaoAnexoDto } from './dto/create-reuniao-anexo.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import multerConfig from './multer-config';
+import { Request } from 'express';
+import { bodyFile } from './dto/anexo.dto';
+import * as fs from 'fs'
+import { join } from 'path';
+import { ReadStream } from 'typeorm/platform/PlatformTools';
+import { ReuniaoAnexo } from './entities/reuniao-anexo.entity';
 
 @Controller('reuniao-anexos')
 export class ReuniaoAnexosController {
-  constructor(private readonly reuniaoAnexosService: ReuniaoAnexosService) {}
+  constructor(private readonly reuniaoAnexosService: ReuniaoAnexosService) { }
 
-  @Post()
-  create(@Body() createReuniaoAnexoDto: CreateReuniaoAnexoDto) {
-    return this.reuniaoAnexosService.create(createReuniaoAnexoDto);
+  @Post("upload/:email")
+  @UseInterceptors(FileInterceptor('file', multerConfig))
+  uploadAnexo(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: bodyFile,
+    @Param('email') email: string,
+    @Req() req: Request
+  ) {
+    return this.reuniaoAnexosService.salvarArquivo(req, body.reuniaoId, file);
   }
 
-  @Get()
-  findAll() {
-    return this.reuniaoAnexosService.findAll();
+  @Get("reuniao/:idReuniao")
+  async getAnexosByReuniao(
+    @Param('idReuniao') idReuniao: string
+  ) : Promise<ReuniaoAnexo[]> {
+    return this.reuniaoAnexosService.getAnexos(idReuniao)
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reuniaoAnexosService.findOne(+id);
+  @Get(":email/:arquivo")
+  getAnexo(
+    @Param('email') email: string,
+    @Param('arquivo') arquivo: string
+  ): StreamableFile {
+    const file: fs.ReadStream = fs.createReadStream(join(process.cwd(), `/anexos/${email}/${arquivo}`));
+    return new StreamableFile(file);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReuniaoAnexoDto:  CreateReuniaoAnexoDto) {
-    return this.reuniaoAnexosService.update(+id, updateReuniaoAnexoDto);
+  //Rota para excluir todos os anexos associados a uma reunião
+  @Delete("deleteAnexos/:idReuniao")
+  async excluirAnexos(
+    @Param('idReuniao') idReuniao: string
+  ) {
+    return this.reuniaoAnexosService.excluirAnexos(idReuniao)
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.reuniaoAnexosService.remove(+id);
-  }
+  
 }

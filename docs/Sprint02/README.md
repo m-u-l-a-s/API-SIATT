@@ -28,6 +28,14 @@
 
 <br>
 
+<br>
+
+**Vídeo de Apresentação da Sprint 2**
+
+[Assista ao vídeo no YouTube](https://www.youtube.com/watch?v=7FhvYs1fNTE).
+
+<br>
+
 Na segunda sprint do projeto, nossa equipe implementou algumas funcionalidades essenciais para a operacionalização do sistema. Este relatório destaca as atividades realizadas:
 
 
@@ -49,6 +57,7 @@ Na segunda sprint do projeto, nossa equipe implementou algumas funcionalidades e
 
 
 <br>
+
 
 
 

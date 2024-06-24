@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ReuniaoService } from './reuniao.service';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
+import { ReuniaoAnexosService } from 'src/reuniao-anexos/reuniao-anexos.service';
 
 interface UserRequest{
   email : string
@@ -8,7 +9,8 @@ interface UserRequest{
 
 @Controller('reuniao')
 export class ReuniaoController {
-  constructor(private readonly reuniaoService: ReuniaoService) {}
+  constructor(private readonly reuniaoService: ReuniaoService,
+    private readonly reuniaoAnexoService: ReuniaoAnexosService) {}
 
   @Post("agendar")
   async create(@Body() createReuniaoDto : CreateReuniaoDto){
@@ -50,14 +52,19 @@ export class ReuniaoController {
     return this.reuniaoService.findAllHibridoByEmail(email);
   }
 
-  @Get("user")
-  async findAllByEmail(@Body() user : UserRequest){
-    return await this.reuniaoService.findAllByEmail(user.email);
+  @Get(":email")
+  async findAllByEmail(@Param("email") email : string ){
+    return await this.reuniaoService.findAllByEmail(email);
   }
 
-  @Get(':id')
+  @Get('id/:id')
   findOne(@Param('id') id: string) {
     return this.reuniaoService.findOne(id);
+  }
+
+  @Get('/dataDia/:dataDia')
+  async findAllByDate(@Param('dataDia') dataDia:string){
+    return await this.reuniaoService.findAllByDate(dataDia);
   }
 
   @Put(':id')
@@ -67,6 +74,7 @@ export class ReuniaoController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
+    this.reuniaoAnexoService.excluirAnexos(id)
     return this.reuniaoService.remove(id);
   }
 }

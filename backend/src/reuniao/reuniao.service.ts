@@ -5,7 +5,7 @@ import { Categoria, ReuniaoEntity } from './entities/reuniao.entity';
 import { Repository } from 'typeorm';
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { SalaPresencialService } from 'src/sala-presencial/sala-presencial.service';
-import { SalaVirtualService } from 'src/sala-virtual/sala-virtual.service';
+import { SalaPresencialEntity } from 'src/sala-presencial/entities/sala-presencial.entity';
 
 @Injectable()
 export class ReuniaoService {
@@ -15,7 +15,6 @@ export class ReuniaoService {
     private readonly reuniaoRepository: Repository<ReuniaoEntity>,
     private readonly usuarioService: UsuarioService,
     private readonly salaPresencialService: SalaPresencialService,
-    private readonly salaVirtualService: SalaVirtualService
   ) { }
 
   async criarReuniaoEntity(reuniaoDTO: CreateReuniaoDto): Promise<ReuniaoEntity> {
@@ -34,43 +33,73 @@ export class ReuniaoService {
     return reuniao
   }
 
+  async criarReuniaoFisica(reuniao: ReuniaoEntity, reuniaoDTO: CreateReuniaoDto) {
+    const salaPresencial: SalaPresencialEntity = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
+    if (salaPresencial.ocupacaoMax < reuniaoDTO.participantes.lenght) {
+      throw new Error("Número de participantes excede a ocupação máxima da sala")
+    }
+    reuniao.salaPresencial = salaPresencial;
+  }
+
   async createReuniao(reuniaoDTO: CreateReuniaoDto) {
     const reuniao = await this.criarReuniaoEntity(reuniaoDTO)
 
     if (reuniao.solicitante == null) {
-      return "Solicitante não encontrado"
+      throw new Error("Solicitante não encontrado");
     }
 
-    try {
-      if (reuniaoDTO.virtual !== null) { reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual) }
-      if (reuniaoDTO.presencial !== null) {
-        reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
-      }
-      if (reuniao.salaPresencial !== null && reuniaoDTO.participantes.lenght > reuniao.salaPresencial.ocupacaoMax) {
-        return "O numero de participantes excede o tamanho da sala"
-      }
-      return await this.reuniaoRepository.save(reuniao);
-    } catch (error) {
-      return error.message
+    switch (reuniaoDTO.categoria) {
+      case Categoria.FISICA:
+        await this.criarReuniaoFisica(reuniao, reuniaoDTO)
+        reuniao.joinUrl = ""
+        break;
+
+      case Categoria.HIBRIDA:
+        await this.criarReuniaoFisica(reuniao, reuniaoDTO)
+        reuniao.joinUrl = reuniaoDTO.joinUrl
+        break;
+
+      case Categoria.VIRTUAL:
+        reuniao.joinUrl = reuniaoDTO.joinUrl
+        break;
+
+      default:
+        throw new Error("Nenhuma tipo de reunião foi selecionado")
     }
+
+    return await this.reuniaoRepository.save(reuniao)
   }
 
   async update(id: string, reuniaoDTO: CreateReuniaoDto) {
-    const reuniao = await this.findOne(id);
+    const reuniao: ReuniaoEntity = await this.reuniaoRepository.findOneBy({ id: id });
     if (reuniao) {
-      reuniao.titulo = reuniaoDTO.titulo;
-      reuniao.categoria = reuniaoDTO.categoria;
-      reuniao.dataHora = reuniaoDTO.dataHora;
-      reuniao.duracao = reuniaoDTO.duracao;
-      reuniao.pauta = reuniaoDTO.pauta;
-      reuniao.participantes = reuniaoDTO.participantes;
-      if (reuniaoDTO.presencial !== null) { reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial) }
-      if (reuniaoDTO.virtual !== null ) { reuniao.salaVirtual = await this.salaVirtualService.findOne(reuniaoDTO.virtual); }
-      reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
-      
-      return await this.reuniaoRepository.update(id, reuniao);
+      try {
+        reuniao.titulo = reuniaoDTO.titulo;
+        reuniao.categoria = reuniaoDTO.categoria;
+        reuniao.dataHora = reuniaoDTO.dataHora;
+        reuniao.duracao = reuniaoDTO.duracao;
+        reuniao.pauta = reuniaoDTO.pauta;
+        reuniao.participantes = reuniaoDTO.participantes;
+
+        if (reuniaoDTO.presencial !== "") {
+          try {
+            reuniao.salaPresencial = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
+        try {
+          reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
+        } catch (error) {
+          console.log(error)
+        }
+
+        return await this.reuniaoRepository.save(reuniao);
+      } catch (error) {
+        console.log(error)
+      }
     }
-    return
   }
 
   async findAllPresencial() {
@@ -88,7 +117,7 @@ export class ReuniaoService {
     return this.reuniaoRepository.query(query);
   }
 
-  async findAllPresencialByEmail(email : string) {
+  async findAllPresencialByEmail(email: string) {
     const query = `SELECT * FROM reuniao r
     INNER JOIN usuario u ON u.id = r.solicitanteId 
     WHERE r.categoria = 'fisica' AND u.email =  '${email}' OR 
@@ -96,7 +125,7 @@ export class ReuniaoService {
     return this.reuniaoRepository.query(query);
   }
 
-  async findAllOnlineByEmail(email : string) {
+  async findAllOnlineByEmail(email: string) {
     const query = `SELECT * FROM reuniao r
     INNER JOIN usuario u ON u.id = r.solicitanteId 
     WHERE r.categoria = 'virtual' AND u.email =  '${email}' OR 
@@ -104,7 +133,7 @@ export class ReuniaoService {
     return this.reuniaoRepository.query(query);
   }
 
-  async findAllHibridoByEmail(email : string) {
+  async findAllHibridoByEmail(email: string) {
     const query = `SELECT * FROM reuniao r
     INNER JOIN usuario u ON u.id = r.solicitanteId 
     WHERE r.categoria = 'hibrida' AND u.email =  '${email}' OR 
@@ -120,10 +149,14 @@ export class ReuniaoService {
   }
 
   async findOne(id: string) {
-    return this.reuniaoRepository.findOneBy({ id: id });
+    const query = `select * from reuniao r where r.id = '${id}';`;
+    return await this.reuniaoRepository.query(query)
   }
 
-
+  async findAllByDate(dataDia: string){
+    const query : string = `SELECT * FROM reuniao r where r.dataHora between '${dataDia} 00:00:00' and '${dataDia} 23:59:59';`
+    return await this.reuniaoRepository.query(query);
+  }
 
   remove(id: string) {
     const reuniao = this.reuniaoRepository.findOneBy({ id: id });
@@ -133,7 +166,7 @@ export class ReuniaoService {
     return
   }
 
-  async find(){
+  async find() {
     return await this.reuniaoRepository.find();
   }
 }

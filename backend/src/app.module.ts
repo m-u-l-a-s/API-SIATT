@@ -4,12 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { ReuniaoModule } from './reuniao/reuniao.module';
 import { ReuniaoAnexosModule } from './reuniao-anexos/reuniao-anexos.module';
-import { SalaVirtualModule } from './sala-virtual/sala-virtual.module';
 import { SalaPresencialModule } from './sala-presencial/sala-presencial.module';
 import { DataGuard } from './data.guard';
 import { MockDataBase } from './MockDataBase/mock-database.service';
 import { MockDataBaseModule } from './MockDataBase/mock-database.module';
 import { AuthModule } from './auth/auth.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { SendEmailModule } from './send-email/send-email.module';
+import { ZoomModule } from './zoom/zoom.module';
 
 @Module({
   imports: [
@@ -27,18 +29,34 @@ import { AuthModule } from './auth/auth.module';
     UsuarioModule,
     ReuniaoModule,
     ReuniaoAnexosModule,
-    SalaVirtualModule,
     SalaPresencialModule,
     MockDataBaseModule,
-    AuthModule
+    AuthModule,
+    MailerModule.forRoot({
+      transport : {
+        host : 'smtp.mailgun.org',
+        secure : false,
+        port : 587,
+        auth : {
+          user : process.env.USER_EMAIL,
+          pass : process.env.PASSWORD_EMAIL
+        },
+        ignoreTLS : true
+      },
+      defaults : {
+        from : ''
+      }
+    }),
+    SendEmailModule,
+    ZoomModule,
   ],
   controllers: [],
   providers: [DataGuard, MockDataBase],
 })
-export class AppModule implements OnModuleInit{
-  constructor(private readonly dataGuard : DataGuard){}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly dataGuard: DataGuard) { }
 
   async onModuleInit() {
-    await this.dataGuard.canActivate(null);   
+    await this.dataGuard.canActivate(null);
   }
 }
