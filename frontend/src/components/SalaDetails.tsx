@@ -7,6 +7,8 @@ import InformationModal from './InformationModal';
 import ConfirmationModal from './ConfirmationModal';
 import api from '../services/api';
 import useAuth from '../hooks/useAuth';
+import { FaEdit } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 interface SalaDetailsProps {
     id: string;
@@ -22,6 +24,7 @@ interface SalaDetailsProps {
 const SalaDetails: React.FC<SalaDetailsProps> = (props: SalaDetailsProps) => {
     const [showModal, setShowModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const nav = useNavigate();
 
     const auth = useAuth();
 
@@ -38,10 +41,10 @@ const SalaDetails: React.FC<SalaDetailsProps> = (props: SalaDetailsProps) => {
         window.location.reload();
     };
 
-    // const handleEdit = (sala: SalaDetailsProps) => {
-    //     navigate(`/Home/EditarSala/${props.id}`, { state: { key: sala } });
-    //     console.log(props.id);
-    // };
+    const handleEdit = (sala: SalaDetailsProps) => {
+        nav(`/Home/EditarSala/${props.id}`, { state: { key: sala } });
+        console.log(props.id);
+    };
 
     return (
         <div className="sala-item bg-base-300 m-2 rounded-md">
@@ -83,9 +86,9 @@ const SalaDetails: React.FC<SalaDetailsProps> = (props: SalaDetailsProps) => {
 
                 {auth?.user.admin && (
                     <>
-                        {/* <li className='p-2 flex' title='Editar sala' style={{ cursor: 'pointer' }} onClick={() => handleEdit(props)}>
+                        <li className='p-2 flex' title='Editar sala' style={{ cursor: 'pointer' }} onClick={() => handleEdit(props)}>
                             <FaEdit className='text-2xl mr-2 align-middle' />
-                        </li> */}
+                        </li> 
                         <li className='p-2 flex' title='Excluir sala' style={{ cursor: 'pointer' }} onClick={() => setDeleteModal(true)}>
                             <MdDelete className='text-3xl mr-2 align-middle' />
                         </li>

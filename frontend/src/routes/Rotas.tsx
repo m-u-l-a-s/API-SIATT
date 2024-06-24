@@ -10,6 +10,7 @@ import { EditarReuniao } from "../pages/EditarReuniao";
 import ListarCadastrados from "../pages/ListarCadastrados";
 import ZoomRedirect from "../components/ZoomRedirect";
 import EditarUsuario from "../pages/EditarUsuario";
+import { EditarSala } from "../pages/EditarSala";
 
 
 
@@ -28,12 +29,15 @@ export const Rotas = () => {
       <Route path="/Home/EditarReuniao/:id" element={<IsLogged page={EditarReuniao} />} />
       <Route path="/zoom" element={<ZoomRedirect/>} />
       <Route path="/Home/EditarUsuario/:id" element={<IsLogged page={EditarUsuario} />} />
+      <Route path="/Home/EditarSala/:id" element={<IsLogged page={EditarSala} />} />
       {/* Rotas De usuários logados */}
 
       {/* Rotas publicas */}
       <Route path="*" element={<Login />} />
       <Route path="/Login" element={<Login />} />
       {/* Rotas publicas */}
+
+      
 
     </Routes>
   );
