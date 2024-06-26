@@ -31,6 +31,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
+    "docx": "^8.5.0",
     "handlebars": "^4.7.8",
     "mysql2": "^3.9.7",
     "nodemailer": "^6.9.13",

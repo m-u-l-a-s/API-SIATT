@@ -20,8 +20,9 @@ type Meeting = {
     solicitanteId: string,
     salaPresencialId: string,
     joinUrl: string | null,
-    login: string;
-    senha: string;
+    AtaUrl: string | null,
+    login: string,
+    senha: string,
 };
 
 const PagAgendamento = () => {
@@ -30,11 +31,13 @@ const PagAgendamento = () => {
     const [usuario, setUsuario] = useState<IUsuario>();
     const auth = useAuth()
     // const [activeButton, setActiveButton] = useState<string>('');
+    
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const user = await api.get(`usuario/email/${authService.decodificarToken(auth?.token)}`);
+                console.log(user)
                 if (user.status !== 200) {
                     auth?.logout();
                     throw new Error("Não foi possível autenticar usuário")
@@ -58,11 +61,25 @@ const PagAgendamento = () => {
                 console.error("Erro: ", error);
             }
         };
+        reunioesDetails = reunioesAgendadas.map(reuniao => {
+            const dataHoraArray = separaDataHora(reuniao.dataHora);
+            if (dataHoraArray != null) {
+                const data = dataHoraArray[0];
+                const hora = dataHoraArray[1];
+                return { ...reuniao, data, hora };
+            }
+            return { ...reuniao, data: '0', hora: '0' };
+        });
+    
+        // Filtrar reuniões baseado no conteúdo do SearchInput:
+        filteredReunioes = reunioesDetails.filter(reuniao =>
+            reuniao.titulo.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
         fetchData();
     }, []);
 
-    const reunioesDetails = reunioesAgendadas.map(reuniao => {
+    let reunioesDetails = reunioesAgendadas.map(reuniao => {
         const dataHoraArray = separaDataHora(reuniao.dataHora);
         if (dataHoraArray != null) {
             const data = dataHoraArray[0];
@@ -73,10 +90,10 @@ const PagAgendamento = () => {
     });
 
     // Filtrar reuniões baseado no conteúdo do SearchInput:
-    const filteredReunioes = reunioesDetails.filter(reuniao =>
+    let filteredReunioes = reunioesDetails.filter(reuniao =>
         reuniao.titulo.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
+
     // const handleFilterClick = (filterType: string) => {
     //     setActiveButton(filterType);
     //     // You can apply additional logic here based on the filter type
@@ -125,6 +142,7 @@ const PagAgendamento = () => {
                             joinUrl={reuniao.joinUrl}
                             idSolicitante={reuniao.solicitanteId}
                             idUsuario={usuario?.id}
+                            AtaUrl={reuniao.AtaUrl}
                         />
                     ))}
                 </div>

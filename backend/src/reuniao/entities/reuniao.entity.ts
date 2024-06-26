@@ -1,7 +1,7 @@
 import { ReuniaoAnexo } from "src/reuniao-anexos/entities/reuniao-anexo.entity";
 import { SalaPresencialEntity } from "src/sala-presencial/entities/sala-presencial.entity";
 import { UsuarioEntity } from "src/usuario/entities/usuario.entity";
-import { Entity, Column, PrimaryGeneratedColumn,ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn,ManyToOne, OneToMany, OneToOne } from "typeorm";
 
 export enum Categoria {
     VIRTUAL = "virtual",
@@ -45,4 +45,6 @@ export class ReuniaoEntity {
     @ManyToOne(() => SalaPresencialEntity , salaPresencial => salaPresencial.reunioes)
     salaPresencial : SalaPresencialEntity
 
+    @Column()
+    AtaUrl ?: string
 }

@@ -70,6 +70,8 @@ const ListarCadastrados = () => {
             const data = {
                 presencial: presencialResponse.data,
             };
+
+            console.log(data)
             setSalas(data);
         } catch (error) {
             console.error("Ocorreu um erro", error);
