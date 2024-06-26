@@ -2,7 +2,7 @@ import { Categoria } from "./CreateReuniaoDto";
 
 export interface MeetingDetailProps {
     // key: string;
-    id: string;
+    id: string | undefined | null;
     titulo: string;
     pauta: string;
     date: string;
@@ -13,5 +13,6 @@ export interface MeetingDetailProps {
     idSolicitante: string;
     idUsuario: string | undefined
     participantes: string[]
-    joinUrl ?: string | null
+    joinUrl ?: string | undefined | null
+    AtaUrl : string | undefined | null
 }

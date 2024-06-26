@@ -10,6 +10,7 @@ export interface CreateReuniao {
     joinUrl ?: string
     solicitanteEmail: string | undefined
     participantes: any | undefined
+    AtaUrl ?: string
 }
 
 export enum Categoria {

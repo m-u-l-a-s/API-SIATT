@@ -13,16 +13,17 @@ import { TextField } from "../components/TextInput";
 import { TextArea } from "../components/TextArea";
 import { InputListField } from "../components/InputListField";
 import { SalaPresencial } from "../interfaces/ISalaPresencial";
-import { CreateReuniao } from "../interfaces/CreateReuniaoDto";
 import { Categoria } from "../interfaces/CreateReuniaoDto";
 import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
 import { ZoomMeetingDto } from "../interfaces/ZoomMeetingDto";
 import axios from "axios";
 import { IUsuario } from "../interfaces/usuario";
 import separaDataHora from "../control/utils";
+import { CreateReuniao } from "../interfaces/CreateReuniaoDto";
 
 
 export interface Reuniao {
+    joinUrl: string | null | undefined;
     categoria: string
     data: string
     dataHora: string
@@ -35,45 +36,11 @@ export interface Reuniao {
     salaVirtualId: string
     solicitanteId: string
     titulo: string
-=======
-
-// type Meeting = {
-//     id: string,
-//     titulo: string,
-//     dataHora: string,
-//     duracao: number,
-//     categoria: string,
-//     pauta: string,
-//     participantes: string[],
-//     solicitanteId: string,
-//     salaPresencialId: string,
-//     salaVirtualId: string | null,
-// };
-
-export enum Categoria {
-    VIRTUAL = "virtual",
-    PRESENCIAL = "fisica",
-    HIBRIDA = "hibrida"
+    AtaUrl?: string
 }
 
-export interface CreateReuniao {
-    titulo: string | undefined
-    categoria: Categoria | undefined
-    dataHora: Date | undefined
-    duracao: number | undefined
-    pauta: string | undefined
-    presencial: string | undefined
-    virtual: string | undefined
-    solicitanteEmail: string | undefined
-    participantes: any | undefined
-}
-export interface SalaVirtual {
-    id: string
-    identificacao: string
-    login: string
-    senha: string
-    permissao: number
-}
+
+
 
 interface FileWithId {
     id: string;
@@ -81,12 +48,6 @@ interface FileWithId {
 }
 
 export function FormularioReuniao() {
-    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
-    const [horaInicial, setHoraInicial] = useState<number>(0);
-    const [minInicial, setMinInicial] = useState<number>(0);
-    const [horaDuracao, setHoraDuracao] = useState<number>(0);
-    const [minDuracao, setMinDuracao] = useState<number>(0);
-
     const [titulo, setTitulo] = useState<string>("")
     const [pauta, setPauta] = useState<string>("")
     const [numConvidados, setNumConvidados] = useState<number>(0)
@@ -264,7 +225,7 @@ export function FormularioReuniao() {
         return salaSelecionada[0].identificacao;
     }
 
-    const sendEmail = async (joinUrl ?: string) => {
+    const sendEmail = async (joinUrl?: string) => {
         let identificacaoSala = findReuniao(salaPresencialSelecionada)
         let bodyRequest: IBodyEmail = {
             emails: emails,
@@ -275,7 +236,7 @@ export function FormularioReuniao() {
             titulo: titulo,
             categoria: form,
             sala: identificacaoSala,
-            link : joinUrl
+            link: joinUrl
         }
         console.log(bodyRequest)
 
@@ -314,7 +275,8 @@ export function FormularioReuniao() {
             salapresencial: salaPresencialSelecionada,
             solicitanteEmail: solicitanteEmail,
             participantes: emails,
-            joinUrl: join_url
+            joinUrl: join_url,
+            AtaUrl: "a"
         }
 
         try {
@@ -322,7 +284,11 @@ export function FormularioReuniao() {
                 console.log(resp)
                 const idReuniao = resp.data.id;
                 await salvarArquivos(idReuniao)
-            }).then(() => setAlertModal(true))
+                await api.post(`reuniao/ata/${resp.data.id}`, reuniao)
+            }).then(() => {
+                setAlertModal(true)
+            }
+            )
         } catch (error) {
             console.log("Erro: " + error)
         }
@@ -353,7 +319,7 @@ export function FormularioReuniao() {
         }
     };
 
-    const sugestaoSala= (e: any) => {
+    const sugestaoSala = (e: any) => {
         const nConvidados = e.target.value
 
         const salasFiltradas = salaPresencial.filter((sala) => {
@@ -466,7 +432,7 @@ export function FormularioReuniao() {
                                         <input
                                             onChange={async (e) => {
                                                 await setNumConvidados(parseInt(e.target.value))
-                                                sugestaoSala()
+                                                sugestaoSala(e)
                                             }
                                             }
                                             type="number"

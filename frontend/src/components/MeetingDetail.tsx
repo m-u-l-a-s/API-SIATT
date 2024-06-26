@@ -30,7 +30,8 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
         setShowModal(false);
     };
 
-    const deleteMeeting = async () => {
+    const deleteMeeting = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
         await api.delete(`reuniao/${props.id}`);
         window.location.reload();
     };
@@ -66,13 +67,16 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                     <CiCalendarDate className='text-2xl mr-2' title='Data da reunião' style={{ cursor: 'pointer' }} /> {props.date}
                 </li>
                 <li className='p-2 flex'> {props.time} </li>
-                <li className='p-2 flex'> <CiLocationOn className='text-2xl mr-2' title='Local da reunião' style={{ cursor: 'pointer' }} />{props.categoria}</li>  
-                <li className='p-2 flex' title='Fazer download da ata' style={{ cursor: 'pointer' }}><FaFileDownload onClick={(e) => getAnexos(props.id, e)} className='text-2xl mr-2 align-middle' /></li>
+                <li className='p-2 flex'> <CiLocationOn className='text-2xl mr-2' title='Local da reunião' style={{ cursor: 'pointer' }} />{props.categoria}</li>
+                <li className='p-2 flex' title='Fazer download dos arquvos da reuniao' style={{ cursor: 'pointer' }}><FaFileDownload onClick={(e) => getAnexos(props.id, e)} className='text-2xl mr-2 align-middle' /></li>
+                {props.AtaUrl && (
+                    <li className='p-2 flex' title='Fazer download da ata' style={{ cursor: 'pointer' }}><a href={props.AtaUrl}><FaFileDownload className='text-2xl mr-2 align-middle' /></a></li>
+                )}
                 {props.joinUrl && (
                     <li className='p-2 flex' ><a href={props.joinUrl} target='_blank' ><FaExternalLinkAlt className='text-2xl mr-2' title='Link da reuniao' style={{ cursor: 'pointer' }} /></a></li>
                 )}
                 <li className='p-2 flex ml-auto' title='Mais informações' style={{ cursor: 'pointer' }} onClick={handleInfoIconClick}><BsInfoCircleFill className='text-2xl mr-2 align-middle' /></li>
-                
+
                 {(props.idSolicitante === props.idUsuario || auth?.user?.admin) && (
                     <li className='p-2 flex' title='Editar reunião' style={{ cursor: 'pointer' }} onClick={() => handleEditar(props)}><FaEdit className='text-2xl mr-2 align-middle' /></li>
                 )}
@@ -86,7 +90,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                 <ConfirmationModal confirmText='Excluir' cancelText='Cancelar' message='Tem certeza que deseja excluir esta reunião?' onCancel={() => setDeleteModal(false)} onConfirm={deleteMeeting} />
             )}
             {showModal && (
-                
+
                 <MeetingDetailsModal
                     categoria={props.categoria}
                     titulo={props.titulo}

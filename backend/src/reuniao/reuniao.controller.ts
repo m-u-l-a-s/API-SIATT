@@ -1,7 +1,11 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, StreamableFile, Res } from '@nestjs/common';
 import { ReuniaoService } from './reuniao.service';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 import { ReuniaoAnexosService } from 'src/reuniao-anexos/reuniao-anexos.service';
+import * as fs from 'fs'
+import * as path from 'path'
+import { join } from 'path';
+import { Response } from 'express';
 
 interface UserRequest{
   email : string
@@ -76,5 +80,24 @@ export class ReuniaoController {
   remove(@Param('id') id: string) {
     this.reuniaoAnexoService.excluirAnexos(id)
     return this.reuniaoService.remove(id);
+  }
+
+  @Get("ata/:id")
+  getAta(@Param("id") id : string, @Res() res : Response){
+    const filePath = path.join(join(process.cwd(), `/atas/${id}/ATA_REUNIAO.docx`));
+    const fileName = `ATA_REUNIAO.docx`;
+    const fileStream: fs.ReadStream = fs.createReadStream(filePath)
+    res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    fileStream.pipe(res);
+    
+  }
+
+  @Post("ata/:id")
+  async createAta(
+    @Param("id") id : string,
+    @Body() data : CreateReuniaoDto
+  ){
+    return await this.reuniaoService.createAta(id, data)
   }
 }

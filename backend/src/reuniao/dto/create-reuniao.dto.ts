@@ -11,6 +11,7 @@ export class CreateReuniaoDto
     presencial ?: string
     solicitanteEmail : string
     participantes : any
+    AtaUrl ?: string
 }
 
 
