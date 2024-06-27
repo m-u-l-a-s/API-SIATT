@@ -8,6 +8,10 @@ export class SendEmailController {
 
     @Post()
     async sendEmail(@Body() body : IBodyEmail){
-        return await this.sendEmailService.send(body)
+        try{
+            return await this.sendEmailService.send(body)
+        } catch(error){
+            return error
+        }
     }
 }

@@ -20,6 +20,7 @@ import axios from "axios";
 import { IUsuario } from "../interfaces/usuario";
 import separaDataHora from "../control/utils";
 import { CreateReuniao } from "../interfaces/CreateReuniaoDto";
+import { join } from "path";
 
 
 export interface Reuniao {
@@ -226,7 +227,10 @@ export function FormularioReuniao() {
     }
 
     const sendEmail = async (joinUrl?: string) => {
-        let identificacaoSala = findReuniao(salaPresencialSelecionada)
+        let identificacaoSala = ""
+        if (salaPresencialSelecionada) {
+            identificacaoSala = findReuniao(salaPresencialSelecionada)
+        }
         let bodyRequest: IBodyEmail = {
             emails: emails,
             data: formatarData(getDataCombo()),
@@ -238,19 +242,15 @@ export function FormularioReuniao() {
             sala: identificacaoSala,
             link: joinUrl
         }
-        console.log(bodyRequest)
 
-        try {
-            await api.post("sendEmail", bodyRequest).then(resp => {
-                console.log(resp)
-            }).catch(erro => {
-                console.log(erro)
-            })
-        } catch (error) {
-            console.log(`Erro: ${error}`)
-        }
+        await api.post("sendEmail", bodyRequest).then(resp => {
+            console.log(resp)
+        }).catch(erro => {
+            console.log(erro)
+        })
+
     }
-    const saveForm = (join_url?: string) => {
+    const saveForm = async (join_url?: string) => {
 
         const solicitanteEmail = authService.decodificarToken(authService.getToken());
         if (!solicitanteEmail) {
@@ -285,7 +285,9 @@ export function FormularioReuniao() {
                 const idReuniao = resp.data.id;
                 await salvarArquivos(idReuniao)
                 await api.post(`reuniao/ata/${resp.data.id}`, reuniao)
-            }).then(() => {
+
+            }).then(async () => {
+                await sendEmail(join_url)
                 setAlertModal(true)
             }
             )
@@ -293,7 +295,6 @@ export function FormularioReuniao() {
             console.log("Erro: " + error)
         }
 
-        sendEmail(join_url);
     }
     const salvarArquivos = (idReuniao: string) => {
         for (let anexo of files) {
@@ -320,8 +321,7 @@ export function FormularioReuniao() {
     };
 
     const sugestaoSala = (e: any) => {
-        const nConvidados = e.target.value
-
+        e.preventDefault()
         const salasFiltradas = salaPresencial.filter((sala) => {
             return sala.ocupacaoMax >= numConvidados
         })
