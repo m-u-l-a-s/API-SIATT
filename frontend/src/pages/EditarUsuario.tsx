@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { api_url } from "../variables";
-import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 //import UserDetails from "../interfaces/UserDetails";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -21,14 +19,13 @@ interface Usuario {
 const EditarUsuario = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [alertModal, setAlertModal] = useState(false)
     const [login, setLogin] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [departamento, setDepartamento] = useState<string>('');
     const [permissao, setPermissao] = useState<string>('');
     const [admin, setAdmin] = useState<boolean>(false)
 
-    const [departamentos, setDepartamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
+    const [departamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
 
 
 
@@ -89,34 +86,6 @@ const EditarUsuario = () => {
         e.preventDefault();
         handleEditarUsuarios(location.state.key.id);
     };
-
-    // const handleEditarUsuarios = async (id: string) => {
-    //     try {
-    //         const updatedUser: Usuario = {
-    //             login,
-    //             email,
-    //             departamento,
-    //             permissao: Number(permissao),
-    //             status: 1,
-    //             admin: Boolean(admin)
-    //         };
-    //         if (senha) {
-    //             updatedUser.senha = senha;
-    //         }
-    //         await api.put(`usuario/${id}`, updatedUser);
-    //        // setAlertModal(true);
-    //         console.log(updatedUser)
-    //     } catch (error) {
-    //         console.error('Erro ao atualizar usuário:', error);
-    //     }
-    // };
-
-
-    const handleModalConfirm = () => {
-        setAlertModal(false);
-        navigate('/home/ListarCadastrados');
-    };
-
 
     return (
 

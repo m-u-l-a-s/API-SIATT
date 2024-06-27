@@ -68,7 +68,9 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                 </li>
                 <li className='p-2 flex'> {props.time} </li>
                 <li className='p-2 flex'> <CiLocationOn className='text-2xl mr-2' title='Local da reunião' style={{ cursor: 'pointer' }} />{props.categoria}</li>
-                <li className='p-2 flex' title='Fazer download dos arquvos da reuniao' style={{ cursor: 'pointer' }}><FaFileDownload onClick={(e) => getAnexos(props.id, e)} className='text-2xl mr-2 align-middle' /></li>
+                {props.id && (
+                    <li className='p-2 flex' title='Fazer download dos arquvos da reuniao' style={{ cursor: 'pointer' }}><FaFileDownload onClick={(e) => getAnexos(props.id, e)} className='text-2xl mr-2 align-middle' /></li>
+                )}
                 {props.AtaUrl && (
                     <li className='p-2 flex' title='Fazer download da ata' style={{ cursor: 'pointer' }}><a href={props.AtaUrl}><FaFileDownload className='text-2xl mr-2 align-middle' /></a></li>
                 )}

@@ -18,12 +18,8 @@ export class SendEmailService {
         if (body.sala) {
             sala = `<p> <b>Sala: </b> ${body.sala}</p>`
         } 
-        await this.mailerService.sendMail(
-            {
-                to: body.emails,
-                from: 'siatt.connect@gmail.com',
-                subject: body.titulo,
-                html: `<h1>${body.titulo}</h1>
+
+        const html = `<h1>${body.titulo}</h1>
                             <h2>${body.pauta}</h2>
                             <p> <b>Data: </b> ${body.data}</p>
                             <p> <b>Hora: </b> ${body.hora}</p>
@@ -32,12 +28,12 @@ export class SendEmailService {
                             ${sala}
                             ${link}
                         `
-            })
-            .then((message) => {
-                return message
-            })
-            .catch((error) => {
-                return error
+        return await this.mailerService.sendMail(
+            {
+                to: body.emails,
+                from: 'siatt.connect@gmail.com',
+                subject: body.titulo,
+                html: html
             })
     }
 }

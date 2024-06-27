@@ -2,7 +2,7 @@ import { Categoria } from "./CreateReuniaoDto";
 
 export interface MeetingDetailProps {
     // key: string;
-    id: string | undefined | null;
+    id: string ;
     titulo: string;
     pauta: string;
     date: string;

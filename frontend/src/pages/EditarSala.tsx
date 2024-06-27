@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { TextField } from "../components/TextInput";
 import { NumberField } from "../components/NumberField";
 import { useLocation, useNavigate } from "react-router-dom";
-import SalaDetails from "../components/SalaDetails";
 import api from "../services/api";
 
 
@@ -20,9 +19,6 @@ interface SalaProps {
 
 
 export function EditarSala (){
-
-    const [id, setId] = useState<string>('');
-
     const [identificacao, setIdentificacao] = useState<string>('');
 
     const [endereco, setEndereco] = useState<string>('');
@@ -62,7 +58,7 @@ export function EditarSala (){
             ocupacaoMax: ocupacaoMax,
             local: local
         }
-        await api.put(`sala-presencial/${id}`, data).then(resp => {
+        await api.put(`sala-presencial/${id}`, data).then(() => {
             navigate ('/home/ListarCadastrados')
         }).catch(error => {console.log(error)})
     }
