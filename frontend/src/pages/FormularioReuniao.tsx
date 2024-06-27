@@ -13,14 +13,12 @@ import { TextField } from "../components/TextInput";
 import { TextArea } from "../components/TextArea";
 import { InputListField } from "../components/InputListField";
 import { SalaPresencial } from "../interfaces/ISalaPresencial";
-import { Categoria } from "../interfaces/CreateReuniaoDto";
 import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
 import { ZoomMeetingDto } from "../interfaces/ZoomMeetingDto";
 import axios from "axios";
 import { IUsuario } from "../interfaces/usuario";
 import separaDataHora from "../control/utils";
-import { CreateReuniao } from "../interfaces/CreateReuniaoDto";
-import { join } from "path";
+import { Categoria, CreateReuniao } from "../interfaces/CreateReuniaoDto";
 
 
 export interface Reuniao {
@@ -520,3 +518,5 @@ export function FormularioReuniao() {
         </>
     )
 }
+
+export { Categoria };

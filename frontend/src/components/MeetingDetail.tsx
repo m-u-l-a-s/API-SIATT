@@ -12,7 +12,6 @@ import { getAnexos } from '../services/getAnexos';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { MeetingDetailsModal } from './MeetingDetailsModal';
 import { Categoria } from '../interfaces/CreateReuniaoDto';
-import { isStringObject } from 'util/types';
 
 
 const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) => {

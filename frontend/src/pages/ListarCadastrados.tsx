@@ -18,7 +18,7 @@ export enum Tipo {
 const ListarCadastrados = () => {
     const [currentTab, setCurrentTab] = useState<Tipo>(Tipo.USUARIO);
     const [usuarios, setUsuarios] = useState<any[]>([]);
-    const [salas, setSalas] = useState<{ presencial: any[]}>({ presencial: []});
+    const [salas, setSalas] = useState<{ presencial: any[] }>({ presencial: [] });
     const [reunioes, setReunioes] = useState<any[]>([]);
     const [usuario, setUsuario] = useState<IUsuario | undefined>();
     const auth = useAuth();
@@ -63,7 +63,7 @@ const ListarCadastrados = () => {
                 api.get(`sala-presencial`),
             ]);
 
-            if (presencialResponse.status !== 200 ) {
+            if (presencialResponse.status !== 200) {
                 throw new Error("Erro ao realizar a requisição!");
             }
 
@@ -148,8 +148,8 @@ const ListarCadastrados = () => {
                             categoria={reuniao.categoria}
                             idSolicitante={reuniao.solicitanteId}
                             idUsuario={usuario?.id}
-                            salaPresencial={reuniao.salaPresencialId ? `Presencial - sala ${reuniao.salaPresencialId}` : `Virtual - sala ${reuniao.salaVirtualId}`}
-                       />
+                            salaPresencial={reuniao.salaPresencialId ? `Presencial - sala ${reuniao.salaPresencialId}` : ''}
+                            AtaUrl={reuniao.AtaUrl} />
                     ))}
                 </div>
             )}
