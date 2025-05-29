@@ -34,6 +34,7 @@
     "docx": "^8.5.0",
     "handlebars": "^4.7.8",
     "mysql2": "^3.9.7",
+    "nest": "^0.1.6",
     "nodemailer": "^6.9.13",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

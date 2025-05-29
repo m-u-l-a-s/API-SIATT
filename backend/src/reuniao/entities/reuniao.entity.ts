@@ -45,6 +45,9 @@ export class ReuniaoEntity {
     @ManyToOne(() => SalaPresencialEntity , salaPresencial => salaPresencial.reunioes)
     salaPresencial : SalaPresencialEntity
 
-    @Column()
+    @Column({nullable: true})
     AtaUrl ?: string
+
+    @Column()
+    zoomMeetingId ?: string
 }

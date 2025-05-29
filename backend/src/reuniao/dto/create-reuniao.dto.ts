@@ -12,6 +12,7 @@ export class CreateReuniaoDto
     solicitanteEmail : string
     participantes : any
     AtaUrl ?: string
+    zommMeetingId ?: number
 }
 
 

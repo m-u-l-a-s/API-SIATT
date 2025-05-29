@@ -28,7 +28,6 @@ export class ReuniaoService {
     reuniao.duracao = reuniaoDTO.duracao;
     reuniao.pauta = reuniaoDTO.pauta;
     reuniao.participantes = reuniaoDTO.participantes;
-    reuniao.AtaUrl = ""
     try {
       reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
     } catch (error) {
@@ -61,10 +60,12 @@ export class ReuniaoService {
       case Categoria.HIBRIDA:
         await this.criarReuniaoFisica(reuniao, reuniaoDTO)
         reuniao.joinUrl = reuniaoDTO.joinUrl
+        reuniao.zoomMeetingId = `${reuniaoDTO.zommMeetingId}`
         break;
 
       case Categoria.VIRTUAL:
         reuniao.joinUrl = reuniaoDTO.joinUrl
+        reuniao.zoomMeetingId = `${reuniaoDTO.zommMeetingId}`
         break;
 
       default:
@@ -168,7 +169,9 @@ export class ReuniaoService {
 
     const reuniaoData : ReuniaoEntity = await this.reuniaoRepository.findOneBy({ id: id })
 
-    reuniaoData.AtaUrl = `${process.env.BACKEND_URL}reuniao/ata/${id}`
+    reuniaoData.AtaUrl = `${process.env.BACKEND_URL}/reuniao/ata/${id}`
+
+    console.log(reuniaoData.AtaUrl)
 
     return await this.reuniaoRepository.save(reuniaoData)
   }
