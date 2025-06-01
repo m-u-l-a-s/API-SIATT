@@ -6,137 +6,54 @@ import TimeChoser from "../components/TimeChoser";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
 import { authService } from "../services/services.auth";
-import { IBodyEmail } from "../interfaces/IBodyEmail";
 import { useLocation } from "react-router-dom";
-import { MeetingDetailProps } from '../interfaces/MeetingDetails';
-import { ReuniaoPresencialDTO } from "../interfaces/ReuniaoPresencialDTO";
 import { Categoria } from "../interfaces/CreateReuniaoDto";
-// type Meeting = {
-//     id: string,
-//     titulo: string,
-//     dataHora: string,
-//     duracao: number,
-//     categoria: string,
-//     pauta: string,
-//     participantes: string[],
-//     solicitanteId: string,
-//     salaPresencialId: string,
-//     salaVirtualId: string | null,
-// };
+import { SalaPresencial } from "../interfaces/ISalaPresencial";
+import { MeetingDetailProps } from "../interfaces/MeetingDetails";
+import { CreateReuniaoDto } from "../types/formularioReuniao";
+import axios, { AxiosRequestConfig } from "axios";
 
 
-export interface CreateReuniao {
-    titulo: string | undefined
-    categoria: Categoria | undefined
-    dataHora: Date | undefined
-    duracao: number | undefined
-    pauta: string | undefined
-    presencial: string | undefined
-    virtual: string | undefined
-    solicitanteEmail: string | undefined
-    participantes: any | undefined
-}
-
-export interface SalaVirtual {
-    id: string
-    identificacao: string
-    login: string
-    senha: string
-    permissao: number
-}
-
-export interface SalaPresencial {
-    id: string
-    identificacao: string
-    permissao: number
-    ocupacaoMax: number
-    local: string
-}
 
 export function EditarReuniao() {
-    const location = useLocation();
+    const { state } = useLocation() as { state: MeetingDetailProps };
 
     const [alertModal, setAlertModal] = useState(false);
-
-    const [form] = useState(Categoria.PRESENCIAL);
+    const [categoria] = useState<Categoria>(state.categoria);
     const [emailInput, setEmailInput] = useState<string>('');
-    const [emails, setEmails] = useState<string[]>([]);
-    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>('');
+    const [emails, setEmails] = useState<string[]>(state.participantes);
+    const [titulo, setTitulo] = useState<string>(state.titulo);
+    const [pauta, setPauta] = useState<string>(state.pauta);
 
-    const [titulo, setTitulo] = useState<string>(location.state.key.title);
-    const [pauta, setPauta] = useState<string>(location.state.key.desc);
-    const [horaInicial, setHoraInicial] = useState<number>(0);
-    const [minInicial, setMinInicial] = useState<number>(0);
-    const [horaDuracao, setHoraDuracao] = useState<number>(0);
-    const [minDuracao, setMinDuracao] = useState<number>(0);
+    const [horaInicial, setHoraInicial] = useState<number>(parseInt(state.time.split(":")[0]));
+    const [minInicial, setMinInicial] = useState<number>(parseInt(state.time.split(":")[1]));
+    const [horaDuracao, setHoraDuracao] = useState<number>(state.duracao / 60);
+    const [minDuracao, setMinDuracao] = useState<number>(state.duracao % 60);
 
-    const [salaOnline, setSalaOnline] = useState<SalaVirtual[]>([]);
     const [salaPresencial, setSalaPresencial] = useState<SalaPresencial[]>([]);
     const [salaPresencialFiltrada, setSalaPresencialFiltrada] = useState<SalaPresencial[]>([]);
+    const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>("");
+    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>(new Date(state.date).toISOString());
 
-    const [salaOnlineSelecionada, setSalaOnlineSelecionada] = useState<string>('');
-    const [salaPresencialSelecionada, setSalaPresencialSelecionada] = useState<string>('');
+    const ZOOM_CLIENT_ID = process.env.ZOOM_CLIENT_ID
+    const ZOOM_REDIRECT_URI = encodeURIComponent('http://localhost:5173/zoom')
+    const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${ZOOM_CLIENT_ID}&redirect_uri=${ZOOM_REDIRECT_URI}`;
 
 
     //useEffect - popular combos
     const getDataReuniao = (): Date => {
-        const reuniao = location.state.key;
-        const dataList = reuniao.date.split("-")
-
-        const dia = dataList[2]
-        const mes = dataList[1]
-        const ano = dataList[0]
-
-        return new Date(ano, parseInt(mes) - 1, dia);
+        return new Date(dataCalendarioCombo);
     }
 
-    //Para popular os campos com as informações da reunião
     useEffect(() => {
-        const reuniao: MeetingDetailProps = location.state.key;
 
-        console.log(reuniao)
-
-        setTitulo(reuniao.titulo);
-        setPauta(reuniao.pauta);
-        setHoraInicial(parseInt(reuniao.time.split(":")[0]));
-        setMinInicial(parseInt(reuniao.time.split(":")[1]));
-        setHoraDuracao(Math.floor(reuniao.duracao / 60));
-        setMinDuracao(reuniao.duracao % 60);
-
-        const dataList = reuniao.date.split("-")
-
-        const dia = dataList[2]
-        const mes = dataList[1]
-        const ano = dataList[0]
-
-        setDataCalendarioCombo(`${dia}/${mes}/${ano}`);
-
-        setEmails(reuniao.participantes)
-  
-
-        getSalaOnline();
         getSalaPresencial();
 
-        if (reuniao.salaPresencial) {
-            setSalaPresencialSelecionada(reuniao.salaPresencial)
+        if (state.salaPresencial) {
+            setSalaPresencialSelecionada(state.salaPresencial)
         }
     }, []);
 
-    //Rota para popular combo sala online
-
-    const getSalaOnline = async () => {
-
-        api.get(`sala-virtual`).then(resp => {
-            if (resp.status !== 200) {
-                throw new Error('Erro ao realizar a requisição');
-            }
-            return resp.data
-        }).then(data => {
-            setSalaOnline(data);
-        }).catch(error => {
-            console.error("Ocorreu um erro", error)
-        })
-    }
 
     // Rota para popular combo sala presencial
 
@@ -155,63 +72,32 @@ export function EditarReuniao() {
         })
     }
 
+    // const sendEmail = async () => {
+    //     let dataFormatada = formatarData(formValues.data)
+    //     let identificacaoSala = findReuniao(salaPresencialSelecionada)
+    //     let bodyRequest: IBodyEmail = {
+    //         emails: emails,
+    //         data: dataFormatada,
+    //         hora: `${horaInicial}:${minInicial}`,
+    //         duracao: `${horaDuracao}:${minDuracao}`,
+    //         pauta: `${formValues.pauta}`,
+    //         titulo: formValues.titulo,
+    //         categoria: categoria,
+    //         sala: identificacaoSala,
+    //     }
+    //     console.log(bodyRequest)
 
-    function adicionaZero(numero: number) {
-        if (numero <= 9)
-            return "0" + numero;
-        else
-            return numero;
-    }
-
-    function formatarData(dataAtual: Date): string {
-        return (adicionaZero(dataAtual.getDate()).toString() + "/" + (adicionaZero(dataAtual.getMonth() + 1)).toString() + "/" + dataAtual.getFullYear());
-    }
-
-    const findReuniao = (id: string) => {
-        for (let salaSelecionada of salaPresencial) {
-            if (salaSelecionada.id == id) {
-                return salaSelecionada.identificacao
-            }
-        }
-        return ""
-    }
-
-    const sendEmail = async () => {
-        let dataFormatada = formatarData(formValues.data)
-        let identificacaoSala = findReuniao(salaPresencialSelecionada)
-        let bodyRequest: IBodyEmail = {
-            emails: emails,
-            data: dataFormatada,
-            hora: `${horaInicial}:${minInicial}`,
-            duracao: `${horaDuracao}:${minDuracao}`,
-            pauta: `${formValues.pauta}`,
-            titulo: formValues.titulo,
-            categoria: form,
-            sala: identificacaoSala,
-        }
-        console.log(bodyRequest)
-
-        try {
-            await api.post("sendEmail", bodyRequest).then(resp => {
-                console.log(resp)
-            }).catch(erro => {
-                console.log(erro)
-            })
-        } catch (error) {
-            console.log(`Erro: ${error}`)
-        }
-    }
-    //Função p/salvar as mudanças no formulário
-    const handleChangeForm = (key: keyof FormValues, value: any) => {
-        setFormValues({ ...formValues, [key]: value })
-        console.log("Form Values:", formValues);
-    }
-
-    //função p/salvar os email no formulário
-    // const handleChangeFormEmail = () => {
-    //     handleChangeForm('email', emails);
+    //     try {
+    //         await api.post("sendEmail", bodyRequest).then(resp => {
+    //             console.log(resp)
+    //         }).catch(erro => {
+    //             console.log(erro)
+    //         })
+    //     } catch (error) {
+    //         console.log(`Erro: ${error}`)
+    //     }
     // }
-
+ 
     const handleInputChange = (e: any) => {
         setEmailInput(e.target.value);
     };
@@ -241,112 +127,88 @@ export function EditarReuniao() {
         }
     }
 
-    //Criação do formulário - função p/salvar no banco
-    type FormValues = {
-        titulo: string,
-        categoria: Categoria,
-        data: Date,
-        hora: string,
-        duracao: number,
-        pauta: string,
-        presencial: string,
-        virtual: string,
-        email: string[],
-
-    }
-
-    const [formValues, setFormValues] = useState<FormValues>({
-        titulo: '',
-        categoria: Categoria.PRESENCIAL,
-        data: new Date,
-        hora: '',
-        duracao: 0,
-        pauta: '',
-        presencial: '',
-        virtual: '',
-        email: [],
-
-    });
-
-
     const saveForm = async (id: string) => {
-        switch (form) {
-            case Categoria.PRESENCIAL:
-                setSalaOnlineSelecionada('');
-                break;
-            case Categoria.VIRTUAL:
-                setSalaPresencialSelecionada('');
-                break;
-            default:
-                break;
+        if (categoria == Categoria.HIBRIDA || categoria == Categoria.VIRTUAL) {
+            const token = authService.getZoomToken()
+            if ((token == null || token == "")) {
+                autenticarUsuario(id)
+                return
+            }
+
+            if (authService.isTokenExpired(token)) {
+                console.log("Token expirado")
+                autenticarUsuario(id)
+                return
+            }
         }
 
-        if (dataCalendarioCombo === undefined) {
-            return "A data da reunião é obrigatória!"
+
+
+        const dataHoraReuniao = new Date(dataCalendarioCombo)
+        dataHoraReuniao.setHours(horaInicial - 3)
+        dataHoraReuniao.setMinutes(minInicial) 
+
+        let zoomMeetingId : number | undefined = undefined
+        let ataUrl : string = "", joinUrl : string = ""
+
+        if (state.zoomMeetingId) {
+            zoomMeetingId = parseInt(state.zoomMeetingId)
+        }
+        if (state.AtaUrl) {
+            ataUrl = state.AtaUrl
+        }
+        if (state.joinUrl) {
+            joinUrl = state.joinUrl
         }
 
-        let dataReuniao = new Date(dataCalendarioCombo)
-        dataReuniao.setHours(horaInicial - 3)
-        dataReuniao.setMinutes(minInicial)
 
-        const emailSolicitante = authService.decodificarToken(authService.getToken())
-        if (!emailSolicitante) {
-            throw new Error("Email solicitante não existe");
-            
-        }
-
-        const reuniao : ReuniaoPresencialDTO =
-        {
-            titulo: titulo,
-            categoria: form,
-            dataHora: dataReuniao,
-            duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
-            pauta: pauta,
-            presencial: salaPresencialSelecionada,
-            virtual: salaOnlineSelecionada,
-            solicitanteEmail: emailSolicitante,
+        const bodyRequest : CreateReuniaoDto = {
+            categoria: categoria,
+            dataHora: dataHoraReuniao,
+            duracao: minDuracao + (horaDuracao *60),
             participantes: emails,
+            pauta: pauta,
+            solicitanteEmail: authService.getToken(),
+            titulo: titulo,
+            zommMeetingId: zoomMeetingId,
+            AtaUrl: ataUrl,
+            joinUrl: joinUrl,
+            presencial: salaPresencialSelecionada,
+        } 
+
+        console.log(bodyRequest)
+
+        const options : AxiosRequestConfig = {
+            url : `http://localhost:3000/reuniao/${id}`,
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${authService.getZoomToken()}`,
+            },
+            data: bodyRequest
         }
 
-        try {
-            console.log(reuniao)
-            await api.put(`reuniao/${id}`,reuniao).then(resp => {
-                console.log(resp)
-            }).then(() => setAlertModal(true))
-        } catch (error) {
-            console.log("Erro: ao salvar reunião " + error)
+        const resp = await axios.request(options)
+        if (resp.status != 204 && resp.status != 200) {
+            console.log(resp.data)
         }
-        sendEmail();
+
+        setAlertModal(true)
     }
 
+    const autenticarUsuario = (id: string) => {
+        const authTab = window.open(zoomAuthUrl, '_blank', 'width=500,height=600');
 
-
-    // const fetchReuniaoData = async (id: string) => {
-    //     try {
-    //         await api.get(`reuniao/id/${id}`).then(
-    //             resp => {
-    //                 console.log(resp.data);
-    //                 setTitulo(resp.data.titulo);
-    //                 setFormValues({
-    //                     titulo: resp.data.titulo,
-    //                     categoria: resp.data.categoria,
-    //                     data: new Date(resp.data.dataHora),
-    //                     hora: '',
-    //                     duracao: resp.data.duracao,
-    //                     pauta: resp.data.pauta,
-    //                     presencial: resp.data.presencial,
-    //                     virtual: resp.data.virtual,
-    //                     email: resp.data.participantes,
-    //                 })
-    //             }
-    //         )
-    //     } catch (error) {
-    //         console.error("Erro ao carregar os dados da reunião", error);
-    //     }
-    // };
-
-
-
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data[0] === 'authenticated') {
+                const accessToken = event.data[1].access_token
+                authTab?.close()
+                authService.setZoomToken(accessToken)
+                window.removeEventListener('message', handleMessage)
+                saveForm(id)
+            }
+        }
+        window?.addEventListener('message', handleMessage)
+    }
 
 
     return (
@@ -364,7 +226,7 @@ export function EditarReuniao() {
                             <div className="flex justify-between">
                                 <div className="flex items-start space-x-4">
                                     <label
-                                        htmlFor="dataReuniao">Data:</label>
+                                        htmlFor="dataReuniao"></label>
                                     <CalendarPicker dataCallBack={setDataCalendarioCombo}
                                         date={getDataReuniao()} />
 
@@ -399,7 +261,6 @@ export function EditarReuniao() {
                                     value={titulo}
                                     onChange={(e) => {
                                         setTitulo(e.target.value);
-                                        handleChangeForm('titulo', e.target.value);
                                     }} />
                             </div>
 
@@ -416,7 +277,6 @@ export function EditarReuniao() {
                                     id="pautaReuniao" name="pautaReuniao"
                                     value={pauta}
                                     onChange={e => {
-                                        handleChangeForm('pauta', e.target.value);
                                         setPauta(e.target.value);
                                     }} />
                             </div>
@@ -462,7 +322,7 @@ export function EditarReuniao() {
 
                             <ListaEmails emails={emails} setEmails={setEmails} />
 
-                            {(form === Categoria.PRESENCIAL || form === Categoria.HIBRIDA) && (
+                            {(categoria === Categoria.PRESENCIAL || categoria === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label htmlFor="">Número de Convidados:</label>
                                     <input
@@ -479,35 +339,7 @@ export function EditarReuniao() {
                                 <label>Escolha sua sala</label>
                             </div>
 
-                            {(form === Categoria.VIRTUAL || form === Categoria.HIBRIDA) && (
-                                <div className="flex items-start space-x-2">
-                                    <label> Sala Online:</label>
-                                    <select onChange={e => { setSalaOnlineSelecionada(e.target.value) }} name="salas" id="salas" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
-                                        {/* popular combo online */}
-                                        <option value="">Sala Online</option>
-                                        {salaOnline.sort((a, b) => {
-                                            const nomeA = a.identificacao.toUpperCase(); // convertendo para maiúsculas para garantir uma comparação sem distinção de maiúsculas/minúsculas
-                                            const nomeB = b.identificacao.toUpperCase();
-
-                                            if (nomeA < nomeB) {
-                                                return -1;
-                                            }
-                                            if (nomeA > nomeB) {
-                                                return 1;
-                                            }
-                                            return 0; // os nomes são iguais
-                                        }).map(sala => {
-                                            return (
-                                                <option value={sala.id}>
-                                                    {sala.identificacao}
-                                                </option>
-                                            )
-                                        })}
-                                    </select>
-                                </div>
-                            )}
-
-                            {(form === Categoria.PRESENCIAL || form === Categoria.HIBRIDA) && (
+                            {(categoria === Categoria.PRESENCIAL || categoria === Categoria.HIBRIDA) && (
                                 <div className="flex items-start space-x-2">
                                     <label >Sala Presencial:</label>
                                     <select value={salaPresencialSelecionada} onChange={e => setSalaPresencialSelecionada(e.target.value)} name="cars" id="cars" className="text-center border  border-gray-300 rounded-lg w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400">
@@ -550,7 +382,7 @@ export function EditarReuniao() {
                             hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] 
                             active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true"
-                                onClick={() => saveForm(location.state.key.id)}
+                                onClick={() => saveForm(state.id)}
                             >
                                 Salvar alterações
                             </button>

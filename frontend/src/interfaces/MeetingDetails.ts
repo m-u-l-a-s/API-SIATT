@@ -8,11 +8,12 @@ export interface MeetingDetailProps {
     date: string;
     time: string;
     duracao: number;
-    categoria : Categoria | string
+    categoria : Categoria
     salaPresencial: string | null;
     idSolicitante: string;
     idUsuario: string | undefined
     participantes: string[]
     joinUrl ?: string | undefined | null
     AtaUrl : string | undefined | null
+    zoomMeetingId : string | null | undefined
 }
