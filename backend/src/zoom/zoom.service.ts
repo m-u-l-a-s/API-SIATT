@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as querystring from 'querystring';  // Adicione esta linha
 import { meeting_invites, ZoomMeetingDto, ZoomSettings, ZoomUpdateDto } from './dto/creatoZoomMeeting.dto';
 import { Categoria, ReuniaoEntity } from 'src/reuniao/entities/reuniao.entity';
@@ -88,24 +88,25 @@ export class ZoomService {
     }
 
     const resp = await axios.request(options)
-    console.log("Resultado da requisicao: "+resp.status )
+    console.log("Resultado da requisicao: " + resp.status)
     return resp
   }
 
   async deleteMeeting(meeting_id: string, token: string) {
     const options: AxiosRequestConfig = {
+      method: 'DELETE',
       url: `https://api.zoom.us/v2/meetings/${meeting_id}`,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      method: "DELETE",
+      headers: { Authorization: `${token}` }
     };
 
     try {
-      const { data } = await axios.request(options)
-      console.log(data)
-      return data
+      const resp = await axios.request(options);
+      console.log("Resultado da requisição de deleção de reuniao: " + resp.status)
+      console.log(resp.data);
+      return resp
     } catch (error) {
-      console.log(error)
-      return error
+      console.error(error);
+      throw new Error(error)
     }
   }
 

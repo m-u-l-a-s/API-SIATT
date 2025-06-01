@@ -1,4 +1,4 @@
-import { HttpCode, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpCode, Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria, ReuniaoEntity } from './entities/reuniao.entity';
@@ -11,6 +11,7 @@ import * as path from 'path';
 import * as fs from 'fs'
 import { ZoomService } from 'src/zoom/zoom.service';
 import { HttpStatusCode } from 'axios';
+
 
 @Injectable()
 export class ReuniaoService {
@@ -273,12 +274,31 @@ export class ReuniaoService {
     return await this.reuniaoRepository.query(query);
   }
 
-  remove(id: string) {
-    const reuniao = this.reuniaoRepository.findOneBy({ id: id });
-    if (reuniao) {
-      return this.reuniaoRepository.delete({ id: id })
+  async remove(id: string, token?: string): Promise<HttpStatusCode> {
+    let ok: boolean = true
+    const reuniao = await this.reuniaoRepository.findOneBy({ id: id });
+    if (reuniao.categoria == Categoria.HIBRIDA || reuniao.categoria == Categoria.VIRTUAL) {
+      const resp = await this.zoomServico.deleteMeeting(reuniao.zoomMeetingId, token)
+      if (resp.status == 401) {
+        ok = false
+        throw new UnauthorizedException("Token inválido")
+      }
+      if (resp.status == 404) {
+        ok = false
+        throw new NotFoundException("Reunião Zoom não encontrada")
+      }
+      if (resp.status == 400) {
+        ok = false
+        throw new BadRequestException("Argumentos inválidos")
+      }
     }
-    return
+
+    if (reuniao && ok) {
+      await this.reuniaoRepository.delete({ id: id })
+      return HttpStatusCode.NoContent
+
+    }
+    return HttpStatusCode.InternalServerError
   }
 
   async find() {

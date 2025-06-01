@@ -41,7 +41,6 @@ const PagAgendamento = () => {
         const fetchData = async () => {
             try {
                 const user = await api.get(`usuario/email/${authService.decodificarToken(auth?.token)}`);
-                console.log(user)
                 if (user.status !== 200) {
                     auth?.logout();
                     throw new Error("Não foi possível autenticar usuário")
@@ -63,7 +62,6 @@ const PagAgendamento = () => {
                         // const dataMesPassado = new Date(dataAtual.setDate(dataAtual.getDate() - 30))
 
                         const reuniaoVindo = reunioesData.filter(reuniao => {
-                            console.log(reuniao)
                             return new Date(reuniao.dataHora) > dataAtual
                         })
 

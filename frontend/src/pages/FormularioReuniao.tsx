@@ -20,6 +20,7 @@ import { CreateReuniaoDto } from "../types/formularioReuniao";
 import { CriarReuniao, FileWithId, salvarArquivos, salvarAta } from "../services/formularioReuniaoService";
 import { UnauthorizedError } from "../errors/HttpErros";
 import  separaDataHora  from "../control/utils";
+import { getZoomClientId, getZoomRedirectUrl } from "../variables";
 
 
 export interface Reuniao {
@@ -57,8 +58,8 @@ export function FormularioReuniao() {
 
     const auth = useAuth();
 
-    const ZOOM_CLIENT_ID = process.env.ZOOM_CLIENT_ID
-    const ZOOM_REDIRECT_URI = encodeURIComponent('http://localhost:5173/zoom')
+    const ZOOM_CLIENT_ID = getZoomClientId()
+    const ZOOM_REDIRECT_URI = encodeURIComponent(getZoomRedirectUrl())
     const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${ZOOM_CLIENT_ID}&redirect_uri=${ZOOM_REDIRECT_URI}`;
     const [horaDuracao, setHoraDuracao] = useState<number>(0);
     const [minDuracao, setMinDuracao] = useState<number>(0);

@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, StreamableFile, Res, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, StreamableFile, Res, Req, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ReuniaoService } from './reuniao.service';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 import { ReuniaoAnexosService } from 'src/reuniao-anexos/reuniao-anexos.service';
 import * as fs from 'fs'
 import * as path from 'path'
 import { join } from 'path';
+import { Axios, AxiosResponse, HttpStatusCode } from 'axios';
+import { ServerResponse } from 'http';
 import { Response } from 'express';
 
 interface UserRequest {
@@ -81,13 +83,32 @@ export class ReuniaoController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @Req() req: Request, @Res() res: Response) {
     this.reuniaoAnexoService.excluirAnexos(id)
-    return this.reuniaoService.remove(id);
+    let token: string = ""
+    if (req.headers["authorization"] !== undefined && req.headers["authorization"] !== "") {
+      token = req.headers["authorization"]
+    }
+    try {
+      await this.reuniaoService.remove(id, token);
+      return res.status(HttpStatusCode.NoContent).json({})
+    } catch (err) {
+      if (err instanceof UnauthorizedException) {
+        return res.status(HttpStatusCode.Unauthorized).json({ message: err.message })
+      }
+
+      if (err instanceof NotFoundException) {
+        return res.status(HttpStatusCode.NotFound).json({ message: err.message })
+      }
+
+      if (err instanceof BadRequestException) {
+        return res.status(HttpStatusCode.BadRequest).json({ message: err.message })
+      }
+    }
   }
 
   @Get("ata/:id")
-  getAta(@Param("id") id: string, @Res() res: Response) {
+  getAta(@Param("id") id: string, @Res() res: ServerResponse) {
     const filePath = path.join(join(process.cwd(), `/atas/${id}/ATA_REUNIAO.docx`));
     const fileName = `ATA_REUNIAO.docx`;
     const fileStream: fs.ReadStream = fs.createReadStream(filePath)
