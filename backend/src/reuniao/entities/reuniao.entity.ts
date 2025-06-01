@@ -37,7 +37,7 @@ export class ReuniaoEntity {
     solicitante : UsuarioEntity
 
     @Column({type : 'json'})
-    participantes : JSON
+    participantes : string[]
 
     @OneToMany(() => ReuniaoAnexo, anexos => anexos)
     anexos : ReuniaoAnexo[];

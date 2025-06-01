@@ -18,3 +18,15 @@ export interface ZoomSettings {
     auto_recording: 'none',
     meeting_invites: any
 }
+
+export interface ZoomUpdateDto {
+    topic : string,
+    agenda : string,
+    start_time : string
+    duration : number
+    meeting_invites : meeting_invites[]
+}
+
+export interface meeting_invites {
+    email : string
+}

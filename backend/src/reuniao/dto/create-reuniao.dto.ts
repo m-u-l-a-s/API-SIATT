@@ -10,9 +10,7 @@ export class CreateReuniaoDto
     joinUrl ?: string
     presencial ?: string
     solicitanteEmail : string
-    participantes : any
+    participantes : string[]
     AtaUrl ?: string
     zommMeetingId ?: number
 }
-
-

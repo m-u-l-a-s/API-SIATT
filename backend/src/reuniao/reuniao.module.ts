@@ -10,10 +10,11 @@ import { SalaPresencialEntity } from 'src/sala-presencial/entities/sala-presenci
 import { ReuniaoAnexo } from 'src/reuniao-anexos/entities/reuniao-anexo.entity';
 import { ReuniaoAnexosService } from 'src/reuniao-anexos/reuniao-anexos.service';
 import { ReuniaoAnexosModule } from 'src/reuniao-anexos/reuniao-anexos.module';
+import { ZoomService } from 'src/zoom/zoom.service';
 @Module({
   imports: [TypeOrmModule.forFeature([ReuniaoEntity, UsuarioEntity, SalaPresencialEntity, ReuniaoAnexo])],
   controllers: [ReuniaoController],
-  providers: [ReuniaoService, SalaPresencialService, UsuarioService, ReuniaoAnexosService],
+  providers: [ReuniaoService, SalaPresencialService, UsuarioService, ReuniaoAnexosService, ZoomService],
   exports: [TypeOrmModule]
 })
 export class ReuniaoModule {}
