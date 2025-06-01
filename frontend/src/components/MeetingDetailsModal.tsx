@@ -1,16 +1,29 @@
+import { useEffect, useState } from "react"
 import { Categoria } from "../interfaces/CreateReuniaoDto"
+import api from "../services/api"
+import { SalaPresencialDto } from "../types/salaPresencial"
 
 interface MeetingDetailsModal {
     categoria: string
     titulo: string
     pauta: string
     participantes: string[]
-    local: string
+    local: string | null | undefined
+    link: string | null | undefined
     confirmText: string;
     onConfirm: () => void;
 }
 
 export const MeetingDetailsModal = (props: MeetingDetailsModal) => {
+    const [sala, setSala] = useState<SalaPresencialDto|null>(null)
+    useEffect( () => {
+        if (props.local != null || props.local != undefined) {
+            api.get(`sala-presencial/${props.local}`).then(resp => {
+              setSala(resp.data)  
+            })
+        }
+    }, []) 
+
     return (
         <>
             <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -22,19 +35,12 @@ export const MeetingDetailsModal = (props: MeetingDetailsModal) => {
                             <p><b>Título:</b> {props.titulo}</p>
                             <p><b>Pauta:</b> {props.pauta}</p>
 
-                            {props.categoria == Categoria.VIRTUAL && (
-                                <p><b>Endereço: </b><a target="_blank" className="link " href={props.local}>reunião no zoom</a></p>
+                            {(sala != null) && (
+                                <p><b>Local: </b>{sala.identificacao}</p>
                             )}
 
-                            {props.categoria == Categoria.PRESENCIAL && (
-                                <p><b>Local: </b>{props.local}</p>
-                            )}
-
-                            {props.categoria == Categoria.HIBRIDA && (
-                                <>
-                                    <p><b>Endereço: </b><a target="_blank" className="link" href={props.local.split(" | ")[1]}>reunião no zoom</a></p>
-                                    <p><b>Local: </b>{props.local.split(" | ")[0]}</p>
-                                </>
+                            {(props.link != null && props.link != undefined && props.link != "") && (
+                                <p><b>Endereço: </b><a target="_blank" className="link " href={props.link}>reunião no zoom</a></p>
                             )}
 
                             <p><b>Participantes: </b></p>

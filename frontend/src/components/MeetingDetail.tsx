@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CiCalendarDate, CiLocationOn } from "react-icons/ci";
 import { FaEdit, FaFileDownload } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -11,13 +11,14 @@ import { MeetingDetailProps } from '../interfaces/MeetingDetails';
 import { getAnexos } from '../services/getAnexos';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { MeetingDetailsModal } from './MeetingDetailsModal';
-import { Categoria } from '../interfaces/CreateReuniaoDto';
 
+export interface PropsEditReuniao {
+    reuniao : MeetingDetailProps
+}
 
 const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) => {
     const [showModal, setShowModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [local, setLocal] = useState('')
 
     const auth = useAuth();
     const navigate = useNavigate();
@@ -36,28 +37,12 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
         window.location.reload();
     };
 
+    
+
     const handleEditar = (reuniao: MeetingDetailProps) => {
-        navigate(`/Home/EditarReuniao/${props.id}`, { state: { key: reuniao } });
+        navigate(`/Home/EditarReuniao/${props.id}`, { state:  reuniao });
         console.log(props.id);
     };
-
-    useEffect(() => {
-        if (props.salaPresencial) {
-            api.get(`sala-presencial/${props.salaPresencial}`).then(resp => {
-                setLocal(resp.data.identificacao)
-            })
-        }
-
-        if (props.categoria == Categoria.HIBRIDA && props.joinUrl) {
-            api.get(`sala-presencial/${props.salaPresencial}`).then(resp => {
-                setLocal(`${resp.data.identificacao} | ${props.joinUrl}`)
-            })
-        }
-
-        if (props.categoria == Categoria.VIRTUAL && props.joinUrl) {
-            setLocal(props.joinUrl)
-        }
-    })
 
     return (
         <div className="meeting-item bg-base-300 m-2 rounded-md">
@@ -97,7 +82,8 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                     categoria={props.categoria}
                     titulo={props.titulo}
                     pauta={props.pauta}
-                    local={local}
+                    local={props.salaPresencial}
+                    link={props.joinUrl}
                     participantes={props.participantes}
                     confirmText="Ok, fechar"
                     onConfirm={handleConfirmModal}
