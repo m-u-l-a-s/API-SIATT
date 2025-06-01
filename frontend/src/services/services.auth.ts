@@ -1,6 +1,6 @@
 import { cookie } from "../variables";
 import api from "./api";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 export interface Login {
     email: string
@@ -50,5 +50,30 @@ export const authService = {
 
     getZoomToken(){
         return localStorage.getItem("ZOOM_TOKEN")
+    },
+
+    isTokenExpired(token: string): boolean {
+        try {
+            const decode : JwtPayload = jwtDecode(token)
+            
+            if (typeof decode.exp !== 'number') {
+                throw new Error("Token não contém campo 'exp' (expiration time).");
+            }
+    
+            const dateExp : Date = this.timestampToDate(decode.exp)
+            const dateAtual : Date = new Date()
+
+            return dateAtual > dateExp
+        } catch (error) {
+            console.error("Erro ao verificar token:", error);
+            return true; // Considera como expirado em caso de erro (segurança)
+        }
+    },
+    timestampToDate(timestamp: number): Date {
+        // Multiplica por 1000 se o timestamp estiver em segundos (Unix)
+        const timestampInMilliseconds = timestamp * 1000;
+        const date = new Date(timestampInMilliseconds);
+    
+        return date; // Retorna um objeto Date
     }
 }

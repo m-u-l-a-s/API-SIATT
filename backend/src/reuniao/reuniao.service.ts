@@ -1,4 +1,4 @@
-import { HttpCode, Injectable } from '@nestjs/common';
+import { HttpCode, Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateReuniaoDto } from './dto/create-reuniao.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Categoria, ReuniaoEntity } from './entities/reuniao.entity';
@@ -9,6 +9,9 @@ import { SalaPresencialEntity } from 'src/sala-presencial/entities/sala-presenci
 import { patchDocument, PatchType, Paragraph } from 'docx';
 import * as path from 'path';
 import * as fs from 'fs'
+import { ZoomService } from 'src/zoom/zoom.service';
+import { HttpStatusCode } from 'axios';
+
 
 @Injectable()
 export class ReuniaoService {
@@ -18,6 +21,7 @@ export class ReuniaoService {
     private readonly reuniaoRepository: Repository<ReuniaoEntity>,
     private readonly usuarioService: UsuarioService,
     private readonly salaPresencialService: SalaPresencialService,
+    private readonly zoomServico: ZoomService,
   ) { }
 
   async criarReuniaoEntity(reuniaoDTO: CreateReuniaoDto): Promise<ReuniaoEntity> {
@@ -28,7 +32,6 @@ export class ReuniaoService {
     reuniao.duracao = reuniaoDTO.duracao;
     reuniao.pauta = reuniaoDTO.pauta;
     reuniao.participantes = reuniaoDTO.participantes;
-    reuniao.AtaUrl = ""
     try {
       reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
     } catch (error) {
@@ -39,7 +42,7 @@ export class ReuniaoService {
 
   async criarReuniaoFisica(reuniao: ReuniaoEntity, reuniaoDTO: CreateReuniaoDto) {
     const salaPresencial: SalaPresencialEntity = await this.salaPresencialService.findOne(reuniaoDTO.presencial)
-    if (salaPresencial.ocupacaoMax < reuniaoDTO.participantes.lenght) {
+    if (salaPresencial.ocupacaoMax < reuniaoDTO.participantes.length) {
       throw new Error("Número de participantes excede a ocupação máxima da sala")
     }
     reuniao.salaPresencial = salaPresencial;
@@ -56,15 +59,18 @@ export class ReuniaoService {
       case Categoria.FISICA:
         await this.criarReuniaoFisica(reuniao, reuniaoDTO)
         reuniao.joinUrl = ""
+        reuniao.zoomMeetingId = ""
         break;
 
       case Categoria.HIBRIDA:
         await this.criarReuniaoFisica(reuniao, reuniaoDTO)
         reuniao.joinUrl = reuniaoDTO.joinUrl
+        reuniao.zoomMeetingId = `${reuniaoDTO.zommMeetingId}`
         break;
 
       case Categoria.VIRTUAL:
         reuniao.joinUrl = reuniaoDTO.joinUrl
+        reuniao.zoomMeetingId = `${reuniaoDTO.zommMeetingId}`
         break;
 
       default:
@@ -157,7 +163,7 @@ export class ReuniaoService {
         RPC_PARTICIPANTES: {
           type: PatchType.DOCUMENT,
           children: participantesList.map(participante => {
-            const data = participante.replace(`"`,``).replace(`"`,``)
+            const data = participante.replace(`"`, ``).replace(`"`, ``)
             return new Paragraph({ text: data });
           }),
         },
@@ -166,16 +172,29 @@ export class ReuniaoService {
     );
     fs.writeFileSync(ataReuniao, doc);
 
-    const reuniaoData : ReuniaoEntity = await this.reuniaoRepository.findOneBy({ id: id })
+    const reuniaoData: ReuniaoEntity = await this.reuniaoRepository.findOneBy({ id: id })
 
-    reuniaoData.AtaUrl = `${process.env.BACKEND_URL}reuniao/ata/${id}`
+    reuniaoData.AtaUrl = `${process.env.BACKEND_URL}/reuniao/ata/${id}`
+
+    console.log(reuniaoData.AtaUrl)
 
     return await this.reuniaoRepository.save(reuniaoData)
   }
 
-  async update(id: string, reuniaoDTO: CreateReuniaoDto) {
+  async update(id: string, reuniaoDTO: CreateReuniaoDto, token?: string) {
     const reuniao: ReuniaoEntity = await this.reuniaoRepository.findOneBy({ id: id });
     if (reuniao) {
+      if (reuniao.categoria == Categoria.HIBRIDA || reuniao.categoria == Categoria.VIRTUAL) {
+        if (!token) {
+          throw new UnauthorizedException("Token inválido ou vazio!")
+        }
+        reuniaoDTO.dataHora = new Date(reuniaoDTO.dataHora)
+        const respZoom = await this.zoomServico.updateMeeting(reuniaoDTO, token)
+        if (!(respZoom.status == 204)) {
+          throw new Error("Erro ao atualizar reunião")
+        }
+      }
+
       try {
         reuniao.titulo = reuniaoDTO.titulo;
         reuniao.categoria = reuniaoDTO.categoria;
@@ -190,12 +209,6 @@ export class ReuniaoService {
           } catch (error) {
             console.log(error)
           }
-        }
-
-        try {
-          reuniao.solicitante = await this.usuarioService.findOneByEmail(reuniaoDTO.solicitanteEmail);
-        } catch (error) {
-          console.log(error)
         }
 
         return await this.reuniaoRepository.save(reuniao);
@@ -261,12 +274,31 @@ export class ReuniaoService {
     return await this.reuniaoRepository.query(query);
   }
 
-  remove(id: string) {
-    const reuniao = this.reuniaoRepository.findOneBy({ id: id });
-    if (reuniao) {
-      return this.reuniaoRepository.delete({ id: id })
+  async remove(id: string, token?: string): Promise<HttpStatusCode> {
+    let ok: boolean = true
+    const reuniao = await this.reuniaoRepository.findOneBy({ id: id });
+    if (reuniao.categoria == Categoria.HIBRIDA || reuniao.categoria == Categoria.VIRTUAL) {
+      const resp = await this.zoomServico.deleteMeeting(reuniao.zoomMeetingId, token)
+      if (resp.status == 401) {
+        ok = false
+        throw new UnauthorizedException("Token inválido")
+      }
+      if (resp.status == 404) {
+        ok = false
+        throw new NotFoundException("Reunião Zoom não encontrada")
+      }
+      if (resp.status == 400) {
+        ok = false
+        throw new BadRequestException("Argumentos inválidos")
+      }
     }
-    return
+
+    if (reuniao && ok) {
+      await this.reuniaoRepository.delete({ id: id })
+      return HttpStatusCode.NoContent
+
+    }
+    return HttpStatusCode.InternalServerError
   }
 
   async find() {

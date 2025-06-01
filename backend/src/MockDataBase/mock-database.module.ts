@@ -6,10 +6,12 @@ import { SalaPresencialEntity } from 'src/sala-presencial/entities/sala-presenci
 import { SalaPresencialService } from 'src/sala-presencial/sala-presencial.service';
 import { UsuarioEntity } from 'src/usuario/entities/usuario.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
+import { ZoomModule } from 'src/zoom/zoom.module';
+import { ZoomService } from 'src/zoom/zoom.service';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([UsuarioEntity, SalaPresencialEntity, ReuniaoEntity])],
-    providers: [SalaPresencialService, UsuarioService, ReuniaoService],
+    imports: [TypeOrmModule.forFeature([UsuarioEntity, SalaPresencialEntity, ReuniaoEntity]), ZoomModule],
+    providers: [SalaPresencialService, UsuarioService, ReuniaoService, ZoomService],
     exports: [TypeOrmModule]
 })
 export class MockDataBaseModule {}

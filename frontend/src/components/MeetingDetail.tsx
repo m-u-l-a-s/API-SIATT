@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CiCalendarDate, CiLocationOn } from "react-icons/ci";
 import { FaEdit, FaFileDownload } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import ConfirmationModal from './ConfirmationModal';
-import api from '../services/api';
 import useAuth from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { MeetingDetailProps } from '../interfaces/MeetingDetails';
@@ -12,12 +11,20 @@ import { getAnexos } from '../services/getAnexos';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { MeetingDetailsModal } from './MeetingDetailsModal';
 import { Categoria } from '../interfaces/CreateReuniaoDto';
+import { authService } from '../services/services.auth';
+import { getZoomClientId, getZoomRedirectUrl } from '../variables';
+import axios, { AxiosRequestConfig } from 'axios';
 
+export interface PropsEditReuniao {
+    reuniao: MeetingDetailProps
+}
 
 const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) => {
     const [showModal, setShowModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
-    const [local, setLocal] = useState('')
+    const ZOOM_CLIENT_ID = getZoomClientId()
+    const ZOOM_REDIRECT_URI = encodeURIComponent(getZoomRedirectUrl())
+    const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${ZOOM_CLIENT_ID}&redirect_uri=${ZOOM_REDIRECT_URI}`;
 
     const auth = useAuth();
     const navigate = useNavigate();
@@ -30,34 +37,60 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
         setShowModal(false);
     };
 
-    const deleteMeeting = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const deleteMeeting = async (e : React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        await api.delete(`reuniao/${props.id}`);
+        const token = authService.getZoomToken()
+        if (props.categoria == Categoria.HIBRIDA || props.categoria == Categoria.VIRTUAL) {
+            if ((token == null || token == "")) {
+                autenticarUsuario(e)
+                return
+            }
+
+            if (authService.isTokenExpired(token)) {
+                console.log("Token expirado")
+                autenticarUsuario(e)
+                return
+            }
+        }
+
+        const options: AxiosRequestConfig = {
+            url: `http://localhost:3000/reuniao/${props.id}`,
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${authService.getZoomToken()}`,
+            },
+        }
+        const resp = await axios.request(options)
+        
+        setDeleteModal(false)
+        if (resp.status !== 204) {
+            alert(resp.data)
+        }
+        
         window.location.reload();
     };
 
+    const autenticarUsuario = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const authTab = window.open(zoomAuthUrl, '_blank', 'width=500,height=600');
+
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data[0] === 'authenticated') {
+                const accessToken = event.data[1].access_token
+                authTab?.close()
+                authService.setZoomToken(accessToken)
+                window.removeEventListener('message', handleMessage)
+                deleteMeeting(e)
+            }
+        }
+        window?.addEventListener('message', handleMessage)
+    }
+
+
+
     const handleEditar = (reuniao: MeetingDetailProps) => {
-        navigate(`/Home/EditarReuniao/${props.id}`, { state: { key: reuniao } });
+        navigate(`/Home/EditarReuniao/${props.id}`, { state: reuniao });
         console.log(props.id);
     };
-
-    useEffect(() => {
-        if (props.salaPresencial) {
-            api.get(`sala-presencial/${props.salaPresencial}`).then(resp => {
-                setLocal(resp.data.identificacao)
-            })
-        }
-
-        if (props.categoria == Categoria.HIBRIDA && props.joinUrl) {
-            api.get(`sala-presencial/${props.salaPresencial}`).then(resp => {
-                setLocal(`${resp.data.identificacao} | ${props.joinUrl}`)
-            })
-        }
-
-        if (props.categoria == Categoria.VIRTUAL && props.joinUrl) {
-            setLocal(props.joinUrl)
-        }
-    })
 
     return (
         <div className="meeting-item bg-base-300 m-2 rounded-md">
@@ -97,7 +130,8 @@ const MeetingDetail: React.FC<MeetingDetailProps> = (props: MeetingDetailProps) 
                     categoria={props.categoria}
                     titulo={props.titulo}
                     pauta={props.pauta}
-                    local={local}
+                    local={props.salaPresencial}
+                    link={props.joinUrl}
                     participantes={props.participantes}
                     confirmText="Ok, fechar"
                     onConfirm={handleConfirmModal}

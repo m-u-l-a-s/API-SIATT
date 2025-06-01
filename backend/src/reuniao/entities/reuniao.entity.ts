@@ -37,7 +37,7 @@ export class ReuniaoEntity {
     solicitante : UsuarioEntity
 
     @Column({type : 'json'})
-    participantes : JSON
+    participantes : string[]
 
     @OneToMany(() => ReuniaoAnexo, anexos => anexos)
     anexos : ReuniaoAnexo[];
@@ -45,6 +45,9 @@ export class ReuniaoEntity {
     @ManyToOne(() => SalaPresencialEntity , salaPresencial => salaPresencial.reunioes)
     salaPresencial : SalaPresencialEntity
 
-    @Column()
+    @Column({nullable: true})
     AtaUrl ?: string
+
+    @Column()
+    zoomMeetingId ?: string
 }

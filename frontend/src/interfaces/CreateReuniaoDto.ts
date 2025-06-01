@@ -11,6 +11,7 @@ export interface CreateReuniao {
     solicitanteEmail: string | undefined
     participantes: any | undefined
     AtaUrl ?: string
+    zommMeetingId ?: number
 }
 
 export enum Categoria {

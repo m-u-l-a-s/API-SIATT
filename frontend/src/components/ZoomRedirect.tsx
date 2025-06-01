@@ -10,7 +10,7 @@ const ZoomRedirect = () => {
 
   useEffect(() => {
     api.post(`zoom/token/${code}`).then(resp => {
-      console.log(resp.data)
+      alert(resp.data)
       window.opener.postMessage(['authenticated',resp.data],'http://localhost:5173')
     }).catch(error => {
       console.log(error)

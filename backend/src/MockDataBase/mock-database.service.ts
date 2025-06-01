@@ -9,6 +9,7 @@ import { SalaPresencialService } from "src/sala-presencial/sala-presencial.servi
 import { CreateUsuarioDto, DEPARTAMENTO } from "src/usuario/dto/create-usuario.dto";
 import { UsuarioEntity } from "src/usuario/entities/usuario.entity";
 import { UsuarioService } from "src/usuario/usuario.service";
+import { ZoomService } from "src/zoom/zoom.service";
 import { Repository } from "typeorm";
 
 @Injectable()
@@ -26,12 +27,13 @@ export class MockDataBase {
         private readonly usuario: Repository<UsuarioEntity>,
 
         @InjectRepository(ReuniaoEntity)
-        private readonly reuniao: Repository<ReuniaoEntity>
+        private readonly reuniao: Repository<ReuniaoEntity>,
 
     ) {
+        const zoom = new ZoomService() 
         this.salaPresencialService = new SalaPresencialService(salaPresencial, reuniao);
         this.usuarioService = new UsuarioService(usuario);
-        this.reuniaoService = new ReuniaoService(reuniao, this.usuarioService, this.salaPresencialService);
+        this.reuniaoService = new ReuniaoService(reuniao, this.usuarioService, this.salaPresencialService, zoom);
     }
 
     async isEmpty(): Promise<void> {
@@ -73,7 +75,7 @@ export class MockDataBase {
     }
 
     async createTestDataReuniao(): Promise<void> {
-        const reuniaoService = new ReuniaoService(this.reuniao, this.usuarioService, this.salaPresencialService);
+        const reuniaoService = new ReuniaoService(this.reuniao, this.usuarioService, this.salaPresencialService, null);
         
         const salaPrincipal = await this.salaPresencialService.findAll();
 

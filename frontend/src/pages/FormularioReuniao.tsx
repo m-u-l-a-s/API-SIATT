@@ -13,12 +13,14 @@ import { TextField } from "../components/TextInput";
 import { TextArea } from "../components/TextArea";
 import { InputListField } from "../components/InputListField";
 import { SalaPresencial } from "../interfaces/ISalaPresencial";
-import ButtonCriarReuniao from "../components/ButtonCriarReuniao";
-import { ZoomMeetingDto } from "../interfaces/ZoomMeetingDto";
-import axios from "axios";
+import { HttpStatusCode } from "axios";
 import { IUsuario } from "../interfaces/usuario";
-import separaDataHora from "../control/utils";
-import { Categoria, CreateReuniao } from "../interfaces/CreateReuniaoDto";
+import { Categoria } from "../interfaces/CreateReuniaoDto";
+import { CreateReuniaoDto } from "../types/formularioReuniao";
+import { CriarReuniao, FileWithId, salvarArquivos, salvarAta } from "../services/formularioReuniaoService";
+import { UnauthorizedError } from "../errors/HttpErros";
+import  separaDataHora  from "../control/utils";
+import { getZoomClientId, getZoomRedirectUrl } from "../variables";
 
 
 export interface Reuniao {
@@ -39,13 +41,6 @@ export interface Reuniao {
 }
 
 
-
-
-interface FileWithId {
-    id: string;
-    file: File;
-}
-
 export function FormularioReuniao() {
     const [titulo, setTitulo] = useState<string>("")
     const [pauta, setPauta] = useState<string>("")
@@ -63,9 +58,9 @@ export function FormularioReuniao() {
 
     const auth = useAuth();
 
-    const clientID = 'zt6lhdUVTteosZ9p7x_NA'
-    const redirectUri = encodeURIComponent('http://localhost:5173/zoom')
-    const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${clientID}&redirect_uri=${redirectUri}`;
+    const ZOOM_CLIENT_ID = getZoomClientId()
+    const ZOOM_REDIRECT_URI = encodeURIComponent(getZoomRedirectUrl())
+    const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${ZOOM_CLIENT_ID}&redirect_uri=${ZOOM_REDIRECT_URI}`;
     const [horaDuracao, setHoraDuracao] = useState<number>(0);
     const [minDuracao, setMinDuracao] = useState<number>(0);
 
@@ -244,68 +239,9 @@ export function FormularioReuniao() {
         await api.post("sendEmail", bodyRequest).then(resp => {
             console.log(resp)
         }).catch(erro => {
-            console.log(erro)
+            throw new Error(erro)
         })
 
-    }
-    const saveForm = async (join_url?: string) => {
-
-        const solicitanteEmail = authService.decodificarToken(authService.getToken());
-        if (!solicitanteEmail) {
-            console.log("Email do solicitante não existe!")
-            return
-        }
-
-        const dataReuniao = getDataCombo()
-
-        if (form == Categoria.VIRTUAL) {
-            setSalaPresencialSelecionada("")
-        }
-
-
-        const reuniao: CreateReuniao =
-        {
-            titulo: titulo,
-            categoria: form,
-            dataHora: dataReuniao,
-            duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
-            pauta: pauta,
-            salapresencial: salaPresencialSelecionada,
-            solicitanteEmail: solicitanteEmail,
-            participantes: emails,
-            joinUrl: join_url,
-            AtaUrl: "a"
-        }
-
-        try {
-            api.post("reuniao/agendar", reuniao).then(async resp => {
-                console.log(resp)
-                const idReuniao = resp.data.id;
-                await salvarArquivos(idReuniao)
-                await api.post(`reuniao/ata/${resp.data.id}`, reuniao)
-
-            }).then(async () => {
-                await sendEmail(join_url)
-                setAlertModal(true)
-            }
-            )
-        } catch (error) {
-            console.log("Erro: " + error)
-        }
-
-    }
-    const salvarArquivos = (idReuniao: string) => {
-        for (let anexo of files) {
-            const formData = new FormData;
-            formData.append("file", anexo.file)
-            formData.append("reuniaoId", idReuniao)
-
-            try {
-                api.post(`reuniao-anexos/upload/${authService.decodificarToken(auth?.token)}`, formData);
-            } catch (error) {
-                console.log(error);
-            }
-        }
     }
 
     const handleAddEmail = (event: any) => {
@@ -332,51 +268,66 @@ export function FormularioReuniao() {
         }
     }
 
+    const AgendarReuniao =  async() => {
+        if (form == Categoria.HIBRIDA || form == Categoria.VIRTUAL) {
+            const token = authService.getZoomToken() 
+            if ((token == null || token == "")) {
+                autenticarUsuario()
+                return 
+            }
+
+            if (authService.isTokenExpired(token)){
+                autenticarUsuario()
+                return
+            }
+        }
+
+        const reuniao : CreateReuniaoDto = {
+            categoria: form,
+            dataHora: getDataCombo(),
+            duracao: ((60 * Number(horaDuracao)) + Number(minDuracao)),
+            participantes: emails,
+            pauta: pauta,
+            solicitanteEmail: authService.decodificarToken(authService.getToken()) || "",
+            titulo: titulo,
+            presencial: salaPresencialSelecionada,
+            zommMeetingId: 0 
+        }
+
+        try {
+            const resp = await CriarReuniao(reuniao)
+            if (resp.status == HttpStatusCode.Created) {
+                setAlertModal(true)
+            }
+    
+            salvarAta(resp.data.id, reuniao)
+            salvarArquivos(resp.data.id, files)
+            sendEmail(resp.data.joinUrl)
+        } catch (err) {
+            if (err instanceof UnauthorizedError){
+                autenticarUsuario()
+            }
+        }
+
+
+    }
+
 
     const autenticarUsuario = () => {
         const authTab = window.open(zoomAuthUrl, '_blank', 'width=500,height=600');
 
         const handleMessage = (event: MessageEvent) => {
             if (event.data[0] === 'authenticated') {
+                const accessToken = event.data[1].access_token
                 authTab?.close()
-                authService.setZoomToken(event.data[1].access_token)
-                auth?.setZoomToken(event.data[1].access_token)
+                authService.setZoomToken(accessToken)
                 window.removeEventListener('message', handleMessage)
-                AgendarReuniaoZoom()
+                AgendarReuniao()
             }
         }
-
         window?.addEventListener('message', handleMessage)
     }
 
-    const AgendarReuniaoZoom = async () => {
-        try {
-            if (form == Categoria.HIBRIDA || form == Categoria.VIRTUAL) {
-                if (dataCalendarioCombo) {
-                    const zoomMeeting: ZoomMeetingDto = {
-                        topic: titulo,
-                        agenda: pauta,
-                        start_time: getDataCombo().toISOString(),
-                        duration: ((60 * Number(horaDuracao)) + Number(minDuracao)),
-                        meeting_invites: emails
-                    }
-                    await axios.post("http://localhost:3000/zoom/schedule", zoomMeeting,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${authService.getZoomToken()}`
-                            }
-                        }
-                    ).then(resp => {
-                        saveForm(resp.data.join_url)
-                    }).catch(error => {
-                        console.error(error)
-                    })
-                }
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     return (
         <>
@@ -482,39 +433,15 @@ export function FormularioReuniao() {
                 </form>
 
             </div>
-
-            {form == Categoria.PRESENCIAL && (
-                <div>
-                    <div className="items-center text-black font-medium ">
-                        <ButtonCriarReuniao CriarReuniao={saveForm} />
-                    </div>
-                </div>
-            )}
-
-            {form == Categoria.VIRTUAL && (
                 <div>
                     <div className="items-center text-black font-medium ">
                         <a target="_blank" className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
                     shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
                     focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
                     disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            onClick={autenticarUsuario}>Agendar</a>
+                            onClick={AgendarReuniao}>Agendar</a>
                     </div>
                 </div>
-            )}
-
-
-            {form == Categoria.HIBRIDA && (
-                <div>
-                    <div className="items-center text-black font-medium ">
-                        <a target="_blank" className="rounded-lg bg-primary py-4 px-20 font-sans text-xs font-bold uppercase 
-                        shadow-md transition-all hover:shadow-lg hover:shadow-gray-500 
-                        focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none 
-                        disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            onClick={autenticarUsuario}>Agendar</a>
-                    </div>
-                </div>
-            )}
         </>
     )
 }
