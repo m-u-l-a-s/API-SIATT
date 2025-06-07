@@ -41,11 +41,7 @@ export function EditarSala (){
             setPermissao(sala.permissao);
             setOcupacaoMax(sala.ocupacaoMax);
             setLocal(sala.local)
-        }else{
-
         }
-
-        
     }, [location.state]);
 
     const atualizarSala = async () => {
