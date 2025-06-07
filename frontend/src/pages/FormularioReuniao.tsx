@@ -64,7 +64,7 @@ export function FormularioReuniao() {
     const [horaDuracao, setHoraDuracao] = useState<number>(0);
     const [minDuracao, setMinDuracao] = useState<number>(0);
 
-    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>();
+    const [dataCalendarioCombo, setDataCalendarioCombo] = useState<string>("");
     const [horaInicial, setHoraInicial] = useState<number>(0);
     const [minInicial, setMinInicial] = useState<number>(0);
 
@@ -268,7 +268,34 @@ export function FormularioReuniao() {
         }
     }
 
+    const validarDados = () : string => {
+        let erros = ""
+
+        if (titulo == "") {
+            erros += "O campo titulo deve ser preenchido.\n"
+        }
+        if (pauta == "") {
+            erros += "O campo pauta deve ser preenchido.\n"
+        }
+        if (dataCalendarioCombo == "") {
+            erros += "O campo data deve ser preenchido.\n"
+        }
+        if (minDuracao == 0 && horaDuracao == 0) {
+            erros += "O campo de duração deve ser preenchido.\n"
+        }
+        if ((form == Categoria.HIBRIDA || form == Categoria.PRESENCIAL) && salaPresencialSelecionada == "" ) {
+            erros += "A sala presencial não foi selecionada"
+        }
+        return erros
+    }
+
     const AgendarReuniao =  async() => {
+        const erros = validarDados()
+        if(erros != "") {
+            alert(erros)
+            return
+        }
+
         if (form == Categoria.HIBRIDA || form == Categoria.VIRTUAL) {
             const token = authService.getZoomToken() 
             if ((token == null || token == "")) {

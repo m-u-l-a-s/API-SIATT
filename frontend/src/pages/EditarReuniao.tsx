@@ -41,6 +41,28 @@ export function EditarReuniao() {
     const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${ZOOM_CLIENT_ID}&redirect_uri=${ZOOM_REDIRECT_URI}`;
 
 
+    const validarDados = () : string => {
+        let erros = ""
+
+        if (titulo == "") {
+            erros += "O campo titulo deve ser preenchido.\n"
+        }
+        if (pauta == "") {
+            erros += "O campo pauta deve ser preenchido.\n"
+        }
+        if (dataCalendarioCombo == "") {
+            erros += "O campo data deve ser preenchido.\n"
+        }
+        if (minDuracao == 0 && horaDuracao == 0) {
+            erros += "O campo de duração deve ser preenchido.\n"
+        }
+        if ((state.categoria == Categoria.HIBRIDA || state.categoria == Categoria.PRESENCIAL) && salaPresencialSelecionada == "" ) {
+            erros += "A sala presencial não foi selecionada"
+        }
+        return erros
+    }
+
+
     //useEffect - popular combos
     const getDataReuniao = (): Date => {
         return new Date(dataCalendarioCombo);
@@ -129,6 +151,12 @@ export function EditarReuniao() {
     }
 
     const saveForm = async (id: string) => {
+        const erros = validarDados()
+        if(erros != ""){
+            alert(erros)
+            return
+        }
+        
         if (categoria == Categoria.HIBRIDA || categoria == Categoria.VIRTUAL) {
             const token = authService.getZoomToken()
             if ((token == null || token == "")) {
@@ -142,8 +170,6 @@ export function EditarReuniao() {
                 return
             }
         }
-
-
 
         const dataHoraReuniao = new Date(dataCalendarioCombo)
         dataHoraReuniao.setHours(horaInicial - 3)
