@@ -111,19 +111,19 @@ const CadUsuario = () => {
 
                     <div className="space-x-3">
                         <label>Nome:</label>
-                        <input className="bg-base-300 bordaInput items-center w-72 h-auto"
+                        <input className="bg-base-300 bordaInput items-center w-72 h-auto text-base-content"
                             type="text" value={login} onChange={(e) => setLogin(e.target.value)} />
                     </div>
 
                     <div className="space-x-3">
                         <label>E-mail</label>
-                        <input className="bg-base-300 bordaInput w-72 h-auto"
+                        <input className="bg-base-300 bordaInput w-72 h-auto text-base-content"
                             type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
                     <div className="space-x-3">
                         <label>Senha:</label>
-                        <input className="bg-base-300 bordaInput w-72 "
+                        <input className="bg-base-300 bordaInput w-72 text-base-content"
                             type="text" value={senha} onChange={(e) => setSenha(e.target.value)} />
                     </div>
 

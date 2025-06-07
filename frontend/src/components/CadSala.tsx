@@ -131,7 +131,7 @@ const CadSala = () => {
                 <label className="font-semibold">Identificação:</label>
                 <input
                   type="text"
-                  className="bg-transparent border border-gray-400 rounded pl-1"
+                  className="text-base-content bg-transparent border border-gray-400 rounded pl-1"
                   value={identPresencial}
                   onChange={(e) => setIdentPresencial(e.target.value)}
                 />
@@ -155,7 +155,7 @@ const CadSala = () => {
                 <label className="font-semibold">Endereço:</label>
                 <input
                   type="text"
-                  className="bg-transparent border border-gray-400 rounded pl-1"
+                  className="text-base-content bg-transparent border border-gray-400 rounded pl-1"
                   value={endereco}
                   onChange={(e) => setEndereco(e.target.value)}
                 />
@@ -165,7 +165,7 @@ const CadSala = () => {
                 <label className="font-semibold">Local:</label>
                 <input
                   type="text"
-                  className="bg-transparent border border-gray-400 rounded pl-1"
+                  className="text-base-content bg-transparent border border-gray-400 rounded pl-1"
                   value={local}
                   onChange={(e) => setLocal(e.target.value)}
                 />

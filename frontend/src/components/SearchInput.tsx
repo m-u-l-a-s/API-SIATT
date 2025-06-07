@@ -14,7 +14,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ setSearchQuery }) => {
             <div className="w-full">
                 <input
                     type="search"
-                    className="w-full px-4 py-1 text-accent bg-base-100 rounded-full focus:outline-none"
+                    className="w-full px-4 py-1 text-accent bg-base-100 rounded-full focus:outline-none text-base-content"
                     placeholder="Pesquisar..."
                     onChange={handleInputChange}
                 />

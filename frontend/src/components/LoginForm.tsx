@@ -40,7 +40,7 @@ const LoginForm: React.FC = () => {
                             <input
                                 type="email"
                                 placeholder="email"
-                                className="input input-bordered"
+                                className="input input-bordered text-base-content"
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -53,7 +53,7 @@ const LoginForm: React.FC = () => {
                             <input
                                 type="password"
                                 placeholder="senha"
-                                className="input input-bordered"
+                                className="input input-bordered text-base-content"
                                 required
                                 value={senha}
                                 onChange={(e) => setSenha(e.target.value)}

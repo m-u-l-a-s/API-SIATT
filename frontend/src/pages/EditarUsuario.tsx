@@ -101,13 +101,13 @@ const EditarUsuario = () => {
 
                 <div className="space-x-3">
                     <label>Nome:</label>
-                    <input className="bg-base-300 bordaInput items-center w-72 h-auto"
+                    <input className="bg-base-300 bordaInput text-base-content items-center w-72 h-auto"
                         type="text" value={login} onChange={(e) => setLogin(e.target.value)} />
                 </div>
 
                 <div className="space-x-3">
                     <label>E-mail</label>
-                    <input className="bg-base-300 bordaInput w-72 h-auto"
+                    <input className="bg-base-300 bordaInput text-base-content w-72 h-auto"
                         type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
 

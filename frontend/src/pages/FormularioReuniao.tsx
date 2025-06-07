@@ -413,7 +413,7 @@ export function FormularioReuniao() {
                                             }
                                             type="number"
                                             id="nConvidados" name="nConvidados"
-                                            className="text-center border  border-gray-300 rounded-lg w-72 h-8 
+                                            className="text-center border text-base-content border-gray-300 rounded-lg w-72 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                         </input>
                                     </div>

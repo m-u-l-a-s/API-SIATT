@@ -14,7 +14,7 @@ export function InputListField(props : InputListFieldProps) {
                 <label htmlFor="">{props.name}</label>
                 <input
                     placeholder="exemplo@exemplo.com"
-                    className="border  border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                    className="text-base-content border  border-gray-300 text-base-content rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                     type="text"
                     value={props.inputValue}
                     onChange={(e) => props.setInputValue(e.target.value)}
