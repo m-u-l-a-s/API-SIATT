@@ -64,7 +64,7 @@ const Navbar = () => {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex flex-shrink-0 items-center">
               <Link to="/">
-                <img src="https://www.siatt.com.br/siatt/wp-content/uploads/2018/01/siatt-logo.png" className='h-10 rounded-lg' alt="Your Company Logo" />
+                <img src="public/siatt-logo.png" className='h-10 rounded-lg' alt="Your Company Logo" />
               </Link>
             </div>
             <span className='text-white flex justify-center items-center ml-6 text-2xl'>Connect</span>

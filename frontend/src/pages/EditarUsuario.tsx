@@ -13,9 +13,6 @@ interface Usuario {
     admin:boolean;
 }
 
-
-
-
 const EditarUsuario = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -27,6 +24,22 @@ const EditarUsuario = () => {
 
     const [departamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
 
+    const validarDados = () : string => {
+        let erros : string = ""
+        if (login == "") {
+            erros += "campo de login deve ser preenchido.\n"
+        }
+        if (email == "") {
+            erros += "campo de email deve ser preenchido.\n"
+        }
+        if (departamento == "" || departamento == "Selecione") {
+            erros += "campo de departamento deve ser preenchido.\n"
+        }
+        if (permissao == "") {
+            erros += "campo de permissao deve ser preenchido.\n"
+        }
+        return erros
+    }
 
 
     const handleAdminChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -38,20 +51,6 @@ const EditarUsuario = () => {
         }
     };
 
-    // useEffect(() => {
-
-    //     const usuario: UserDetailsProps = location.state.key;
-    //     setLogin(usuario.login);
-    //     setEmail(usuario.email);
-    //     setSenha(usuario.senha);
-    //     setDepartamento(usuario.departamento);
-    //     setPermissao(usuario.permissao.toString());
-    //     setAdmin(usuario.admin);
-
-
-
-    // }, []);
-
     useEffect(() => {
         if (location.state && location.state.key) {
             const usuario: Usuario = location.state.key;
@@ -60,13 +59,16 @@ const EditarUsuario = () => {
             setDepartamento(usuario.departamento);
             setPermissao(usuario.permissao.toString());
             setAdmin(usuario.admin);
-        } else {
-            
         }
     }, [location.state]);
     
 
     const handleEditarUsuarios = async (id: string) => {
+        const erros = validarDados()
+        if (erros != "") {
+            alert(erros)
+            return
+        } 
         try {
             const updatedUser: Usuario = { login, email, departamento, permissao: Number(permissao), status: 1, admin: Boolean(admin) };
             console.log(updatedUser);
@@ -99,13 +101,13 @@ const EditarUsuario = () => {
 
                 <div className="space-x-3">
                     <label>Nome:</label>
-                    <input className="bg-base-300 bordaInput items-center w-72 h-auto"
+                    <input className="bg-base-300 bordaInput text-base-content items-center w-72 h-auto"
                         type="text" value={login} onChange={(e) => setLogin(e.target.value)} />
                 </div>
 
                 <div className="space-x-3">
                     <label>E-mail</label>
-                    <input className="bg-base-300 bordaInput w-72 h-auto"
+                    <input className="bg-base-300 bordaInput text-base-content w-72 h-auto"
                         type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
 

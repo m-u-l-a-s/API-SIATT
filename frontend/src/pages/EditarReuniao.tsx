@@ -41,6 +41,28 @@ export function EditarReuniao() {
     const zoomAuthUrl = `https://zoom.us/oauth/authorize?response_type=code&client_id=${ZOOM_CLIENT_ID}&redirect_uri=${ZOOM_REDIRECT_URI}`;
 
 
+    const validarDados = () : string => {
+        let erros = ""
+
+        if (titulo == "") {
+            erros += "O campo titulo deve ser preenchido.\n"
+        }
+        if (pauta == "") {
+            erros += "O campo pauta deve ser preenchido.\n"
+        }
+        if (dataCalendarioCombo == "") {
+            erros += "O campo data deve ser preenchido.\n"
+        }
+        if (minDuracao == 0 && horaDuracao == 0) {
+            erros += "O campo de duração deve ser preenchido.\n"
+        }
+        if ((state.categoria == Categoria.HIBRIDA || state.categoria == Categoria.PRESENCIAL) && salaPresencialSelecionada == "" ) {
+            erros += "A sala presencial não foi selecionada"
+        }
+        return erros
+    }
+
+
     //useEffect - popular combos
     const getDataReuniao = (): Date => {
         return new Date(dataCalendarioCombo);
@@ -129,6 +151,12 @@ export function EditarReuniao() {
     }
 
     const saveForm = async (id: string) => {
+        const erros = validarDados()
+        if(erros != ""){
+            alert(erros)
+            return
+        }
+
         if (categoria == Categoria.HIBRIDA || categoria == Categoria.VIRTUAL) {
             const token = authService.getZoomToken()
             if ((token == null || token == "")) {
@@ -142,8 +170,6 @@ export function EditarReuniao() {
                 return
             }
         }
-
-
 
         const dataHoraReuniao = new Date(dataCalendarioCombo)
         dataHoraReuniao.setHours(horaInicial - 3)
@@ -256,7 +282,7 @@ export function EditarReuniao() {
                                 <label>Título da Reunião:</label>
                                 <input
                                     className="border  border-gray-300 rounded-lg px-3  w-96 h-8 
-                            focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                            focus:outline-none focus:border-gray-500 focus:ring-gray-400 text-base-content"
                                     type="text"
                                     id="tituloReuniao" name="tituloReuniao"
                                     value={titulo}
@@ -305,7 +331,7 @@ export function EditarReuniao() {
                                 <label htmlFor=""> E-mail dos convidados: </label>
                                 <input
                                     placeholder="exemplo@exemplo.com"
-                                    className="border  border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
+                                    className="text-base-content border  border-gray-300 rounded-lg px-3 w-72 h-8 focus:outline-none focus:border-gray-500 focus:ring-gray-400 "
                                     type="text"
                                     value={emailInput}
                                     onChange={handleInputChange}
@@ -330,7 +356,7 @@ export function EditarReuniao() {
                                         onChange={(e) => sugestaoSala(e)}
                                         type="number"
                                         id="nConvidados" name="nConvidados"
-                                        className="text-center border  border-gray-300 rounded-lg w-72 h-8 
+                                        className="text-base-content text-center border  border-gray-300 rounded-lg w-72 h-8 
                             focus:outline-none focus:border-gray-500 focus:ring-gray-400">
                                     </input>
                                 </div>

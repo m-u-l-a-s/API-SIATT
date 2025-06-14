@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import InformationModal from "../components/InformationModal";
 import api from "../services/api";
@@ -8,7 +8,7 @@ interface Usuario {
     login: string;
     email: string;
     departamento: string;
-    permissao: Number;
+    permissao: number;
     senha: string;
     status: 1;
     admin: boolean;
@@ -29,17 +29,38 @@ const CadUsuario = () => {
 
     const [departamentos] = useState<string[]>(['financeiro', 'comercial', 'tecnico', "administrativo"]);
 
-    const handleAdicionarUsuario = (event: any) => {
-        if (permissao == undefined) {
-            throw new Error("Permissao vazia")
+    const validarDados = () : string => {
+        let erros : string = ""
+        if (login == "") {
+            erros += "campo de login deve ser preenchido.\n"
+        }
+        if (email == "") {
+            erros += "campo de email deve ser preenchido.\n"
+        }
+        if (senha == "") {
+            erros += "campo de senha deve ser preenchido.\n"
+        }
+        if (departamento == "") {
+            erros += "campo de departamento deve ser preenchido.\n"
+        }
+        if (permissao == "") {
+            erros += "campo de permissao deve ser preenchido.\n"
+        }
+        return erros
+    }
+
+    const handleAdicionarUsuario = (event: React.MouseEvent) => {
+        const erros = validarDados()
+        if (erros != "" ) {
+            alert(erros)
+            return
         }
         event.preventDefault();
         const novoUsuario: Usuario = { login, email, senha, departamento, permissao: Number(permissao), status: 1, admin: Boolean(admin) };
         setUsuarios([...usuarios, novoUsuario]);
-
     };
 
-    const DelUsuarioLista = (index: number, e: any) => {
+    const DelUsuarioLista = (index: number, e : React.MouseEvent) => {
         e.preventDefault()
         const updateUsuarios = usuarios.filter((_, i) => i !== index)
         console.log(updateUsuarios)
@@ -59,6 +80,11 @@ const CadUsuario = () => {
 
     const handleCadastrarUsuarios = async () => {
         // Implemente a lógica para enviar os usuários cadastrados para o backend
+        if(usuarios.length == 0) {
+            alert("Não há usuários para cadastrar!")
+            return
+        }
+
         usuarios.forEach(async usuario => {
             await api.post("usuario", usuario)
                 .then(resp => {
@@ -85,19 +111,19 @@ const CadUsuario = () => {
 
                     <div className="space-x-3">
                         <label>Nome:</label>
-                        <input className="bg-base-300 bordaInput items-center w-72 h-auto"
+                        <input className="bg-base-300 bordaInput items-center w-72 h-auto text-base-content"
                             type="text" value={login} onChange={(e) => setLogin(e.target.value)} />
                     </div>
 
                     <div className="space-x-3">
                         <label>E-mail</label>
-                        <input className="bg-base-300 bordaInput w-72 h-auto"
+                        <input className="bg-base-300 bordaInput w-72 h-auto text-base-content"
                             type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
                     <div className="space-x-3">
                         <label>Senha:</label>
-                        <input className="bg-base-300 bordaInput w-72 "
+                        <input className="bg-base-300 bordaInput w-72 text-base-content"
                             type="text" value={senha} onChange={(e) => setSenha(e.target.value)} />
                     </div>
 
@@ -110,7 +136,6 @@ const CadUsuario = () => {
                                 <option value={departamento} key={index}>{departamento}</option>
                             ))}
                         </select>
-
                     </div>
 
                     <div className="space-x-4 -ml-20">
@@ -121,15 +146,10 @@ const CadUsuario = () => {
                             value={admin ? 'true' : 'false'}
                             onChange={handleAdminChange}
                         >
-
                             <option value={'true'}>Sim</option>
                             <option value={'false'}>Não</option>
 
                         </select>
-
-
-
-
                     </div>
 
 
@@ -153,7 +173,7 @@ const CadUsuario = () => {
                          hover:shadow-gray-500 focus:opacity-[0.85] 
                         focus:shadow-none active:opacity-[0.85] 
                         active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            onClick={handleAdicionarUsuario}>
+                            onClick={(e : React.MouseEvent) => handleAdicionarUsuario(e)}>
                             Adicionar à lista
                         </button>
                     </div>
@@ -173,15 +193,10 @@ const CadUsuario = () => {
                         {usuarios.map((usuario, index) => (
                             <div key={index}
                                 className=" flex items-center justify-between space-x-3 bordaInput w-auto h-auto ">
-
                                 <span>{usuario.login}</span>
-
-                                {/* <button >ed</button> */}
                                 <button
-                                    onClick={(e) => DelUsuarioLista(index, e)}
+                                    onClick={(e: React.MouseEvent) => DelUsuarioLista(index, e)}
                                 > <MdDelete /> </button>
-
-
                             </div>
                         ))}
                     </div>
